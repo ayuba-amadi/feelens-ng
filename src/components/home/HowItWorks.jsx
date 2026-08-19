@@ -1,0 +1,9 @@
+import { ArrowRight, CheckCircle2, Search, ShieldCheck } from 'lucide-react'
+
+const steps = [{ number: '01', title: 'Search the service', text: 'Tell us what you need in plain language, from a passport to a business registration.', icon: Search }, { number: '02', title: 'Check the verified information', text: 'Review the fee, requirements, and evidence trail together in one clear record.', icon: ShieldCheck }, { number: '03', title: 'Continue to the official channel', text: 'Use the appropriate government application or payment channel with confidence.', icon: CheckCircle2 }]
+
+function HowItWorks() {
+  return <section id="how-it-works" className="bg-slate-50"><div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10"><div className="max-w-xl"><p className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-700">A clearer path</p><h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">How FeeLens works</h2><p className="mt-4 text-base leading-7 text-slate-600">We make the information journey easier to follow, while linking every published detail back to authoritative government sources.</p></div><div className="mt-12 grid gap-6 lg:grid-cols-3">{steps.map(({ number, title, text, icon: Icon }, index) => <div key={number} className="relative rounded-2xl border border-slate-200 bg-white p-6"><div className="flex items-center justify-between"><span className="text-sm font-bold text-emerald-600">{number}</span><Icon size={23} className="text-slate-400" aria-hidden="true" /></div><h3 className="mt-10 text-lg font-bold text-slate-900">{title}</h3><p className="mt-3 text-sm leading-6 text-slate-600">{text}</p>{index < steps.length - 1 && <ArrowRight size={18} className="absolute -bottom-12 left-1/2 hidden -translate-x-1/2 text-slate-300 lg:block" aria-hidden="true" />}</div>)}</div></div></section>
+}
+
+export default HowItWorks
