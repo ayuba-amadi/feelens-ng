@@ -1,0 +1,5 @@
+function PublicationGapNotice() {
+  return <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6"><h2 className="text-xl font-bold text-slate-950">Publication gap</h2><div className="mt-5 grid gap-5 sm:grid-cols-2"><div><h3 className="text-sm font-bold uppercase tracking-[0.14em] text-emerald-700">What FeeLens confirmed</h3><p className="mt-2 text-sm leading-6 text-slate-600">The service and responsible institution are identified in an authoritative government source.</p></div><div><h3 className="text-sm font-bold uppercase tracking-[0.14em] text-slate-600">What remains unclear</h3><p className="mt-2 text-sm leading-6 text-slate-600">A current publicly accessible numeric fee has not been located in the sources reviewed by FeeLens.</p></div></div><p className="mt-5 border-t border-slate-200 pt-4 text-sm font-semibold leading-6 text-slate-700">Do not treat a third-party quotation or agent charge as an official government fee unless it is supported by authoritative government evidence.</p></section>
+}
+
+export default PublicationGapNotice

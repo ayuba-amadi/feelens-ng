@@ -1,0 +1,10 @@
+import { Link } from 'react-router'
+import PageIntro from '../components/common/PageIntro'
+import { agencies } from '../data/agencies.js'
+import { services } from '../data/services.js'
+
+function AboutPage() {
+  return <><PageIntro eyebrow="About the pilot" title="A clearer path through public-service information" description="FeeLens NG is an independent civic-tech transparency pilot for Abuja and the FCT." /><div className="mx-auto max-w-4xl px-5 py-10 sm:px-8 lg:px-10"><div className="grid gap-4 sm:grid-cols-2"><div className="rounded-2xl bg-slate-950 p-6 text-white"><p className="text-sm text-slate-300">Pilot institutions</p><p className="mt-2 text-4xl font-bold">{agencies.length}</p></div><div className="rounded-2xl bg-emerald-600 p-6 text-white"><p className="text-sm text-emerald-100">Indexed services</p><p className="mt-2 text-4xl font-bold">{services.length}</p></div></div><section className="mt-10"><h2 className="text-2xl font-bold text-slate-950">What FeeLens helps users do</h2><ul className="mt-5 grid gap-3 text-slate-600 sm:grid-cols-2"><li className="rounded-xl border border-slate-200 p-4">Find government services</li><li className="rounded-xl border border-slate-200 p-4">Understand published charges</li><li className="rounded-xl border border-slate-200 p-4">Identify free services</li><li className="rounded-xl border border-slate-200 p-4">See authoritative evidence</li><li className="rounded-xl border border-slate-200 p-4">Continue through official channels</li></ul></section><section className="mt-10"><h2 className="text-2xl font-bold text-slate-950">Independent and deliberately scoped</h2><p className="mt-4 leading-7 text-slate-600">The technical architecture can scale beyond Abuja, but this pilot is deliberately scoped to services relevant to Abuja/FCT residents. FeeLens is not a government platform, does not claim government endorsement, and does not process applications or payments.</p><Link to="/methodology" className="mt-5 inline-flex font-semibold text-emerald-700">Read the methodology →</Link></section></div></>
+}
+
+export default AboutPage
