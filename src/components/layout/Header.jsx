@@ -4,8 +4,7 @@ import { Link } from 'react-router'
 
 const navigation = [
   { label: 'Verify a Fee', href: '/#verify' },
-  { label: 'Browse Services', href: '/services' },
-  { label: 'Agencies', href: '/agencies' },
+  { label: 'MDAs', href: '/mdas' },
   { label: 'How It Works', href: '/methodology' },
 ]
 
