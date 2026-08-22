@@ -1,6 +1,6 @@
 const currencyFormatter = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 2 })
 
-const formatAmount = (amount, currency = 'NGN') => currency === 'NGN' ? currencyFormatter.format(amount) : `${new Intl.NumberFormat('en-NG').format(amount)} ${currency}`
+const formatAmount = (amount, currency = 'NGN') => currency === 'NGN' ? currencyFormatter.format(amount) : currency === 'USD' ? `US$${new Intl.NumberFormat('en-NG').format(amount)}` : `${new Intl.NumberFormat('en-NG').format(amount)} ${currency}`
 const unavailableAmountLabel = (feeOption) => feeOption?.publicationStatus === 'published' && feeOption.verificationStatus === 'pending'
   ? 'Current amount not yet verified in FeeLens'
   : 'Official amount not publicly located'
