@@ -5,7 +5,8 @@ export default {
     extend: {
       colors: {
         ink: '#102a43',
-        leaf: '#16794c'
+        leaf: '#16794c',
+        'leaf-dark': '#0d5d39'
       }
     }
   },

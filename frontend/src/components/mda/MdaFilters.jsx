@@ -1,0 +1,11 @@
+import { Filter, RotateCcw } from 'lucide-react';
+
+function FilterSelect({ id, label, value, onChange, options }) {
+  return <label className="block min-w-0 flex-1 text-xs font-bold text-slate-600" htmlFor={id}>{label}<select id={id} value={value} onChange={(event) => onChange(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-normal text-ink focus:border-leaf focus:outline-none"><option value="">All {label.toLowerCase()}</option>{options.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>;
+}
+
+export function MdaFilters({ filters, setFilters, options, onReset }) {
+  const update = (key) => (value) => setFilters((current) => ({ ...current, [key]: value, page: 1 }));
+  return <div className="surface-card p-4"><div className="flex items-center gap-2 text-sm font-bold text-ink"><Filter size={17} className="text-leaf" aria-hidden="true" />Filter and sort</div><div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5"><FilterSelect id="jurisdiction" label="Jurisdiction" value={filters.jurisdiction} onChange={update('jurisdiction')} options={options.jurisdictions} /><FilterSelect id="entity-type" label="Entity type" value={filters.entityType} onChange={update('entityType')} options={options.entityTypes} /><FilterSelect id="coverage-status" label="Coverage status" value={filters.coverageStatus} onChange={update('coverageStatus')} options={options.coverageStatuses} /><FilterSelect id="category" label="Category" value={filters.category} onChange={update('category')} options={options.categories} /><label className="block min-w-0 text-xs font-bold text-slate-600" htmlFor="sort">Sort<select id="sort" value={filters.sort} onChange={(event) => update('sort')(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-normal text-ink focus:border-leaf focus:outline-none"><option value="coverage">Coverage priority</option><option value="alpha">A–Z</option><option value="live">Live / available first</option><option value="services">Mapped services</option></select></label></div><button type="button" onClick={onReset} className="text-button mt-3"><RotateCcw size={15} aria-hidden="true" />Reset filters</button></div>;
+}
+
