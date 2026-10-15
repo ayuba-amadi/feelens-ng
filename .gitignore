@@ -1,24 +1,18 @@
-# Dependencies
+# Dependencies and build output
 node_modules/
-
-# Builds
 dist/
 build/
+coverage/
 
-# Environment/secrets
+# Local environment files and secrets
 .env
 .env.*
 !.env.example
+*.pem
+*.key
 
-# Logs
+# Local logs and OS/editor files
 *.log
-npm-debug.log*
-
-# OS/editor
 .DS_Store
-.vscode/
 .idea/
-
-# Temporary files
-tmp/
-.cache/
+.vscode/
