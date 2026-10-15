@@ -9,7 +9,7 @@ ALTER TABLE mdas
   ADD COLUMN IF NOT EXISTS entity_type TEXT,
   ADD COLUMN IF NOT EXISTS jurisdiction TEXT,
   ADD COLUMN IF NOT EXISTS category TEXT,
-  ADD COLUMN IF NOT EXISTS coverage_status TEXT NOT NULL DEFAULT 'pending',
+  ADD COLUMN IF NOT EXISTS coverage_status TEXT NOT NULL DEFAULT 'pilot',
   ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE;
 
 ALTER TABLE services
@@ -46,7 +46,7 @@ BEGIN
     SELECT 1 FROM pg_constraint WHERE conname = 'mdas_coverage_status_check'
   ) THEN
     ALTER TABLE mdas ADD CONSTRAINT mdas_coverage_status_check
-      CHECK (coverage_status IN ('verified', 'pending', 'conflicting', 'unable_to_verify', 'superseded')) NOT VALID;
+      CHECK (coverage_status IN ('pilot', 'roadmap', 'inactive')) NOT VALID;
   END IF;
 
   IF NOT EXISTS (

@@ -1,6 +1,7 @@
 const { z } = require('zod');
 
 const verificationStatuses = ['verified', 'pending', 'conflicting', 'unable_to_verify', 'superseded'];
+const coverageStatuses = ['pilot', 'roadmap', 'inactive'];
 const pricingModels = ['fixed', 'free', 'range', 'percentage', 'formula', 'variable', 'unknown'];
 const sourceTypes = [
   'act',
@@ -43,7 +44,7 @@ const mdaSchema = z.object({
   entityType: optionalText(100),
   jurisdiction: optionalText(100),
   category: optionalText(100),
-  coverageStatus: z.enum(verificationStatuses).default('pending'),
+  coverageStatus: z.enum(coverageStatuses).default('pilot'),
   isActive: z.boolean().default(true),
   updatedAt: z.iso.datetime({ offset: true }).optional(),
 }).strict();

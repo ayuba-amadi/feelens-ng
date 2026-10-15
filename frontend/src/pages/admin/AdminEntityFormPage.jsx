@@ -5,11 +5,12 @@ import { AdminError, AdminLoading, AdminPageHeader, Field, FormSection, InlineNo
 import { adminApi } from '../../lib/admin-api';
 
 const verificationStatuses = ['verified', 'pending', 'conflicting', 'unable_to_verify', 'superseded'];
+const coverageStatuses = ['pilot', 'roadmap', 'inactive'];
 const pricingModels = ['fixed', 'free', 'range', 'percentage', 'formula', 'variable', 'unknown'];
 const sourceTypes = ['act', 'regulation', 'gazette', 'statutory_instrument', 'approved_fee_schedule', 'official_circular', 'official_website', 'official_portal', 'official_notice', 'correspondence', 'foi_response', 'other'];
 
 const defaults = {
-  mdas: { name: '', slug: '', acronym: '', description: '', websiteUrl: '', entityType: '', jurisdiction: '', category: '', coverageStatus: 'pending', isActive: true },
+  mdas: { name: '', slug: '', acronym: '', description: '', websiteUrl: '', entityType: '', jurisdiction: '', category: '', coverageStatus: 'pilot', isActive: true },
   services: { mdaId: '', name: '', slug: '', description: '', category: '', jurisdiction: '', requirements: [], processSteps: [], notes: '', isActive: true },
   fees: { serviceId: '', pricingModel: 'unknown', label: '', currency: 'NGN', amount: '', minimumAmount: '', maximumAmount: '', percentage: '', formula: '', conditions: '', notes: '', verificationStatus: 'pending', verifiedAt: '', nextReviewAt: '', isCurrent: true },
   sources: { title: '', sourceType: 'official_website', evidenceTier: 2, publisher: '', url: '', documentReference: '', publicationDate: '', effectiveDate: '', accessedAt: '', notes: '' },
@@ -159,7 +160,7 @@ function MdaFields({ form, set, errors }) {
       <FormSection title="Coverage and official presence">
         <div className="admin-form-grid">
           <Field label="Official website" name="websiteUrl" error={errors.websiteUrl}>{(props) => <Input {...props} type="url" value={form.websiteUrl || ''} onChange={(e) => set('websiteUrl', e.target.value)} />}</Field>
-          <Field label="Coverage status" name="coverageStatus" required error={errors.coverageStatus}>{(props) => <Select {...props} value={form.coverageStatus} onChange={(e) => set('coverageStatus', e.target.value)}>{verificationStatuses.map((status) => <option key={status} value={status}>{status.replaceAll('_', ' ')}</option>)}</Select>}</Field>
+          <Field label="Coverage status" name="coverageStatus" required error={errors.coverageStatus}>{(props) => <Select {...props} value={form.coverageStatus} onChange={(e) => set('coverageStatus', e.target.value)}>{coverageStatuses.map((status) => <option key={status} value={status}>{status.replaceAll('_', ' ')}</option>)}</Select>}</Field>
           <Field label="Record state" name="isActive">{(props) => <Select {...props} value={String(form.isActive)} onChange={(e) => set('isActive', e.target.value === 'true')}><option value="true">Active</option><option value="false">Inactive / archived</option></Select>}</Field>
         </div>
       </FormSection>

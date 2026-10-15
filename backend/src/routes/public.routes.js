@@ -165,10 +165,10 @@ function sourceSearch(conditions, values, search, columns) {
 
 function mdaSort(sort) {
   return {
-    coverage: "CASE m.coverage_status WHEN 'verified' THEN 1 WHEN 'pending' THEN 2 WHEN 'conflicting' THEN 3 WHEN 'unable_to_verify' THEN 4 ELSE 5 END",
+    coverage: "CASE m.coverage_status WHEN 'pilot' THEN 1 WHEN 'roadmap' THEN 2 WHEN 'inactive' THEN 3 ELSE 4 END",
     alpha: 'm.name',
     name: 'm.name',
-    live: "CASE WHEN m.coverage_status = 'verified' AND (SELECT COUNT(*) FROM services ms WHERE ms.mda_id = m.id AND ms.is_active = TRUE) > 0 THEN 1 ELSE 2 END",
+    live: "CASE WHEN m.coverage_status = 'pilot' AND (SELECT COUNT(*) FROM services ms WHERE ms.mda_id = m.id AND ms.is_active = TRUE) > 0 THEN 1 ELSE 2 END",
     services: '"serviceCount"',
     status: 'm.coverage_status',
     updatedAt: 'm.updated_at',
@@ -258,7 +258,7 @@ function createPublicRouter(pool) {
         }
       }
       if (query.featured === true) {
-        conditions.push("m.coverage_status = 'verified'");
+        conditions.push("m.coverage_status = 'pilot'");
         conditions.push('(SELECT COUNT(*) FROM services ms WHERE ms.mda_id = m.id AND ms.is_active = TRUE) > 0');
       }
       values.push(page.pageSize, page.offset);

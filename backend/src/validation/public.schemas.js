@@ -2,6 +2,7 @@ const { z } = require('zod');
 const { sourceTypes } = require('./admin.schemas');
 
 const verificationStatuses = ['verified', 'pending', 'conflicting', 'unable_to_verify', 'superseded'];
+const coverageStatuses = ['pilot', 'roadmap', 'inactive'];
 const publicSorts = ['coverage', 'alpha', 'live', 'services', 'name', 'status', 'updatedAt'];
 
 const optionalQueryText = (max = 200) => z.string().trim().max(max).transform((value) => value || undefined).optional();
@@ -24,7 +25,7 @@ const publicMdaListSchema = z.object({
   jurisdiction: optionalQueryText(100),
   entityType: optionalQueryText(100),
   category: optionalQueryText(100),
-  coverageStatus: z.enum(verificationStatuses).optional(),
+  coverageStatus: z.enum(coverageStatuses).optional(),
   sort: z.enum(publicSorts).default('coverage'),
   featured: queryBoolean.optional(),
 }).strict();

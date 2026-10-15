@@ -7,6 +7,9 @@ const statusMeta = {
   conflicting: { label: 'Conflicting', meaning: 'Authoritative sources disagree.', icon: GitCompareArrows, classes: 'border-orange-200 bg-orange-50 text-orange-800' },
   unable_to_verify: { label: 'Unable to verify', meaning: 'A current authoritative amount could not be established.', icon: HelpCircle, classes: 'border-slate-300 bg-slate-100 text-slate-700' },
   superseded: { label: 'Superseded', meaning: 'This record has been replaced by newer information.', icon: History, classes: 'border-slate-300 bg-slate-100 text-slate-700' },
+  pilot: { label: 'Pilot', meaning: 'This MDA is included in the current FeeLens pilot.', icon: CheckCircle2, classes: 'border-emerald-200 bg-emerald-50 text-emerald-800' },
+  roadmap: { label: 'Roadmap', meaning: 'This MDA is planned for future FeeLens coverage.', icon: Clock3, classes: 'border-slate-300 bg-slate-100 text-slate-700' },
+  inactive: { label: 'Inactive', meaning: 'This MDA is not currently active in the public catalogue.', icon: History, classes: 'border-slate-300 bg-slate-100 text-slate-600' },
   status_not_listed: { label: 'Status not listed', meaning: 'The public record has not supplied a verification status.', icon: HelpCircle, classes: 'border-slate-200 bg-white text-slate-500' }
 };
 
