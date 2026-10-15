@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { publicApi } from '../lib/api';
 import { useApiResource } from '../hooks/use-api';
@@ -14,9 +14,21 @@ export function MdasPage() {
   const [filters, setFilters] = useState(initialFilters);
   const [searchDraft, setSearchDraft] = useState('');
   const [retry, setRetry] = useState(0);
+  const [loadedItems, setLoadedItems] = useState([]);
   const queryKey = JSON.stringify(filters);
   const state = useApiResource((options) => publicApi.getMdas(filters, options), [queryKey, retry]);
-  const items = state.status === 'success' ? state.data?.items || [] : [];
+  const pageItems = state.status === 'success' ? state.data?.items || [] : [];
+
+  useEffect(() => {
+    setLoadedItems([]);
+  }, [JSON.stringify({ ...filters, page: 1 }), retry]);
+
+  useEffect(() => {
+    if (state.status !== 'success') return;
+    setLoadedItems((current) => filters.page === 1 ? pageItems : [...current, ...pageItems]);
+  }, [state.status, state.data, filters.page]);
+
+  const items = state.status === 'success' ? loadedItems : [];
   const options = useMemo(() => ({
     jurisdictions: [...new Set(items.map((item) => valueOf(item, 'jurisdiction')).filter(Boolean))].sort(),
     entityTypes: [...new Set(items.map((item) => valueOf(item, 'entityType', 'entity_type')).filter(Boolean))].sort(),

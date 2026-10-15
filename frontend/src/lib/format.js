@@ -37,10 +37,10 @@ export function formatFee(option) {
   const currency = valueOf(option, 'currency') || 'NGN';
   if (model === 'free') return { label: 'Free', detail: 'No fee is listed for this option.' };
   if (model === 'fixed') { const amount = formatCurrency(valueOf(option, 'amount'), currency); return amount ? { label: amount, detail: 'Fixed fee' } : { label: 'Fixed fee', detail: 'Amount not provided.' }; }
-  if (model === 'range') { const minimum = formatCurrency(valueOf(option, 'minAmount', 'min_amount'), currency); const maximum = formatCurrency(valueOf(option, 'maxAmount', 'max_amount'), currency); return { label: minimum && maximum ? `${minimum} – ${maximum}` : 'Fee range', detail: 'Range varies by the details of the service.' }; }
+  if (model === 'range') { const minimum = formatCurrency(valueOf(option, 'minAmount', 'minimumAmount', 'min_amount'), currency); const maximum = formatCurrency(valueOf(option, 'maxAmount', 'maximumAmount', 'max_amount'), currency); return { label: minimum && maximum ? `${minimum} – ${maximum}` : 'Fee range', detail: 'Range varies by the details of the service.' }; }
   if (model === 'percentage') { const percentage = valueOf(option, 'percentage'); return { label: percentage !== undefined ? `${percentage}%` : 'Percentage fee', detail: 'Calculated as a percentage.' }; }
   if (model === 'formula') return { label: 'Calculated fee', detail: valueOf(option, 'formula') || 'The source provides a calculation formula.' };
-  if (model === 'variable') return { label: 'Variable fee', detail: valueOf(option, 'notes', 'description') || 'The amount varies. Review the evidence and official channel.' };
+  if (model === 'variable') return { label: 'Variable fee', detail: valueOf(option, 'conditions', 'notes', 'description') || 'The amount varies. Review the evidence and official channel.' };
   return { label: 'Fee not established', detail: 'An authoritative current amount has not been established. This does not mean free.' };
 }
 

@@ -12,9 +12,9 @@ import { MdaCard } from '../components/mda/MdaCard';
 import { EvidenceFlow } from '../components/home/EvidenceFlow';
 import { HowItWorks } from '../components/home/HowItWorks';
 
-function metricValue(stats, keys) {
+function metricValue(stats, keys, hasCoverage) {
   const value = valueOf(stats, ...keys);
-  return value === undefined || value === null ? 'Pilot data being prepared' : formatCount(value);
+  return !hasCoverage || value === undefined || value === null ? 'Pilot data being prepared' : formatCount(value);
 }
 
 export function HomePage() {
@@ -26,12 +26,14 @@ export function HomePage() {
   }, []);
 
   const statData = stats.status === 'success' && stats.data && typeof stats.data === 'object' ? stats.data : null;
+  const hasCoverage = statData && ['mdasCovered', 'servicesMapped', 'verifiedFeeItems', 'sources']
+    .some((key) => Number(statData[key]) > 0);
   const featuredItems = featured.status === 'success' ? featured.data?.items || [] : [];
   return <div>
     <section className="hero-grid hero-glow border-b border-slate-200/70"><div className="page-shell py-10 sm:py-14"><div className="mx-auto max-w-3xl text-center"><p className="eyebrow">Independent civic technology</p><h1 className="mt-3 text-4xl font-black tracking-tight text-ink sm:text-5xl sm:leading-[1.08]">Know the official fee before you pay.</h1><p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">Find a public service, understand whether it is free or paid, inspect the evidence, and continue through the official channel.</p></div><div className="surface-card mx-auto mt-7 max-w-3xl p-3 sm:mt-8 sm:p-4"><SearchBox id="public-search" compact /></div><p className="mx-auto mt-3 max-w-xl text-center text-xs leading-5 text-slate-500">Search results depend on published FeeLens records. No record is treated as free just because a fee is unknown.</p></div></section>
 
     <div className="page-shell space-y-14 py-10 sm:py-12">
-      <section><SectionHeading eyebrow="Pilot coverage" title="A transparent picture of what is mapped" description="These numbers are connected to public data and stay neutral until records are available." /><div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4"><MetricCard label="MDAs covered" value={metricValue(statData, ['mdasCovered', 'mdas_covered', 'mdaCount'])} /><MetricCard label="Services mapped" value={metricValue(statData, ['servicesMapped', 'services_mapped', 'serviceCount'])} /><MetricCard label="Verified fee items" value={metricValue(statData, ['verifiedFeeItems', 'verified_fee_items', 'verifiedFees'])} /><MetricCard label="Sources / evidence" value={metricValue(statData, ['sources', 'sourceCount', 'evidenceCount'])} /></div>{stats.status === 'error' ? <p className="mt-3 text-xs text-slate-500">Pilot data is not available yet; this view will update when the public API is connected.</p> : null}</section>
+      <section><SectionHeading eyebrow="Pilot coverage" title="A transparent picture of what is mapped" description="These numbers are connected to public data and stay neutral until records are available." /><div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4"><MetricCard label="MDAs covered" value={metricValue(statData, ['mdasCovered', 'mdas_covered', 'mdaCount'], hasCoverage)} /><MetricCard label="Services mapped" value={metricValue(statData, ['servicesMapped', 'services_mapped', 'serviceCount'], hasCoverage)} /><MetricCard label="Verified fee items" value={metricValue(statData, ['verifiedFeeItems', 'verified_fee_items', 'verifiedFees'], hasCoverage)} /><MetricCard label="Sources / evidence" value={metricValue(statData, ['sources', 'sourceCount', 'evidenceCount'], hasCoverage)} /></div>{stats.status === 'error' ? <p className="mt-3 text-xs text-slate-500">Pilot data is not available yet; this view will update when public records are connected.</p> : null}</section>
 
       <section><SectionHeading eyebrow="Featured coverage" title="Browse the public catalogue" description="Only MDAs returned by the public API appear here. FeeLens does not invent pilot records." action={<Link className="text-button" to="/mdas">View all MDAs <ArrowRight size={16} aria-hidden="true" /></Link>} />{featured.status === 'loading' ? <div className="mt-6"><LoadingState label="Loading featured coverage…" /></div> : featured.status === 'error' ? <div className="mt-6"><ErrorState title="Featured coverage is not available yet" description="The public catalogue will appear here when the API is ready." /></div> : featuredItems.length === 0 ? <div className="mt-6"><EmptyState title="Pilot coverage is being prepared" description="When public MDA records are available, featured coverage will appear in this space." icon={Building2} /></div> : <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{featuredItems.map((mda, index) => <MdaCard key={valueOf(mda, 'id', 'slug') || index} mda={mda} />)}</div>}</section>
 

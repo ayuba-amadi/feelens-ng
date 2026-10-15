@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { publicApi } from '../../lib/api';
+import { MIN_PUBLIC_SEARCH_LENGTH, publicApi } from '../../lib/api';
 import { valueOf } from '../../lib/format';
 import { SearchEmptyState } from './States';
 
@@ -10,6 +10,13 @@ function resultLink(result) {
   const slug = valueOf(result, 'slug');
   if (!slug) return null;
   return type.includes('mda') ? `/mdas/${slug}` : `/services/${slug}`;
+}
+
+function resultTypeLabel(result) {
+  const type = String(valueOf(result, 'type', 'recordType') || '').toLowerCase();
+  if (type.includes('mda')) return 'MDA';
+  const mdaName = valueOf(result, 'mdaName', 'mda_name');
+  return mdaName ? `Service · ${mdaName}` : 'Service';
 }
 
 export function SearchBox({ id = 'public-search', label = 'Search services and MDAs', initialValue = '', onSubmit, compact = false }) {
@@ -27,10 +34,15 @@ export function SearchBox({ id = 'public-search', label = 'Search services and M
       setState({ status: 'idle', results: [], error: null });
       return;
     }
+    if (cleanTerm.length < MIN_PUBLIC_SEARCH_LENGTH) {
+      setSubmittedTerm(cleanTerm);
+      setState({ status: 'too_short', results: [], error: null });
+      return;
+    }
     setSubmittedTerm(cleanTerm);
     setState({ status: 'loading', results: [], error: null });
     try {
-      const results = await publicApi.search(cleanTerm);
+      const results = await publicApi.searchPublic(cleanTerm);
       setState({ status: 'success', results: Array.isArray(results) ? results : [], error: null });
       onSubmit?.(cleanTerm, results);
     } catch (error) {
@@ -45,8 +57,9 @@ export function SearchBox({ id = 'public-search', label = 'Search services and M
       <button className="primary-button min-h-12 shrink-0" type="submit"><Search size={17} aria-hidden="true" /> Search</button>
     </form>
     {state.status === 'loading' ? <p className="mt-3 text-sm text-slate-600" role="status">Searching public records…</p> : null}
+    {state.status === 'too_short' ? <p className="mt-3 text-sm text-slate-600" role="status">Enter at least {MIN_PUBLIC_SEARCH_LENGTH} characters to search public records.</p> : null}
     {state.status === 'error' ? <p className="mt-3 rounded-xl border border-orange-200 bg-orange-50 px-3 py-2 text-sm text-orange-900">Search is not available yet. Public records will appear here when the API is connected.</p> : null}
-    {state.status === 'success' ? <div className={`mt-3 rounded-2xl border border-slate-200 bg-white p-3 ${compact ? '' : 'shadow-sm'}`}><div className="flex items-center justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Results for “{submittedTerm}”</p><span className="text-xs text-slate-500">{state.results.length} found</span></div>{state.results.length === 0 ? <div className="mt-3"><SearchEmptyState /></div> : <div className="mt-2 divide-y divide-slate-100">{state.results.slice(0, 6).map((result, index) => { const href = resultLink(result); return href ? <Link key={`${href}-${index}`} to={href} className="flex min-h-12 items-center justify-between gap-3 py-3 text-sm hover:text-leaf"><span className="min-w-0"><span className="block truncate font-bold text-ink">{valueOf(result, 'name', 'title') || 'Unnamed public record'}</span><span className="block truncate text-xs text-slate-500">{valueOf(result, 'mdaName', 'mda_name', 'type', 'recordType') || 'Public record'}</span></span><span className="shrink-0 text-xs font-bold text-leaf">View</span></Link> : null; })}</div>}</div> : null}
+    {state.status === 'success' ? <div className={`mt-3 rounded-2xl border border-slate-200 bg-white p-3 ${compact ? '' : 'shadow-sm'}`}><div className="flex items-center justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Results for “{submittedTerm}”</p><span className="text-xs text-slate-500">{state.results.length} found</span></div>{state.results.length === 0 ? <div className="mt-3"><SearchEmptyState /></div> : <div className="mt-2 divide-y divide-slate-100">{state.results.slice(0, 6).map((result, index) => { const href = resultLink(result); return href ? <Link key={`${href}-${index}`} to={href} className="flex min-h-12 items-center justify-between gap-3 py-3 text-sm hover:text-leaf"><span className="min-w-0"><span className="block truncate font-bold text-ink">{valueOf(result, 'name', 'title') || 'Unnamed public record'}</span><span className="block truncate text-xs text-slate-500">{resultTypeLabel(result)}</span></span><span className="shrink-0 text-xs font-bold text-leaf">View</span></Link> : null; })}</div>}</div> : null}
   </div>;
 }
 
