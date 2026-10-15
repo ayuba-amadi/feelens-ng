@@ -6,6 +6,7 @@ const session = require('express-session');
 const { createHealthRouter } = require('./routes/health.routes');
 const { createAuthRouter } = require('./routes/auth.routes');
 const { createAdminRouter } = require('./routes/admin.routes');
+const { createPublicRouter } = require('./routes/public.routes');
 const { notFound } = require('./middleware/not-found');
 const { errorHandler } = require('./middleware/error-handler');
 
@@ -56,6 +57,7 @@ function createApp({ config, pool, sessionStore, adminMiddleware, csrfMiddleware
   }));
 
   app.use(createHealthRouter(pool));
+  app.use('/public', createPublicRouter(pool));
   app.use('/auth', createAuthRouter(pool));
   app.use('/admin', createAdminRouter(pool, { adminMiddleware, csrfMiddleware }));
 
