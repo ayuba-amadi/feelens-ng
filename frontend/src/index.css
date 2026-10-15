@@ -19,9 +19,9 @@ body {
   overflow-x: hidden;
 }
 
-button, a, input, select { -webkit-tap-highlight-color: transparent; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
   outline: 3px solid rgba(23, 121, 76, 0.35);
   outline-offset: 3px;
 }
@@ -35,6 +35,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .primary-button { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-leaf px-4 py-2.5 text-sm font-bold text-white transition hover:bg-leaf-dark disabled:cursor-not-allowed disabled:opacity-60; }
   .secondary-button { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-ink transition hover:border-leaf hover:text-leaf disabled:cursor-not-allowed disabled:opacity-60; }
   .text-button { @apply inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-leaf transition hover:text-leaf-dark; }
+  .admin-panel { @apply rounded-2xl border border-slate-200 bg-white shadow-[0_12px_35px_-30px_rgba(15,35,48,0.65)]; }
+  .admin-state { @apply flex min-h-24 items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm font-semibold text-slate-600; }
+  .admin-input { @apply min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 disabled:cursor-not-allowed disabled:text-slate-500; }
+  .admin-form-grid { @apply grid gap-4 md:grid-cols-2; }
+  .admin-icon-button { @apply grid h-11 w-10 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35; }
+  .admin-status { @apply inline-flex min-h-7 items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 text-xs font-bold capitalize text-slate-700; }
 }
 
 .hero-grid {

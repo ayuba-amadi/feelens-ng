@@ -1,29 +1,36 @@
 # FeeLens NG
 
-FeeLens NG is a civic-tech transparency platform that helps citizens and businesses check official government fees before they pay.
+FeeLens NG is independent civic technology that helps citizens and businesses answer: “What is the official fee before I pay?” It is not a government platform, payment processor, application portal, agent, or middleman.
 
-## Production Architecture
+## Applications
 
-- Frontend: React + Vite + Tailwind CSS
-- Backend: Node.js
-- Database: PostgreSQL
-- Hosting: Truehost cPanel / Apache
-- Production domain: https://feelens.ng
-- API: https://feelens.ng/api
-- Source control: Git/GitHub
+- `frontend/` — React, Vite, Tailwind CSS, React Router and Lucide public/admin interfaces.
+- `backend/` — Node.js 22, Express and PostgreSQL API with server-side administrator sessions.
+- `database/` — reviewed PostgreSQL 13-compatible migrations; migrations are never run automatically.
+- `research/` — FeeLens evidence and verification methodology.
+- `docs/` — architecture, deployment preparation and administration guidance.
 
-## Production Server
+The public site is read-only and requires no citizen account. The administration application under `/admin` requires a previously provisioned administrator account. There is no public registration endpoint.
 
-Frontend:
-`/home/vgrphaph/public_html`
+## Local development
 
-Backend:
-`/home/vgrphaph/feelens-api`
+Copy each `.env.example` to a local, ignored `.env` only when needed. Use isolated local database credentials and never reuse production secrets.
 
-Database:
-`vgrphaph_feelens_prod`
+```text
+frontend: npm install && npm run dev
+backend:  npm install && npm run dev
+```
+
+Validation commands:
+
+```text
+frontend: npm run lint && npm run build
+backend:  npm run lint && npm test
+root:     git diff --check
+```
+
+The Phase 3 CMS supports MDAs, services, fee options and supersession, sources, evidence links, official channels, verification history, formal requests, administrators, accounts and read-only audit history. See `docs/admin-guide.md` for workflows.
 
 ## Security
 
-Secrets must never be committed to Git.
-Production database access is server-side only.
+Never commit secrets, administrator passwords or a real `.env`. PostgreSQL remains server-side only. Review `SECURITY.md` and `docs/deployment.md` before any production work.

@@ -17,7 +17,9 @@ export default [
       globals: {
         document: 'readonly',
         fetch: 'readonly',
-        URL: 'readonly'
+        URL: 'readonly',
+        window: 'readonly',
+        CustomEvent: 'readonly'
       },
     },
     plugins: {

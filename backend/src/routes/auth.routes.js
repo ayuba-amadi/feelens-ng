@@ -8,6 +8,13 @@ const {
   findAdminByEmail,
   updateLastLogin
 } = require('../repositories/admin.repository');
+const {
+  createCsrfToken,
+  sessionDestroy,
+  sessionRegenerate,
+  sessionSave,
+  tokensMatch
+} = require('../utils/session-security');
 
 const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email(),
@@ -17,24 +24,6 @@ const loginSchema = z.object({
 const dummyPasswordHashPromise = argon2.hash(crypto.randomBytes(32), {
   type: argon2.argon2id
 });
-
-function sessionRegenerate(session) {
-  return new Promise((resolve, reject) => {
-    session.regenerate((error) => (error ? reject(error) : resolve()));
-  });
-}
-
-function sessionSave(session) {
-  return new Promise((resolve, reject) => {
-    session.save((error) => (error ? reject(error) : resolve()));
-  });
-}
-
-function sessionDestroy(session) {
-  return new Promise((resolve, reject) => {
-    session.destroy((error) => (error ? reject(error) : resolve()));
-  });
-}
 
 function validationDetails(error) {
   return error.issues.map((issue) => ({
@@ -77,6 +66,7 @@ function createAuthRouter(pool) {
 
       await sessionRegenerate(req.session);
       req.session.adminUserId = admin.id;
+      req.session.csrfToken = createCsrfToken();
       await updateLastLogin(pool, admin.id);
       await sessionSave(req.session);
 
@@ -87,7 +77,8 @@ function createAuthRouter(pool) {
           email: admin.email,
           displayName: admin.display_name,
           role: admin.role
-        }
+        },
+        csrfToken: req.session.csrfToken
       });
     } catch (error) {
       return next(error);
@@ -96,11 +87,21 @@ function createAuthRouter(pool) {
 
   router.post('/logout', async (req, res, next) => {
     try {
+      if (req.session?.adminUserId
+        && !tokensMatch(req.session.csrfToken, req.get('x-csrf-token'))) {
+        return res.status(403).json({ error: 'Invalid or missing CSRF token' });
+      }
+
       if (req.session) {
         await sessionDestroy(req.session);
       }
 
-      res.clearCookie('feelens.sid');
+      res.clearCookie('feelens.sid', {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/'
+      });
       return res.status(200).json({ success: true });
     } catch (error) {
       return next(error);
@@ -116,7 +117,14 @@ function createAuthRouter(pool) {
       const admin = await findActiveAdminById(pool, req.session.adminUserId);
 
       if (!admin) {
+        await sessionDestroy(req.session);
+        res.clearCookie('feelens.sid', { path: '/' });
         return res.status(401).json({ authenticated: false });
+      }
+
+      if (!req.session.csrfToken) {
+        req.session.csrfToken = createCsrfToken();
+        await sessionSave(req.session);
       }
 
       return res.status(200).json({
@@ -126,7 +134,8 @@ function createAuthRouter(pool) {
           email: admin.email,
           displayName: admin.display_name,
           role: admin.role
-        }
+        },
+        csrfToken: req.session.csrfToken
       });
     } catch (error) {
       return next(error);

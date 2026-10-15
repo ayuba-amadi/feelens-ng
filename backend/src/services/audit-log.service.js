@@ -1,3 +1,5 @@
+const { sanitizeAuditValue } = require('../utils/audit-sanitizer');
+
 async function recordAuditLog(pool, {
   actorAdminUserId,
   action,
@@ -15,8 +17,8 @@ async function recordAuditLog(pool, {
       action,
       entityType,
       entityId,
-      oldValues === null ? null : JSON.stringify(oldValues),
-      newValues === null ? null : JSON.stringify(newValues)
+      oldValues === null ? null : JSON.stringify(sanitizeAuditValue(oldValues)),
+      newValues === null ? null : JSON.stringify(sanitizeAuditValue(newValues))
     ]
   );
 }

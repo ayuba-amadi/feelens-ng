@@ -7,14 +7,18 @@ function errorHandler(error, req, res, next) {
     return res.status(400).json({ error: 'Malformed JSON request.' });
   }
 
-  const status = Number.isInteger(error?.statusCode) ? error.statusCode : 500;
+  const status = Number.isInteger(error?.statusCode)
+    ? error.statusCode
+    : (Number.isInteger(error?.status) ? error.status : 500);
   const safeMessage = status >= 500 ? 'Internal server error.' : (error.message || 'Request failed.');
 
   if (status >= 500) {
     console.error('Unhandled application error.');
   }
 
-  return res.status(status).json({ error: safeMessage });
+  const response = { error: safeMessage };
+  if (status < 500 && error?.details) response.details = error.details;
+  return res.status(status).json(response);
 }
 
 module.exports = { errorHandler };

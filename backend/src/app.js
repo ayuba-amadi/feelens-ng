@@ -9,7 +9,7 @@ const { createAdminRouter } = require('./routes/admin.routes');
 const { notFound } = require('./middleware/not-found');
 const { errorHandler } = require('./middleware/error-handler');
 
-function createApp({ config, pool, sessionStore } = {}) {
+function createApp({ config, pool, sessionStore, adminMiddleware, csrfMiddleware } = {}) {
   if (!config || !pool) {
     throw new Error('Application configuration and database pool are required.');
   }
@@ -57,7 +57,7 @@ function createApp({ config, pool, sessionStore } = {}) {
 
   app.use(createHealthRouter(pool));
   app.use('/auth', createAuthRouter(pool));
-  app.use('/admin', createAdminRouter(pool));
+  app.use('/admin', createAdminRouter(pool, { adminMiddleware, csrfMiddleware }));
 
   app.use(notFound);
   app.use(errorHandler);

@@ -1,34 +1,28 @@
 const express = require('express');
 const { requireAdmin } = require('../middleware/require-admin');
+const { requireCsrf } = require('../middleware/require-csrf');
+const { createContentRouter } = require('./admin/content.routes');
+const { createDashboardRouter } = require('./admin/dashboard.routes');
+const { createGovernanceRouter } = require('./admin/governance.routes');
 
-const placeholderEndpoints = [
-  'mdas',
-  'services',
-  'fees',
-  'sources',
-  'channels',
-  'verifications',
-  'foi',
-  'audit-logs'
-];
-
-function createAdminRouter(pool) {
+function createAdminRouter(pool, options = {}) {
   const router = express.Router();
-  router.use(requireAdmin(pool));
+  router.use(options.adminMiddleware || requireAdmin(pool));
+  router.use(options.csrfMiddleware || requireCsrf);
 
   router.get('/', (req, res) => {
-    res.json({ status: 'ready', message: 'Admin API foundation.' });
-  });
-
-  for (const endpoint of placeholderEndpoints) {
-    router.all(`/${endpoint}`, (req, res) => {
-      res.status(200).json({
-        status: 'placeholder',
-        endpoint: `/admin/${endpoint}`,
-        message: 'Management CRUD is planned for a later phase.'
-      });
+    res.json({
+      status: 'ready',
+      user: {
+        id: req.admin.id,
+        displayName: req.admin.display_name,
+        role: req.admin.role,
+      },
     });
-  }
+  });
+  router.use('/dashboard', createDashboardRouter(pool));
+  router.use(createContentRouter(pool));
+  router.use(createGovernanceRouter(pool));
 
   return router;
 }
