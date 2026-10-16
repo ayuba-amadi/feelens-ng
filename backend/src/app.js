@@ -10,12 +10,26 @@ const { createPublicRouter } = require('./routes/public.routes');
 const { notFound } = require('./middleware/not-found');
 const { errorHandler } = require('./middleware/error-handler');
 
+function normalizeApiMountPath(req, _res, next) {
+  if (req.url === '/api') {
+    req.url = '/';
+  } else if (req.url.startsWith('/api/')) {
+    req.url = req.url.slice(4);
+  }
+
+  next();
+}
+
 function createApp({ config, pool, sessionStore, adminMiddleware, csrfMiddleware } = {}) {
   if (!config || !pool) {
     throw new Error('Application configuration and database pool are required.');
   }
 
   const app = express();
+
+  // cPanel exposes this application under /api while preserving the prefix.
+  // Normalize it before route matching; root paths remain valid for local/tests.
+  app.use(normalizeApiMountPath);
   app.disable('x-powered-by');
 
   if (config.NODE_ENV === 'production') {
@@ -67,5 +81,5 @@ function createApp({ config, pool, sessionStore, adminMiddleware, csrfMiddleware
   return app;
 }
 
-module.exports = { createApp };
+module.exports = { createApp, normalizeApiMountPath };
 
