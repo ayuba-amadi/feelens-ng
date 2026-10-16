@@ -43,28 +43,40 @@ ALTER TABLE foi_requests
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_constraint WHERE conname = 'mdas_coverage_status_check'
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'mdas_coverage_status_check'
+      AND conrelid = 'mdas'::regclass
   ) THEN
     ALTER TABLE mdas ADD CONSTRAINT mdas_coverage_status_check
       CHECK (coverage_status IN ('pilot', 'roadmap', 'inactive')) NOT VALID;
   END IF;
 
   IF NOT EXISTS (
-    SELECT 1 FROM pg_constraint WHERE conname = 'services_requirements_array_check'
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'services_requirements_array_check'
+      AND conrelid = 'services'::regclass
   ) THEN
     ALTER TABLE services ADD CONSTRAINT services_requirements_array_check
       CHECK (jsonb_typeof(requirements) = 'array') NOT VALID;
   END IF;
 
   IF NOT EXISTS (
-    SELECT 1 FROM pg_constraint WHERE conname = 'services_process_steps_array_check'
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'services_process_steps_array_check'
+      AND conrelid = 'services'::regclass
   ) THEN
     ALTER TABLE services ADD CONSTRAINT services_process_steps_array_check
       CHECK (jsonb_typeof(process_steps) = 'array') NOT VALID;
   END IF;
 
   IF NOT EXISTS (
-    SELECT 1 FROM pg_constraint WHERE conname = 'fee_options_verification_status_check'
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'fee_options_verification_status_check'
+      AND conrelid = 'fee_options'::regclass
   ) THEN
     ALTER TABLE fee_options ADD CONSTRAINT fee_options_verification_status_check
       CHECK (verification_status IN ('verified', 'pending', 'conflicting', 'unable_to_verify', 'superseded')) NOT VALID;
