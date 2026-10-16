@@ -9,6 +9,13 @@ const envSchema = z.object({
   DB_HOST: z.string().trim().min(1),
   DB_PORT: z.coerce.number().int().min(1).max(65535).default(5432),
   DB_NAME: z.string().trim().min(1),
+  DB_SCHEMA: z.string()
+    .trim()
+    .regex(
+      /^[A-Za-z_][A-Za-z0-9_]*$/,
+      'DB_SCHEMA must be a valid PostgreSQL schema identifier.',
+    )
+    .default('public'),
   DB_USER: z.string().trim().min(1),
   DB_PASSWORD: z.string().min(1),
   ALLOWED_ORIGINS: z.string().trim().min(1),

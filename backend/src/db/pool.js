@@ -3,6 +3,10 @@ const { loadEnv } = require('../config/env');
 
 let pool;
 
+function buildSearchPath(schema = 'public') {
+  return schema === 'public' ? 'public' : `${schema},public`;
+}
+
 function getPool(config = loadEnv()) {
   if (!pool) {
     pool = new Pool({
@@ -11,6 +15,7 @@ function getPool(config = loadEnv()) {
       database: config.DB_NAME,
       user: config.DB_USER,
       password: config.DB_PASSWORD,
+      options: `-c search_path=${buildSearchPath(config.DB_SCHEMA)}`,
       max: 10,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 5_000
@@ -31,5 +36,7 @@ async function closePool() {
   }
 }
 
-module.exports = { getPool, closePool };
+module.exports = { getPool, closePool,
+  buildSearchPath,
+};
 
