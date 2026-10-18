@@ -7,7 +7,7 @@ import { adminApi } from '../../lib/admin-api';
 const verificationStatuses = ['verified', 'pending', 'conflicting', 'unable_to_verify', 'superseded'];
 const coverageStatuses = ['pilot', 'roadmap', 'inactive'];
 const pricingModels = ['fixed', 'free', 'range', 'percentage', 'formula', 'variable', 'unknown'];
-const sourceTypes = ['act', 'regulation', 'gazette', 'statutory_instrument', 'approved_fee_schedule', 'official_circular', 'official_website', 'official_portal', 'official_notice', 'correspondence', 'foi_response', 'other'];
+const sourceTypes = ['act', 'regulation', 'gazette', 'statutory_instrument', 'approved_fee_schedule', 'official_circular', 'official_website', 'official_portal', 'official_notice', 'official_faq', 'official_fee_page', 'official_process_page', 'service_level_agreement', 'gazette_fee_schedule', 'official_statement', 'official_bulletin', 'official_training_material', 'official_guideline', 'official_tariff_page', 'correspondence', 'foi_response', 'other'];
 
 const defaults = {
   mdas: { name: '', slug: '', acronym: '', description: '', websiteUrl: '', entityType: '', jurisdiction: '', category: '', coverageStatus: 'pilot', isActive: true },

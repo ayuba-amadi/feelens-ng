@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const {
+  channelSchema,
   feeSchema,
   passwordChangeSchema,
 } = require('../src/validation/admin.schemas');
@@ -16,6 +17,14 @@ function baseFee(overrides = {}) {
     ...overrides,
   };
 }
+
+test('official channels require exactly one service or MDA owner', () => {
+  const base = { channelType: 'portal', name: 'Official portal' };
+  assert.equal(channelSchema.safeParse({ ...base, serviceId: '11' }).success, true);
+  assert.equal(channelSchema.safeParse({ ...base, mdaId: '22' }).success, true);
+  assert.equal(channelSchema.safeParse({ ...base, serviceId: '11', mdaId: '22' }).success, false);
+  assert.equal(channelSchema.safeParse(base).success, false);
+});
 
 test('unknown fees reject numeric values and never coerce to zero', () => {
   const valid = feeSchema.parse(baseFee());

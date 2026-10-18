@@ -1,0 +1,10 @@
+ M backend/src/routes/admin/content.routes.js
+ M backend/src/routes/public.routes.js
+ M backend/src/validation/admin.schemas.js
+ M frontend/src/components/service/EvidenceCard.jsx
+ M frontend/src/components/service/OfficialChannelCard.jsx
+ M frontend/src/pages/MdaDetailPage.jsx
+ M frontend/src/pages/admin/AdminChannelsPage.jsx
+ M frontend/src/pages/admin/AdminEntityFormPage.jsx
+?? backend/scripts/import-production-manifest.js
+?? database/migrations/004_manifest_source_and_channel_support.sql

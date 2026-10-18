@@ -51,10 +51,10 @@ const SOURCE_SELECT = `
   accessed_at AS "accessedAt", notes, created_at AS "createdAt", updated_at AS "updatedAt"`;
 
 const CHANNEL_SELECT = `
-  c.id, c.service_id AS "serviceId", c.channel_type AS "channelType", c.name,
+  c.id, c.service_id AS "serviceId", c.mda_id AS "mdaId", c.channel_type AS "channelType", c.name,
   c.url, c.contact_value AS "contactValue", c.instructions,
   c.is_active AS "isActive", c.created_at AS "createdAt", c.updated_at AS "updatedAt",
-  s.name AS "serviceName"`;
+  s.name AS "serviceName", m.name AS "mdaName"`;
 
 function listResponse(rows, page, pageSize) {
   return {
@@ -598,7 +598,7 @@ function createContentRouter(pool) {
       const query = parse(paginationSchema, req.query);
       const conditions = [];
       const values = [];
-      addSearch(conditions, values, query.search, ['c.name', 's.name', 'c.url']);
+      addSearch(conditions, values, query.search, ['c.name', 's.name', 'm.name', 'c.url']);
       if (req.query.serviceId) {
         values.push(parse(idParamsSchema, { id: req.query.serviceId }).id);
         conditions.push(`c.service_id = $${values.length}`);
@@ -607,7 +607,9 @@ function createContentRouter(pool) {
       const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
       const result = await pool.query(
         `SELECT ${CHANNEL_SELECT}, COUNT(*) OVER() AS total_count
-           FROM official_channels c JOIN services s ON s.id=c.service_id ${where}
+           FROM official_channels c
+           LEFT JOIN services s ON s.id=c.service_id
+           LEFT JOIN mdas m ON m.id=COALESCE(s.mda_id, c.mda_id) ${where}
           ORDER BY c.updated_at DESC, c.id DESC LIMIT $${values.length - 1} OFFSET $${values.length}`,
         values,
       );
@@ -621,13 +623,15 @@ function createContentRouter(pool) {
       const created = await withTransaction(pool, async (client) => {
         const result = await client.query(
           `INSERT INTO official_channels
-            (service_id,channel_type,name,url,contact_value,instructions,is_active)
-           VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
-          [value.serviceId, value.channelType, value.name, value.url, value.contactValue,
-            value.instructions, value.isActive],
+            (service_id,mda_id,channel_type,name,url,contact_value,instructions,is_active)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`,
+          [value.serviceId || null, value.mdaId || null, value.channelType, value.name, value.url,
+            value.contactValue, value.instructions, value.isActive],
         );
         const full = await client.query(
-          `SELECT ${CHANNEL_SELECT} FROM official_channels c JOIN services s ON s.id=c.service_id WHERE c.id=$1`,
+          `SELECT ${CHANNEL_SELECT} FROM official_channels c
+           LEFT JOIN services s ON s.id=c.service_id
+           LEFT JOIN mdas m ON m.id=COALESCE(s.mda_id, c.mda_id) WHERE c.id=$1`,
           [result.rows[0].id],
         );
         await audit(client, req, 'channel.created', 'official_channel', result.rows[0].id, null, full.rows[0]);
@@ -643,7 +647,9 @@ function createContentRouter(pool) {
     try {
       const { id } = parse(idParamsSchema, req.params);
       const result = await pool.query(
-        `SELECT ${CHANNEL_SELECT} FROM official_channels c JOIN services s ON s.id=c.service_id WHERE c.id=$1`, [id],
+        `SELECT ${CHANNEL_SELECT} FROM official_channels c
+         LEFT JOIN services s ON s.id=c.service_id
+         LEFT JOIN mdas m ON m.id=COALESCE(s.mda_id, c.mda_id) WHERE c.id=$1`, [id],
       );
       if (!result.rows[0]) throw notFound('Official channel');
       res.json(result.rows[0]);
@@ -662,13 +668,15 @@ function createContentRouter(pool) {
           throw conflict('This channel was changed by another administrator. Refresh before saving.');
         }
         await client.query(
-          `UPDATE official_channels SET service_id=$1,channel_type=$2,name=$3,url=$4,
-             contact_value=$5,instructions=$6,is_active=$7,updated_at=NOW() WHERE id=$8`,
-          [value.serviceId, value.channelType, value.name, value.url, value.contactValue,
-            value.instructions, value.isActive, id],
+          `UPDATE official_channels SET service_id=$1,mda_id=$2,channel_type=$3,name=$4,url=$5,
+             contact_value=$6,instructions=$7,is_active=$8,updated_at=NOW() WHERE id=$9`,
+          [value.serviceId || null, value.mdaId || null, value.channelType, value.name, value.url,
+            value.contactValue, value.instructions, value.isActive, id],
         );
         const result = await client.query(
-          `SELECT ${CHANNEL_SELECT} FROM official_channels c JOIN services s ON s.id=c.service_id WHERE c.id=$1`, [id],
+          `SELECT ${CHANNEL_SELECT} FROM official_channels c
+           LEFT JOIN services s ON s.id=c.service_id
+           LEFT JOIN mdas m ON m.id=COALESCE(s.mda_id, c.mda_id) WHERE c.id=$1`, [id],
         );
         await audit(client, req, 'channel.updated', 'official_channel', id, oldValue, result.rows[0]);
         return result.rows[0];

@@ -83,6 +83,18 @@ function publicMdaSelect() {
     m.coverage_status AS "coverageStatus",
     m.website_url AS "officialWebsite",
     m.website_url AS "websiteUrl",
+    COALESCE((
+      SELECT json_agg(json_build_object(
+        'id', c.id,
+        'channelType', c.channel_type,
+        'name', c.name,
+        'url', c.url,
+        'contactValue', c.contact_value,
+        'instructions', c.instructions
+      ) ORDER BY c.id ASC)
+      FROM official_channels c
+      WHERE c.mda_id = m.id AND c.is_active = TRUE
+    ), '[]'::json) AS "officialChannels",
     (
       SELECT COUNT(*)::int
       FROM services ms

@@ -13,6 +13,16 @@ const sourceTypes = [
   'official_website',
   'official_portal',
   'official_notice',
+  'official_faq',
+  'official_fee_page',
+  'official_process_page',
+  'service_level_agreement',
+  'gazette_fee_schedule',
+  'official_statement',
+  'official_bulletin',
+  'official_training_material',
+  'official_guideline',
+  'official_tariff_page',
   'correspondence',
   'foi_response',
   'other',
@@ -139,8 +149,14 @@ const sourceSchema = z.object({
   updatedAt: z.iso.datetime({ offset: true }).optional(),
 }).strict();
 
+const optionalId = z.preprocess(
+  (value) => (value === '' || value === null ? undefined : value),
+  z.coerce.number().int().positive().optional(),
+);
+
 const channelSchema = z.object({
-  serviceId: z.coerce.number().int().positive(),
+  serviceId: optionalId,
+  mdaId: optionalId,
   channelType: z.enum(['website', 'portal', 'office', 'email', 'phone', 'other']),
   name: requiredText(300),
   url: optionalUrl,
@@ -148,7 +164,11 @@ const channelSchema = z.object({
   instructions: optionalText(5000),
   isActive: z.boolean().default(true),
   updatedAt: z.iso.datetime({ offset: true }).optional(),
-}).strict();
+}).strict().superRefine((value, context) => {
+  if ((value.serviceId === undefined) === (value.mdaId === undefined)) {
+    context.addIssue({ code: 'custom', path: ['serviceId'], message: 'Choose exactly one service or MDA owner.' });
+  }
+});
 
 const verificationSchema = z.object({
   serviceId: z.coerce.number().int().positive(),

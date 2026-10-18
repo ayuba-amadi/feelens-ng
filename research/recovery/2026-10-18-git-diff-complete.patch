@@ -1,0 +1,281 @@
+diff --git a/backend/src/routes/admin/content.routes.js b/backend/src/routes/admin/content.routes.js
+index 01134b8..5766379 100644
+--- a/backend/src/routes/admin/content.routes.js
++++ b/backend/src/routes/admin/content.routes.js
+@@ -51,10 +51,10 @@ const SOURCE_SELECT = `
+   accessed_at AS "accessedAt", notes, created_at AS "createdAt", updated_at AS "updatedAt"`;
+ 
+ const CHANNEL_SELECT = `
+-  c.id, c.service_id AS "serviceId", c.channel_type AS "channelType", c.name,
++  c.id, c.service_id AS "serviceId", c.mda_id AS "mdaId", c.channel_type AS "channelType", c.name,
+   c.url, c.contact_value AS "contactValue", c.instructions,
+   c.is_active AS "isActive", c.created_at AS "createdAt", c.updated_at AS "updatedAt",
+-  s.name AS "serviceName"`;
++  s.name AS "serviceName", m.name AS "mdaName"`;
+ 
+ function listResponse(rows, page, pageSize) {
+   return {
+@@ -598,7 +598,7 @@ function createContentRouter(pool) {
+       const query = parse(paginationSchema, req.query);
+       const conditions = [];
+       const values = [];
+-      addSearch(conditions, values, query.search, ['c.name', 's.name', 'c.url']);
++      addSearch(conditions, values, query.search, ['c.name', 's.name', 'm.name', 'c.url']);
+       if (req.query.serviceId) {
+         values.push(parse(idParamsSchema, { id: req.query.serviceId }).id);
+         conditions.push(`c.service_id = $${values.length}`);
+@@ -607,7 +607,9 @@ function createContentRouter(pool) {
+       const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+       const result = await pool.query(
+         `SELECT ${CHANNEL_SELECT}, COUNT(*) OVER() AS total_count
+-           FROM official_channels c JOIN services s ON s.id=c.service_id ${where}
++           FROM official_channels c
++           LEFT JOIN services s ON s.id=c.service_id
++           LEFT JOIN mdas m ON m.id=COALESCE(s.mda_id, c.mda_id) ${where}
+           ORDER BY c.updated_at DESC, c.id DESC LIMIT $${values.length - 1} OFFSET $${values.length}`,
+         values,
+       );
+@@ -621,13 +623,15 @@ function createContentRouter(pool) {
+       const created = await withTransaction(pool, async (client) => {
+         const result = await client.query(
+           `INSERT INTO official_channels
+-            (service_id,channel_type,name,url,contact_value,instructions,is_active)
+-           VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
+-          [value.serviceId, value.channelType, value.name, value.url, value.contactValue,
+-            value.instructions, value.isActive],
++            (service_id,mda_id,channel_type,name,url,contact_value,instructions,is_active)
++           VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`,
++          [value.serviceId || null, value.mdaId || null, value.channelType, value.name, value.url,
++            value.contactValue, value.instructions, value.isActive],
+         );
+         const full = await client.query(
+-          `SELECT ${CHANNEL_SELECT} FROM official_channels c JOIN services s ON s.id=c.service_id WHERE c.id=$1`,
++          `SELECT ${CHANNEL_SELECT} FROM official_channels c
++           LEFT JOIN services s ON s.id=c.service_id
++           LEFT JOIN mdas m ON m.id=COALESCE(s.mda_id, c.mda_id) WHERE c.id=$1`,
+           [result.rows[0].id],
+         );
+         await audit(client, req, 'channel.created', 'official_channel', result.rows[0].id, null, full.rows[0]);
+@@ -643,7 +647,9 @@ function createContentRouter(pool) {
+     try {
+       const { id } = parse(idParamsSchema, req.params);
+       const result = await pool.query(
+-        `SELECT ${CHANNEL_SELECT} FROM official_channels c JOIN services s ON s.id=c.service_id WHERE c.id=$1`, [id],
++        `SELECT ${CHANNEL_SELECT} FROM official_channels c
++         LEFT JOIN services s ON s.id=c.service_id
++         LEFT JOIN mdas m ON m.id=COALESCE(s.mda_id, c.mda_id) WHERE c.id=$1`, [id],
+       );
+       if (!result.rows[0]) throw notFound('Official channel');
+       res.json(result.rows[0]);
+@@ -662,13 +668,15 @@ function createContentRouter(pool) {
+           throw conflict('This channel was changed by another administrator. Refresh before saving.');
+         }
+         await client.query(
+-          `UPDATE official_channels SET service_id=$1,channel_type=$2,name=$3,url=$4,
+-             contact_value=$5,instructions=$6,is_active=$7,updated_at=NOW() WHERE id=$8`,
+-          [value.serviceId, value.channelType, value.name, value.url, value.contactValue,
+-            value.instructions, value.isActive, id],
++          `UPDATE official_channels SET service_id=$1,mda_id=$2,channel_type=$3,name=$4,url=$5,
++             contact_value=$6,instructions=$7,is_active=$8,updated_at=NOW() WHERE id=$9`,
++          [value.serviceId || null, value.mdaId || null, value.channelType, value.name, value.url,
++            value.contactValue, value.instructions, value.isActive, id],
+         );
+         const result = await client.query(
+-          `SELECT ${CHANNEL_SELECT} FROM official_channels c JOIN services s ON s.id=c.service_id WHERE c.id=$1`, [id],
++          `SELECT ${CHANNEL_SELECT} FROM official_channels c
++           LEFT JOIN services s ON s.id=c.service_id
++           LEFT JOIN mdas m ON m.id=COALESCE(s.mda_id, c.mda_id) WHERE c.id=$1`, [id],
+         );
+         await audit(client, req, 'channel.updated', 'official_channel', id, oldValue, result.rows[0]);
+         return result.rows[0];
+diff --git a/backend/src/routes/public.routes.js b/backend/src/routes/public.routes.js
+index 0e6f232..4b3f585 100644
+--- a/backend/src/routes/public.routes.js
++++ b/backend/src/routes/public.routes.js
+@@ -83,6 +83,18 @@ function publicMdaSelect() {
+     m.coverage_status AS "coverageStatus",
+     m.website_url AS "officialWebsite",
+     m.website_url AS "websiteUrl",
++    COALESCE((
++      SELECT json_agg(json_build_object(
++        'id', c.id,
++        'channelType', c.channel_type,
++        'name', c.name,
++        'url', c.url,
++        'contactValue', c.contact_value,
++        'instructions', c.instructions
++      ) ORDER BY c.id ASC)
++      FROM official_channels c
++      WHERE c.mda_id = m.id AND c.is_active = TRUE
++    ), '[]'::json) AS "officialChannels",
+     (
+       SELECT COUNT(*)::int
+       FROM services ms
+diff --git a/backend/src/validation/admin.schemas.js b/backend/src/validation/admin.schemas.js
+index 486a51f..8a63bab 100644
+--- a/backend/src/validation/admin.schemas.js
++++ b/backend/src/validation/admin.schemas.js
+@@ -13,6 +13,16 @@ const sourceTypes = [
+   'official_website',
+   'official_portal',
+   'official_notice',
++  'official_faq',
++  'official_fee_page',
++  'official_process_page',
++  'service_level_agreement',
++  'gazette_fee_schedule',
++  'official_statement',
++  'official_bulletin',
++  'official_training_material',
++  'official_guideline',
++  'official_tariff_page',
+   'correspondence',
+   'foi_response',
+   'other',
+@@ -139,8 +149,14 @@ const sourceSchema = z.object({
+   updatedAt: z.iso.datetime({ offset: true }).optional(),
+ }).strict();
+ 
++const optionalId = z.preprocess(
++  (value) => (value === '' || value === null ? undefined : value),
++  z.coerce.number().int().positive().optional(),
++);
++
+ const channelSchema = z.object({
+-  serviceId: z.coerce.number().int().positive(),
++  serviceId: optionalId,
++  mdaId: optionalId,
+   channelType: z.enum(['website', 'portal', 'office', 'email', 'phone', 'other']),
+   name: requiredText(300),
+   url: optionalUrl,
+@@ -148,7 +164,11 @@ const channelSchema = z.object({
+   instructions: optionalText(5000),
+   isActive: z.boolean().default(true),
+   updatedAt: z.iso.datetime({ offset: true }).optional(),
+-}).strict();
++}).strict().superRefine((value, context) => {
++  if ((value.serviceId === undefined) === (value.mdaId === undefined)) {
++    context.addIssue({ code: 'custom', path: ['serviceId'], message: 'Choose exactly one service or MDA owner.' });
++  }
++});
+ 
+ const verificationSchema = z.object({
+   serviceId: z.coerce.number().int().positive(),
+diff --git a/frontend/src/components/service/EvidenceCard.jsx b/frontend/src/components/service/EvidenceCard.jsx
+index 9d5bd3d..103f2fe 100644
+--- a/frontend/src/components/service/EvidenceCard.jsx
++++ b/frontend/src/components/service/EvidenceCard.jsx
+@@ -4,6 +4,6 @@ import { ExternalLink } from '../common/ExternalLink';
+ 
+ export function EvidenceCard({ source }) {
+   const url = valueOf(source, 'url', 'officialUrl', 'official_url');
+-  return <article className="rounded-2xl border border-slate-200 bg-white p-4"><div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600"><FileText size={18} aria-hidden="true" /></div><div className="min-w-0"><h3 className="break-words font-bold text-ink">{valueOf(source, 'title', 'name') || 'Untitled source'}</h3><p className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-slate-500">{valueOf(source, 'sourceType', 'source_type', 'type') || 'Source type not listed'}</p></div></div><dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2"><div><dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Publisher</dt><dd className="mt-1 text-slate-700">{valueOf(source, 'publisher', 'issuingBody') || 'Not listed'}</dd></div><div><dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Publication / effective date</dt><dd className="mt-1 text-slate-700">{formatDate(valueOf(source, 'publicationDate', 'publication_date', 'effectiveDate'))}</dd></div><div><dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Checked</dt><dd className="mt-1 inline-flex items-center gap-1 text-slate-700"><CalendarDays size={14} aria-hidden="true" />{formatDate(valueOf(source, 'accessedAt', 'accessed_at', 'retrievedAt', 'checkedAt'))}</dd></div><div><dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Role</dt><dd className="mt-1 text-slate-700">{valueOf(source, 'role', 'verificationRole') || 'Evidence record'}</dd></div></dl>{valueOf(source, 'documentReference', 'document_reference', 'pageOrSection', 'page_or_section') ? <p className="mt-3 border-t border-slate-200 pt-3 text-sm text-slate-600">Reference: {valueOf(source, 'documentReference', 'document_reference', 'pageOrSection', 'page_or_section')}</p> : null}{url ? <ExternalLink href={url} className="mt-2">Open official source</ExternalLink> : null}</article>;
++  return <article className="rounded-2xl border border-slate-200 bg-white p-4"><div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600"><FileText size={18} aria-hidden="true" /></div><div className="min-w-0"><h3 className="break-words font-bold text-ink">{valueOf(source, 'title', 'name') || 'Untitled source'}</h3><p className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-slate-500">{valueOf(source, 'sourceType', 'source_type', 'type') || 'Source type not listed'}</p></div></div><dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2"><div><dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Publisher</dt><dd className="mt-1 text-slate-700">{valueOf(source, 'publisher', 'issuingBody') || 'Not listed'}</dd></div><div><dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Publication / effective date</dt><dd className="mt-1 text-slate-700">{formatDate(valueOf(source, 'publicationDate', 'publication_date', 'effectiveDate'))}</dd></div><div><dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Checked</dt><dd className="mt-1 inline-flex items-center gap-1 text-slate-700"><CalendarDays size={14} aria-hidden="true" />{formatDate(valueOf(source, 'accessedAt', 'accessed_at', 'retrievedAt', 'checkedAt'))}</dd></div><div><dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Role</dt><dd className="mt-1 text-slate-700">{valueOf(source, 'role', 'verificationRole') || 'Evidence record'}</dd></div></dl>{valueOf(source, 'documentReference', 'document_reference', 'pageOrSection', 'page_or_section') ? <p className="mt-3 border-t border-slate-200 pt-3 text-sm text-slate-600">Reference: {valueOf(source, 'documentReference', 'document_reference', 'pageOrSection', 'page_or_section')}</p> : null}{url ? <ExternalLink href={url} className="mt-2">View official source</ExternalLink> : null}</article>;
+ }
+ 
+diff --git a/frontend/src/components/service/OfficialChannelCard.jsx b/frontend/src/components/service/OfficialChannelCard.jsx
+index a0c2ccb..ebd8279 100644
+--- a/frontend/src/components/service/OfficialChannelCard.jsx
++++ b/frontend/src/components/service/OfficialChannelCard.jsx
+@@ -8,6 +8,6 @@ export function OfficialChannelCard({ channel }) {
+   const type = String(valueOf(channel, 'channelType', 'channel_type', 'type') || 'website').toLowerCase();
+   const Icon = icons[type] || ArrowUpRight;
+   const url = valueOf(channel, 'url', 'officialUrl', 'official_url');
+-  return <article className="rounded-2xl border border-leaf/20 bg-[#f4f8f5] p-4"><div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-leaf"><Icon size={18} aria-hidden="true" /></div><div className="min-w-0"><p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Official channel</p><h3 className="mt-1 break-words font-bold text-ink">{valueOf(channel, 'name', 'title') || 'Official service channel'}</h3><p className="mt-1 text-sm leading-6 text-slate-600">{valueOf(channel, 'instructions', 'description') || 'Use this official channel to continue the government transaction.'}</p></div></div>{url ? <ExternalLink href={url} className="mt-3">Continue to official channel</ExternalLink> : <p className="mt-3 text-xs font-bold text-slate-500">A public link has not been supplied.</p>}</article>;
++  return <article className="rounded-2xl border border-leaf/20 bg-[#f4f8f5] p-4"><div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-leaf"><Icon size={18} aria-hidden="true" /></div><div className="min-w-0"><p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Official action channel</p><h3 className="mt-1 break-words font-bold text-ink">{valueOf(channel, 'name', 'title') || 'Official service channel'}</h3><p className="mt-1 text-sm leading-6 text-slate-600">{valueOf(channel, 'instructions', 'description') || 'Use this official channel to continue the government transaction.'}</p></div></div>{url ? <ExternalLink href={url} className="mt-3">Apply / Pay on Official Portal</ExternalLink> : <p className="mt-3 text-xs font-bold text-slate-500">A public link has not been supplied.</p>}</article>;
+ }
+ 
+diff --git a/frontend/src/pages/MdaDetailPage.jsx b/frontend/src/pages/MdaDetailPage.jsx
+index ea93cee..c445b70 100644
+--- a/frontend/src/pages/MdaDetailPage.jsx
++++ b/frontend/src/pages/MdaDetailPage.jsx
+@@ -10,6 +10,7 @@ import { PageIntro } from '../components/common/PageIntro';
+ import { StatusBadge } from '../components/common/StatusBadge';
+ import { EmptyState, ErrorState, LoadingState } from '../components/common/States';
+ import { ServiceCard } from '../components/mda/ServiceCard';
++import { OfficialChannelCard } from '../components/service/OfficialChannelCard';
+ 
+ function coverageCount(services, statuses) {
+   if (!services.length) return '—';
+@@ -34,6 +35,7 @@ export function MdaDetailPage() {
+   if (mdaState.status === 'loading') return <div className="page-shell py-8"><LoadingState label="Loading MDA profile…" /></div>;
+   if (mdaState.status === 'error') return <div className="page-shell py-8"><ErrorState title={mdaState.error?.code === 'not_found' ? 'MDA not found' : 'MDA profile is not available'} description={mdaState.error?.code === 'not_found' ? 'This public MDA record does not exist in FeeLens.' : 'The public API did not return this MDA profile.'} /></div>;
+ 
+-  return <div className="page-shell space-y-8 py-8 sm:py-10"><section className="surface-card p-5 sm:p-7"><div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between"><div className="flex min-w-0 items-start gap-4"><Monogram name={valueOf(mda, 'name', 'fullName')} acronym={valueOf(mda, 'acronym', 'shortName')} size="large" /><div className="min-w-0"><p className="eyebrow">MDA profile</p><h1 className="mt-2 break-words text-2xl font-black tracking-tight text-ink sm:text-3xl">{valueOf(mda, 'name', 'fullName') || 'Unnamed MDA'}</h1><div className="mt-3 flex flex-wrap gap-2"><StatusBadge status={valueOf(mda, 'coverageStatus', 'coverage_status', 'status')} /><span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600"><MapPin size={13} aria-hidden="true" />{valueOf(mda, 'jurisdiction') || 'Jurisdiction not listed'}</span></div></div></div>{website ? <ExternalLink href={website}>Official website</ExternalLink> : null}</div><div className="mt-5 grid gap-3 border-t border-slate-200 pt-5 sm:grid-cols-3"><p className="flex items-center gap-2 text-sm text-slate-600"><ShieldCheck size={16} className="text-leaf" aria-hidden="true" />{valueOf(mda, 'entityType', 'entity_type') || 'Entity type not listed'}</p><p className="flex items-center gap-2 text-sm text-slate-600"><MapPin size={16} className="text-leaf" aria-hidden="true" />{valueOf(mda, 'jurisdiction') || 'Jurisdiction not listed'}</p><p className="flex items-center gap-2 text-sm text-slate-600"><Globe2 size={16} className="text-leaf" aria-hidden="true" />Independent public record</p></div></section><section><PageIntro eyebrow="Coverage summary" title="What is mapped here" description="Counts reflect records returned by the public API. A dash means the API has not supplied that measure." /><div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4"><MetricCard label="Mapped services" value={mappedServices === undefined ? '—' : formatCount(mappedServices)} /><MetricCard label="Verified fee items" value={verified === undefined ? '—' : formatCount(verified)} /><MetricCard label="Pending" value={typeof pending === 'number' ? formatCount(pending) : pending} /><MetricCard label="Conflicting / unresolved" value={typeof unresolved === 'number' ? formatCount(unresolved) : unresolved} /></div></section><section><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Service list</p><h2 className="section-heading mt-2">Services linked to this MDA</h2></div>{services.length ? <span className="text-sm text-slate-500">{formatCount(services.length)} listed</span> : null}</div><div className="mt-5">{servicesState.status === 'loading' ? <LoadingState label="Loading services…" /> : servicesState.status === 'error' ? <ErrorState title="Services are not available yet" description="This MDA profile loaded, but its public service list could not be reached." /> : services.length === 0 ? <EmptyState title="No services mapped yet" description="Services will appear here when they have been reviewed and added to the public catalogue." icon={Layers3} /> : <div className="grid gap-4 lg:grid-cols-2">{services.map((service, index) => <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} />)}</div>}</div></section></div>;
++  const officialChannels = valueOf(mda, 'officialChannels', 'official_channels') || [];
++  return <div className="page-shell space-y-8 py-8 sm:py-10"><section className="surface-card p-5 sm:p-7"><div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between"><div className="flex min-w-0 items-start gap-4"><Monogram name={valueOf(mda, 'name', 'fullName')} acronym={valueOf(mda, 'acronym', 'shortName')} size="large" /><div className="min-w-0"><p className="eyebrow">MDA profile</p><h1 className="mt-2 break-words text-2xl font-black tracking-tight text-ink sm:text-3xl">{valueOf(mda, 'name', 'fullName') || 'Unnamed MDA'}</h1><div className="mt-3 flex flex-wrap gap-2"><StatusBadge status={valueOf(mda, 'coverageStatus', 'coverage_status', 'status')} /><span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600"><MapPin size={13} aria-hidden="true" />{valueOf(mda, 'jurisdiction') || 'Jurisdiction not listed'}</span></div></div></div>{website ? <ExternalLink href={website}>Official website</ExternalLink> : null}</div><div className="mt-5 grid gap-3 border-t border-slate-200 pt-5 sm:grid-cols-3"><p className="flex items-center gap-2 text-sm text-slate-600"><ShieldCheck size={16} className="text-leaf" aria-hidden="true" />{valueOf(mda, 'entityType', 'entity_type') || 'Entity type not listed'}</p><p className="flex items-center gap-2 text-sm text-slate-600"><MapPin size={16} className="text-leaf" aria-hidden="true" />{valueOf(mda, 'jurisdiction') || 'Jurisdiction not listed'}</p><p className="flex items-center gap-2 text-sm text-slate-600"><Globe2 size={16} className="text-leaf" aria-hidden="true" />Independent public record</p></div></section><section><PageIntro eyebrow="Coverage summary" title="What is mapped here" description="Counts reflect records returned by the public API. A dash means the API has not supplied that measure." /><div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4"><MetricCard label="Mapped services" value={mappedServices === undefined ? '—' : formatCount(mappedServices)} /><MetricCard label="Verified fee items" value={verified === undefined ? '—' : formatCount(verified)} /><MetricCard label="Pending" value={typeof pending === 'number' ? formatCount(pending) : pending} /><MetricCard label="Conflicting / unresolved" value={typeof unresolved === 'number' ? formatCount(unresolved) : unresolved} /></div></section>{officialChannels.length ? <section><p className="eyebrow">Official MDA channel</p><h2 className="section-heading mt-2">Start from the official institution channel</h2><div className="mt-5 grid gap-4 sm:grid-cols-2">{officialChannels.map((channel, index) => <OfficialChannelCard key={valueOf(channel, 'id', 'url') || index} channel={channel} />)}</div></section> : null}<section><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Service list</p><h2 className="section-heading mt-2">Services linked to this MDA</h2></div>{services.length ? <span className="text-sm text-slate-500">{formatCount(services.length)} listed</span> : null}</div><div className="mt-5">{servicesState.status === 'loading' ? <LoadingState label="Loading services…" /> : servicesState.status === 'error' ? <ErrorState title="Services are not available yet" description="This MDA profile loaded, but its public service list could not be reached." /> : services.length === 0 ? <EmptyState title="No services mapped yet" description="Services will appear here when they have been reviewed and added to the public catalogue." icon={Layers3} /> : <div className="grid gap-4 lg:grid-cols-2">{services.map((service, index) => <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} />)}</div>}</div></section></div>;
+ }
+ 
+diff --git a/frontend/src/pages/admin/AdminChannelsPage.jsx b/frontend/src/pages/admin/AdminChannelsPage.jsx
+index 4988c67..2944bed 100644
+--- a/frontend/src/pages/admin/AdminChannelsPage.jsx
++++ b/frontend/src/pages/admin/AdminChannelsPage.jsx
+@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
+ import { AdminEmpty, AdminError, AdminLoading, AdminPageHeader, Field, InlineNotice } from '../../components/admin/AdminUi';
+ import { adminApi } from '../../lib/admin-api';
+ 
+-const blank = { serviceId: '', channelType: 'portal', name: '', url: '', contactValue: '', instructions: '', isActive: true };
++const blank = { ownerType: 'service', serviceId: '', mdaId: '', channelType: 'portal', name: '', url: '', contactValue: '', instructions: '', isActive: true };
+ 
+ export function AdminChannelsPage() {
+   const [items, setItems] = useState(null);
+   const [services, setServices] = useState([]);
++  const [mdas, setMdas] = useState([]);
+   const [form, setForm] = useState(blank);
+   const [editing, setEditing] = useState(null);
+   const [error, setError] = useState('');
+@@ -16,18 +17,19 @@ export function AdminChannelsPage() {
+ 
+   const load = async () => {
+     try {
+-      const [channelsData, serviceData] = await Promise.all([adminApi.channels.list({ pageSize: 100 }), adminApi.services.list({ pageSize: 100 })]);
+-      setItems(channelsData.items || []); setServices(serviceData.items || []); setError('');
++      const [channelsData, serviceData, mdaData] = await Promise.all([adminApi.channels.list({ pageSize: 100 }), adminApi.services.list({ pageSize: 100 }), adminApi.mdas.list({ pageSize: 100 })]);
++      setItems(channelsData.items || []); setServices(serviceData.items || []); setMdas(mdaData.items || []); setError('');
+     } catch (requestError) { setError(requestError.message); setItems([]); }
+   };
+   useEffect(() => { load(); }, []);
+ 
+-  function startEdit(item) { setEditing(item.id); setForm({ ...blank, ...item }); setNotice(''); }
++  function startEdit(item) { setEditing(item.id); setForm({ ...blank, ...item, ownerType: item.mdaId && !item.serviceId ? 'mda' : 'service' }); setNotice(''); }
+   function reset() { setEditing(null); setForm(blank); }
+   async function submit(event) {
+     event.preventDefault(); setSaving(true); setError(''); setNotice('');
+     try {
+-      const payload = { ...form, serviceId: Number(form.serviceId) };
++      const { ownerType, ...channelFields } = form;
++      const payload = { ...channelFields, serviceId: ownerType === 'service' ? Number(form.serviceId) : undefined, mdaId: ownerType === 'mda' ? Number(form.mdaId) : undefined };
+       if (editing) await adminApi.channels.update(editing, payload); else await adminApi.channels.create(payload);
+       setNotice(`Official channel ${editing ? 'updated' : 'created'}.`); reset(); await load();
+     } catch (requestError) { setError(requestError.message); } finally { setSaving(false); }
+@@ -44,14 +46,15 @@ export function AdminChannelsPage() {
+           {items?.length === 0 && <AdminEmpty title="No official channels yet" message="Add a channel after creating the related service." />}
+           {!!items?.length && <div className="admin-panel divide-y divide-slate-200">{items.map((item) => (
+             <article key={item.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+-              <div className="min-w-0"><p className="break-words text-sm font-extrabold text-navy">{item.name}</p><p className="truncate text-xs text-slate-500">{item.serviceName} · {item.channelType} · {item.isActive ? 'Active' : 'Inactive'}</p><p className="mt-1 break-all text-xs text-slate-500">{item.url || item.contactValue || 'No URL/contact value'}</p></div>
++              <div className="min-w-0"><p className="break-words text-sm font-extrabold text-navy">{item.name}</p><p className="truncate text-xs text-slate-500">{item.serviceName || item.mdaName} · {item.channelType} · {item.isActive ? 'Active' : 'Inactive'}</p><p className="mt-1 break-all text-xs text-slate-500">{item.url || item.contactValue || 'No URL/contact value'}</p></div>
+               <button type="button" onClick={() => startEdit(item)} className="secondary-button shrink-0"><Pencil className="h-4 w-4" /> Edit</button>
+             </article>
+           ))}</div>}
+         </section>
+         <form onSubmit={submit} className="admin-panel h-fit space-y-4 p-4 sm:p-5 xl:sticky xl:top-24">
+           <div><h2 className="font-extrabold text-navy">{editing ? 'Edit channel' : 'Add channel'}</h2><p className="text-sm text-slate-500">Only enter a channel confirmed as official.</p></div>
+-          <Field label="Service" name="channel-service" required>{(props) => <select {...props} className="admin-input" value={form.serviceId} onChange={(e) => setForm({ ...form, serviceId: e.target.value })} required><option value="">Select a service</option>{services.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>}</Field>
++          <Field label="Channel owner" name="channel-owner" required>{(props) => <select {...props} className="admin-input" value={form.ownerType} onChange={(e) => setForm({ ...form, ownerType: e.target.value, serviceId: '', mdaId: '' })} required><option value="service">Service</option><option value="mda">MDA-wide channel</option></select>}</Field>
++          {form.ownerType === 'service' ? <Field label="Service" name="channel-service" required>{(props) => <select {...props} className="admin-input" value={form.serviceId} onChange={(e) => setForm({ ...form, serviceId: e.target.value })} required><option value="">Select a service</option>{services.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>}</Field> : <Field label="MDA" name="channel-mda" required>{(props) => <select {...props} className="admin-input" value={form.mdaId} onChange={(e) => setForm({ ...form, mdaId: e.target.value })} required><option value="">Select an MDA</option>{mdas.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>}</Field>}
+           <Field label="Channel type" name="channel-type" required>{(props) => <select {...props} className="admin-input" value={form.channelType} onChange={(e) => setForm({ ...form, channelType: e.target.value })}>{['website', 'portal', 'office', 'email', 'phone', 'other'].map((item) => <option key={item} value={item}>{item}</option>)}</select>}</Field>
+           <Field label="Label / title" name="channel-name" required>{(props) => <input {...props} className="admin-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />}</Field>
+           <Field label="Official URL" name="channel-url">{(props) => <input {...props} type="url" className="admin-input" value={form.url || ''} onChange={(e) => setForm({ ...form, url: e.target.value })} />}</Field>
+diff --git a/frontend/src/pages/admin/AdminEntityFormPage.jsx b/frontend/src/pages/admin/AdminEntityFormPage.jsx
+index 6933753..c897b93 100644
+--- a/frontend/src/pages/admin/AdminEntityFormPage.jsx
++++ b/frontend/src/pages/admin/AdminEntityFormPage.jsx
+@@ -7,7 +7,7 @@ import { adminApi } from '../../lib/admin-api';
+ const verificationStatuses = ['verified', 'pending', 'conflicting', 'unable_to_verify', 'superseded'];
+ const coverageStatuses = ['pilot', 'roadmap', 'inactive'];
+ const pricingModels = ['fixed', 'free', 'range', 'percentage', 'formula', 'variable', 'unknown'];
+-const sourceTypes = ['act', 'regulation', 'gazette', 'statutory_instrument', 'approved_fee_schedule', 'official_circular', 'official_website', 'official_portal', 'official_notice', 'correspondence', 'foi_response', 'other'];
++const sourceTypes = ['act', 'regulation', 'gazette', 'statutory_instrument', 'approved_fee_schedule', 'official_circular', 'official_website', 'official_portal', 'official_notice', 'official_faq', 'official_fee_page', 'official_process_page', 'service_level_agreement', 'gazette_fee_schedule', 'official_statement', 'official_bulletin', 'official_training_material', 'official_guideline', 'official_tariff_page', 'correspondence', 'foi_response', 'other'];
+ 
+ const defaults = {
+   mdas: { name: '', slug: '', acronym: '', description: '', websiteUrl: '', entityType: '', jurisdiction: '', category: '', coverageStatus: 'pilot', isActive: true },

@@ -1,0 +1,848 @@
+{
+  "batch": "batch-01",
+  "mdas": [
+    {
+      "name": "FCT Internal Revenue Service",
+      "acronym": "FCT-IRS",
+      "slug": "fct-irs",
+      "officialWebsite": "https://fctirs.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "Federal Capital Territory tax information, filing and payment services.",
+      "officialChannels": [
+        {
+          "channelType": "website",
+          "name": "FCT-IRS official website",
+          "url": "https://fctirs.gov.ng/",
+          "instructions": "Use the official FCT-IRS website and its linked service options."
+        },
+        {
+          "channelType": "portal",
+          "name": "FCT-IRS TaxPortal",
+          "url": "https://taxporta.fctirs.gov.ng/",
+          "instructions": "Register or sign in to the official FCT-IRS TaxPortal."
+        }
+      ],
+      "services": [
+        {
+          "name": "Tax ID/TIN generation or retrieval",
+          "slug": "tax-id-tin-generation-or-retrieval",
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "fctirs-faq",
+              "title": "FCT-IRS official FAQ",
+              "sourceType": "official_faq",
+              "url": "https://fctirs.gov.ng/faq/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "FCT Internal Revenue Service",
+              "notes": "The official FAQ supports the free Tax ID/TIN generation or retrieval service."
+            }
+          ],
+          "officialActionUrl": "https://fctirs.gov.ng/",
+          "officialChannelType": "website",
+          "paymentGuide": "Use the official FCT-IRS service links. Tax ID/TIN generation or retrieval is a free service; do not pay an agent for the service itself."
+        },
+        {
+          "name": "Tax Clearance Certificate application / verification",
+          "slug": "tax-clearance-certificate-application-verification",
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "fctirs-website",
+              "title": "FCT-IRS official website",
+              "sourceType": "official_website",
+              "url": "https://fctirs.gov.ng/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "FCT Internal Revenue Service",
+              "notes": "The official website provides the source for the Tax Clearance Certificate service."
+            }
+          ],
+          "officialActionUrl": "https://fctirs.gov.ng/",
+          "officialChannelType": "website",
+          "paymentGuide": "Apply or verify through the official FCT-IRS service links. Any underlying tax liability is separate from the service fee."
+        },
+        {
+          "name": "Tax return filing / self-service portal access",
+          "slug": "tax-return-filing-self-service-portal-access",
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "fctirs-website",
+              "title": "FCT-IRS official website",
+              "sourceType": "official_website",
+              "url": "https://fctirs.gov.ng/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "FCT Internal Revenue Service",
+              "notes": "The official website links to the TaxPortal service."
+            }
+          ],
+          "officialActionUrl": "https://taxporta.fctirs.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Register or sign in to the official TaxPortal. Filing/portal access is free; tax payable, if any, is a separate statutory liability."
+        },
+        {
+          "name": "Tax payment",
+          "slug": "tax-payment",
+          "pricingModel": "variable",
+          "amount": null,
+          "currency": "NGN",
+          "formula": "Amount depends on the actual tax liability.",
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "fctirs-website",
+              "title": "FCT-IRS official website",
+              "sourceType": "official_website",
+              "url": "https://fctirs.gov.ng/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "FCT Internal Revenue Service",
+              "notes": "The official website links to the TaxPortal and approved payment options."
+            }
+          ],
+          "officialActionUrl": "https://taxporta.fctirs.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official TaxPortal or an approved payment channel linked by FCT-IRS. The amount depends on the actual tax liability."
+        }
+      ]
+    },
+    {
+      "name": "National Identity Management Commission",
+      "acronym": "NIMC",
+      "slug": "nimc",
+      "officialWebsite": "https://nimc.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "National Identity Management Commission identity-enrolment and record services.",
+      "officialChannels": [
+        {
+          "channelType": "website",
+          "name": "NIMC official website",
+          "url": "https://nimc.gov.ng/",
+          "instructions": "Use the official NIMC website and its linked service instructions."
+        }
+      ],
+      "services": [
+        {
+          "name": "NIN enrolment - adults",
+          "slug": "nin-enrolment-adults",
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nimc-fees",
+              "title": "NIMC official fee page",
+              "sourceType": "official_fee_page",
+              "url": "https://nimc.gov.ng/fees",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Identity Management Commission",
+              "notes": "The official fee page lists adult NIN enrolment as free."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "website",
+          "paymentGuide": "Use official NIMC channels for enrolment. The enrolment service is free; do not pay an agent for the service itself."
+        },
+        {
+          "name": "NIN enrolment - minors",
+          "slug": "nin-enrolment-minors",
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nimc-fees",
+              "title": "NIMC official fee page",
+              "sourceType": "official_fee_page",
+              "url": "https://nimc.gov.ng/fees",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Identity Management Commission",
+              "notes": "The official fee page lists minor NIN enrolment as free."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "website",
+          "paymentGuide": "Use official NIMC channels for enrolment. The enrolment service is free; do not pay an agent for the service itself."
+        },
+        {
+          "name": "NIN data modification - ordinary updatable field",
+          "slug": "nin-data-modification-ordinary-updatable-field",
+          "pricingModel": "fixed",
+          "amount": 2000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nimc-fees",
+              "title": "NIMC official fee page",
+              "sourceType": "official_fee_page",
+              "url": "https://nimc.gov.ng/fees",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Identity Management Commission",
+              "notes": "The listed fee for an ordinary updatable field is ₦2,000."
+            }
+          ],
+          "officialActionUrl": "https://nimc.gov.ng/nin/nin-modifications-adults/",
+          "officialChannelType": "website",
+          "paymentGuide": "Review the official NIMC modification process and pay only through the official route presented there."
+        },
+        {
+          "name": "Date-of-birth modification",
+          "slug": "date-of-birth-modification",
+          "pricingModel": "unknown",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "conflicting",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nimc-fees",
+              "title": "NIMC official fee page",
+              "sourceType": "official_fee_page",
+              "url": "https://nimc.gov.ng/fees",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Identity Management Commission",
+              "notes": "The official fee page lists ₦28,574 for date-of-birth modification."
+            },
+            {
+              "key": "nimc-modifications-adults",
+              "title": "NIMC adult modification process",
+              "sourceType": "official_process_page",
+              "url": "https://nimc.gov.ng/nin/nin-modifications-adults/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Identity Management Commission",
+              "notes": "The official adult modification process page lists ₦15,000."
+            }
+          ],
+          "officialActionUrl": "https://nimc.gov.ng/nin/nin-modifications-adults/",
+          "officialChannelType": "website",
+          "paymentGuide": "Official NIMC pages conflict on the fee. Do not publish one definitive amount. Confirm the amount displayed in the official NIMC process before paying."
+        },
+        {
+          "name": "Re-issuance of NIN slip - loss/damage/theft",
+          "slug": "re-issuance-of-nin-slip-loss-damage-theft",
+          "pricingModel": "fixed",
+          "amount": 600,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nimc-fees",
+              "title": "NIMC official fee page",
+              "sourceType": "official_fee_page",
+              "url": "https://nimc.gov.ng/fees",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Identity Management Commission",
+              "notes": "The listed re-issuance fee for loss, damage or theft is ₦600."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "website",
+          "paymentGuide": "Use official NIMC channels and confirm the applicable re-issuance option before paying."
+        },
+        {
+          "name": "Re-issuance of NIN slip after record change/modification",
+          "slug": "re-issuance-of-nin-slip-after-record-change-modification",
+          "pricingModel": "fixed",
+          "amount": 1000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nimc-fees",
+              "title": "NIMC official fee page",
+              "sourceType": "official_fee_page",
+              "url": "https://nimc.gov.ng/fees",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Identity Management Commission",
+              "notes": "The listed re-issuance fee after a record change/modification is ₦1,000 per data field."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "website",
+          "paymentGuide": "Use official NIMC channels and confirm the number of modified data fields before paying."
+        }
+      ]
+    },
+    {
+      "name": "Nigeria Immigration Service",
+      "acronym": "NIS",
+      "slug": "nigeria-immigration-service",
+      "officialWebsite": "https://immigration.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "Nigeria Immigration Service passport and immigration-service information and application channel.",
+      "officialChannels": [
+        {
+          "channelType": "website",
+          "name": "Nigeria Immigration Service official website",
+          "url": "https://immigration.gov.ng/",
+          "instructions": "Review official notices and service information on the NIS website."
+        },
+        {
+          "channelType": "portal",
+          "name": "NIS official passport portal",
+          "url": "https://passport.immigration.gov.ng/",
+          "instructions": "Use the official passport portal for online passport applications and payment."
+        }
+      ],
+      "services": [
+        {
+          "name": "Standard passport - 32 pages / 5 years",
+          "slug": "standard-passport-32-pages-5-years",
+          "pricingModel": "fixed",
+          "amount": 100000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nis-passport-fee-review",
+              "title": "NIS upward review of Nigerian standard passport fees",
+              "sourceType": "official_notice",
+              "url": "https://immigration.gov.ng/nigeria-immigration-service-announces-upward-review-of-nigerian-standard-passport-fees/",
+              "publicationDate": null,
+              "effectiveDate": "2025-09-01",
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigeria Immigration Service",
+              "notes": "The notice states that the reviewed standard passport fee took effect on 1 September 2025."
+            },
+            {
+              "key": "nis-service-level-agreement-2025",
+              "title": "NIS Service Level Agreement 2025",
+              "sourceType": "service_level_agreement",
+              "url": "https://immigration.gov.ng/wp-content/uploads/2025/10/SERVICE_LEVEL_AGREEMENT_2025_.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigeria Immigration Service",
+              "notes": "The document is identified as a 2025 service-level agreement; the source does not provide a more precise date here."
+            }
+          ],
+          "officialActionUrl": "https://passport.immigration.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Apply online, select the correct passport option, pay only through the official passport portal, and book biometric enrolment."
+        },
+        {
+          "name": "Standard passport - 64 pages / 10 years",
+          "slug": "standard-passport-64-pages-10-years",
+          "pricingModel": "fixed",
+          "amount": 200000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nis-passport-fee-review",
+              "title": "NIS upward review of Nigerian standard passport fees",
+              "sourceType": "official_notice",
+              "url": "https://immigration.gov.ng/nigeria-immigration-service-announces-upward-review-of-nigerian-standard-passport-fees/",
+              "publicationDate": null,
+              "effectiveDate": "2025-09-01",
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigeria Immigration Service",
+              "notes": "The notice states that the reviewed standard passport fee took effect on 1 September 2025."
+            },
+            {
+              "key": "nis-service-level-agreement-2025",
+              "title": "NIS Service Level Agreement 2025",
+              "sourceType": "service_level_agreement",
+              "url": "https://immigration.gov.ng/wp-content/uploads/2025/10/SERVICE_LEVEL_AGREEMENT_2025_.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigeria Immigration Service",
+              "notes": "The document is identified as a 2025 service-level agreement; the source does not provide a more precise date here."
+            }
+          ],
+          "officialActionUrl": "https://passport.immigration.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Apply online, select the correct passport option, pay only through the official passport portal, and book biometric enrolment."
+        },
+        {
+          "name": "Passport correction of data - administrative charge",
+          "slug": "passport-correction-of-data-administrative-charge",
+          "pricingModel": "fixed",
+          "amount": 30000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nis-service-level-agreement-2025",
+              "title": "NIS Service Level Agreement 2025",
+              "sourceType": "service_level_agreement",
+              "url": "https://immigration.gov.ng/wp-content/uploads/2025/10/SERVICE_LEVEL_AGREEMENT_2025_.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigeria Immigration Service",
+              "notes": "The service-level agreement lists the passport data-correction administrative charge as ₦30,000."
+            }
+          ],
+          "officialActionUrl": "https://passport.immigration.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official passport portal, select the data-correction service, and pay only through the official payment route."
+        }
+      ]
+    },
+    {
+      "name": "Federal Road Safety Corps / Nigeria Driver's Licence",
+      "acronym": "FRSC",
+      "slug": "frsc-drivers-licence",
+      "officialWebsite": "https://nigeriadriverslicence.frsc.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "Official Nigerian Driver's Licence information and application services.",
+      "officialChannels": [
+        {
+          "channelType": "portal",
+          "name": "Nigeria Driver's Licence official portal",
+          "url": "https://nigeriadriverslicence.frsc.gov.ng/",
+          "instructions": "Use the official Driver's Licence portal for new, renewal and reissue processes."
+        }
+      ],
+      "services": [
+        {
+          "name": "Driver's licence - Class A, 3 years",
+          "slug": "drivers-licence-class-a-3-years",
+          "pricingModel": "fixed",
+          "amount": 7000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "frsc-drivers-licence-faq",
+              "title": "Nigeria Driver's Licence official FAQ",
+              "sourceType": "official_faq",
+              "url": "https://nigeriadriverslicence.frsc.gov.ng/faq",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Federal Road Safety Corps",
+              "notes": "The official FAQ supports the listed Driver's Licence fee."
+            }
+          ],
+          "officialActionUrl": "https://nigeriadriverslicence.frsc.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Apply through the official driver's licence portal. Complete the relevant new, renewal or reissue process and pay using the payment option presented by the official system. Payment-channel charges, if any, are separate."
+        },
+        {
+          "name": "Driver's licence - Class A, 5 years",
+          "slug": "drivers-licence-class-a-5-years",
+          "pricingModel": "fixed",
+          "amount": 11000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "frsc-drivers-licence-faq",
+              "title": "Nigeria Driver's Licence official FAQ",
+              "sourceType": "official_faq",
+              "url": "https://nigeriadriverslicence.frsc.gov.ng/faq",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Federal Road Safety Corps",
+              "notes": "The official FAQ supports the listed Driver's Licence fee."
+            }
+          ],
+          "officialActionUrl": "https://nigeriadriverslicence.frsc.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Apply through the official driver's licence portal. Complete the relevant new, renewal or reissue process and pay using the payment option presented by the official system. Payment-channel charges, if any, are separate."
+        },
+        {
+          "name": "Driver's licence - other classes, 3 years",
+          "slug": "drivers-licence-other-classes-3-years",
+          "pricingModel": "fixed",
+          "amount": 15000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "frsc-drivers-licence-faq",
+              "title": "Nigeria Driver's Licence official FAQ",
+              "sourceType": "official_faq",
+              "url": "https://nigeriadriverslicence.frsc.gov.ng/faq",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Federal Road Safety Corps",
+              "notes": "The official FAQ supports the listed Driver's Licence fee."
+            }
+          ],
+          "officialActionUrl": "https://nigeriadriverslicence.frsc.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Apply through the official driver's licence portal. Complete the relevant new, renewal or reissue process and pay using the payment option presented by the official system. Payment-channel charges, if any, are separate."
+        },
+        {
+          "name": "Driver's licence - other classes, 5 years",
+          "slug": "drivers-licence-other-classes-5-years",
+          "pricingModel": "fixed",
+          "amount": 21000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "frsc-drivers-licence-faq",
+              "title": "Nigeria Driver's Licence official FAQ",
+              "sourceType": "official_faq",
+              "url": "https://nigeriadriverslicence.frsc.gov.ng/faq",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Federal Road Safety Corps",
+              "notes": "The official FAQ supports the listed Driver's Licence fee."
+            }
+          ],
+          "officialActionUrl": "https://nigeriadriverslicence.frsc.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Apply through the official driver's licence portal. Complete the relevant new, renewal or reissue process and pay using the payment option presented by the official system. Payment-channel charges, if any, are separate."
+        }
+      ]
+    },
+    {
+      "name": "Corporate Affairs Commission",
+      "acronym": "CAC",
+      "slug": "cac",
+      "officialWebsite": "https://cac.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "Official corporate registration, search and post-registration filing services.",
+      "officialChannels": [
+        {
+          "channelType": "website",
+          "name": "CAC official website",
+          "url": "https://cac.gov.ng/",
+          "instructions": "Review official CAC notices and fee information on the CAC website."
+        },
+        {
+          "channelType": "portal",
+          "name": "CAC registration portal",
+          "url": "https://icrp.cac.gov.ng/",
+          "instructions": "Use the official CAC registration portal for applications, filings and payment."
+        }
+      ],
+      "services": [
+        {
+          "name": "Name reservation - standard",
+          "slug": "name-reservation-standard",
+          "pricingModel": "formula",
+          "amount": null,
+          "currency": "NGN",
+          "formula": "₦1,000 statutory fee + ₦200 AI service charge from 1 Apr 2026",
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "cac-fee-schedule-2025-05-29",
+              "title": "CAC New Schedule of Fees",
+              "sourceType": "gazette_fee_schedule",
+              "url": "https://news.cac.gov.ng/wp-content/uploads/2025/06/New-Schedule-of-Fees-29th-May-2025.pdf",
+              "publicationDate": "2025-05-29",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 1,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "The schedule provides the statutory fee component."
+            },
+            {
+              "key": "cac-ai-service-charge-notice",
+              "title": "CAC AI service-charge notice",
+              "sourceType": "official_notice",
+              "url": "https://www.cac.gov.ng/blog",
+              "publicationDate": "2026-04-02",
+              "effectiveDate": "2026-04-01",
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "CAC notice dated 2 April 2026 identifies the AI service charge from 1 April 2026."
+            }
+          ],
+          "officialActionUrl": "https://icrp.cac.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official CAC registration portal. Keep the statutory filing fee and AI/portal service charge separate as shown by the official source."
+        },
+        {
+          "name": "Business name registration + CTC of registration documents",
+          "slug": "business-name-registration-ctc-registration-documents",
+          "pricingModel": "formula",
+          "amount": null,
+          "currency": "NGN",
+          "formula": "₦20,000 statutory fee + ₦500 AI service charge from 1 Apr 2026",
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "cac-fee-schedule-2025-05-29",
+              "title": "CAC New Schedule of Fees",
+              "sourceType": "gazette_fee_schedule",
+              "url": "https://news.cac.gov.ng/wp-content/uploads/2025/06/New-Schedule-of-Fees-29th-May-2025.pdf",
+              "publicationDate": "2025-05-29",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 1,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "The schedule provides the statutory fee component."
+            },
+            {
+              "key": "cac-ai-service-charge-notice",
+              "title": "CAC AI service-charge notice",
+              "sourceType": "official_notice",
+              "url": "https://www.cac.gov.ng/blog",
+              "publicationDate": "2026-04-02",
+              "effectiveDate": "2026-04-01",
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "CAC notice dated 2 April 2026 identifies the AI service charge from 1 April 2026."
+            }
+          ],
+          "officialActionUrl": "https://icrp.cac.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official CAC registration portal. Keep the statutory filing fee and AI/portal service charge separate as shown by the official source."
+        },
+        {
+          "name": "Company with share capital - small/private other than small",
+          "slug": "company-with-share-capital-small-private-other-than-small",
+          "pricingModel": "formula",
+          "amount": null,
+          "currency": "NGN",
+          "formula": "₦10,000 for every ₦1,000,000 share capital or part thereof",
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "cac-fee-schedule-2025-05-29",
+              "title": "CAC New Schedule of Fees",
+              "sourceType": "gazette_fee_schedule",
+              "url": "https://news.cac.gov.ng/wp-content/uploads/2025/06/New-Schedule-of-Fees-29th-May-2025.pdf",
+              "publicationDate": "2025-05-29",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 1,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "The fee is calculated by share capital band; no single fixed amount is published here."
+            }
+          ],
+          "officialActionUrl": "https://icrp.cac.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official CAC registration portal. The statutory fee is calculated from the share capital amount or part thereof."
+        },
+        {
+          "name": "Certified True Copy of company documents/extracts",
+          "slug": "certified-true-copy-company-documents-extracts",
+          "pricingModel": "fixed",
+          "amount": 5000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "cac-fee-schedule-2025-05-29",
+              "title": "CAC New Schedule of Fees",
+              "sourceType": "gazette_fee_schedule",
+              "url": "https://news.cac.gov.ng/wp-content/uploads/2025/06/New-Schedule-of-Fees-29th-May-2025.pdf",
+              "publicationDate": "2025-05-29",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 1,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "The listed fee is ₦5,000."
+            }
+          ],
+          "officialActionUrl": "https://icrp.cac.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official CAC registration portal and confirm the document or extract requested before paying."
+        },
+        {
+          "name": "Business name annual return / other post-registration or miscellaneous filing",
+          "slug": "business-name-annual-return-post-registration-miscellaneous-filing",
+          "pricingModel": "fixed",
+          "amount": 5000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "cac-fee-schedule-2025-05-29",
+              "title": "CAC New Schedule of Fees",
+              "sourceType": "gazette_fee_schedule",
+              "url": "https://news.cac.gov.ng/wp-content/uploads/2025/06/New-Schedule-of-Fees-29th-May-2025.pdf",
+              "publicationDate": "2025-05-29",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 1,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "The listed fee is ₦5,000."
+            }
+          ],
+          "officialActionUrl": "https://icrp.cac.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official CAC registration portal and confirm the filing type before paying."
+        },
+        {
+          "name": "Business name status report",
+          "slug": "business-name-status-report",
+          "pricingModel": "fixed",
+          "amount": 5000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "cac-fee-schedule-2025-05-29",
+              "title": "CAC New Schedule of Fees",
+              "sourceType": "gazette_fee_schedule",
+              "url": "https://news.cac.gov.ng/wp-content/uploads/2025/06/New-Schedule-of-Fees-29th-May-2025.pdf",
+              "publicationDate": "2025-05-29",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 1,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "The listed fee is ₦5,000."
+            }
+          ],
+          "officialActionUrl": "https://icrp.cac.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official CAC registration portal and confirm the entity and report requested before paying."
+        },
+        {
+          "name": "Full electronic search per entity - view only",
+          "slug": "full-electronic-search-per-entity-view-only",
+          "pricingModel": "fixed",
+          "amount": 1000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "cac-fee-schedule-2025-05-29",
+              "title": "CAC New Schedule of Fees",
+              "sourceType": "gazette_fee_schedule",
+              "url": "https://news.cac.gov.ng/wp-content/uploads/2025/06/New-Schedule-of-Fees-29th-May-2025.pdf",
+              "publicationDate": "2025-05-29",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 1,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "The listed fee is ₦1,000."
+            }
+          ],
+          "officialActionUrl": "https://icrp.cac.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official CAC registration portal, select the view-only search option, and confirm the charge before paying."
+        },
+        {
+          "name": "Persons with Significant Control view-only search",
+          "slug": "persons-with-significant-control-view-only-search",
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "cac-fee-schedule-2025-05-29",
+              "title": "CAC New Schedule of Fees",
+              "sourceType": "gazette_fee_schedule",
+              "url": "https://news.cac.gov.ng/wp-content/uploads/2025/06/New-Schedule-of-Fees-29th-May-2025.pdf",
+              "publicationDate": "2025-05-29",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 1,
+              "publisher": "Corporate Affairs Commission",
+              "notes": "The schedule identifies the view-only Persons with Significant Control search as free."
+            }
+          ],
+          "officialActionUrl": "https://icrp.cac.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official CAC registration portal. The view-only Persons with Significant Control search is listed as free; confirm the final portal display before proceeding."
+        }
+      ]
+    }
+  ]
+}
