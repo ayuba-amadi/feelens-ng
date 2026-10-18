@@ -1,7 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const manifest = require('../../research/production-import/batch-01-mdas.json');
+const batch2Manifest = require('../../research/production-import/batch-02-mdas.json');
+const batch3Manifest = require('../../research/production-import/batch-03-mdas.json');
 const {
+  BATCH_02_SLUGS,
+  BATCH_03_SLUGS,
   dryRunReport,
   importBatch,
   selectBatch,
@@ -28,12 +32,14 @@ function fakePool() {
       }
       if (sql.startsWith('SELECT * FROM mdas')) return { rows: state.mdas.filter((row) => row.slug === values[0]).map(clone) };
       if (sql.startsWith('INSERT INTO mdas')) {
-        const row = { id: nextId('mdas'), name: values[0], slug: values[1], acronym: values[2], description: values[3], website_url: values[4], coverage_status: values[5], is_active: values[6] };
+        const row = { id: nextId('mdas'), name: values[0], slug: values[1], acronym: values[2], description: values[3], website_url: values[4], coverage_status: values[5], is_active: values[6], jurisdiction: values[7] ?? null };
         state.mdas.push(row); return { rows: [clone(row)] };
       }
       if (sql.startsWith('UPDATE mdas')) {
-        const row = state.mdas.find((item) => item.id === values[6]);
+        const hasJurisdiction = sql.includes('jurisdiction=$7');
+        const row = state.mdas.find((item) => item.id === values[hasJurisdiction ? 7 : 6]);
         Object.assign(row, { name: values[0], acronym: values[1], description: values[2], website_url: values[3], coverage_status: values[4], is_active: values[5] });
+        if (hasJurisdiction) row.jurisdiction = values[6];
         return { rows: [clone(row)] };
       }
       if (sql.startsWith('SELECT * FROM services')) return { rows: state.services.filter((row) => row.mda_id === values[0] && row.slug === values[1]).map(clone) };
@@ -116,6 +122,71 @@ test('Batch 1 filtering excludes non-Batch-1 records', () => {
   assert.deepEqual(selected.excludedMdas, ['batch-02-example']);
 });
 
+test('Batch 1, Batch 2 and Batch 3 filters are isolated and each batch has exactly five MDAs', () => {
+  const batch1 = selectBatch(validateManifest(manifest), 'batch-01');
+  const batch2 = selectBatch(validateManifest(batch2Manifest), 'batch-02');
+  const batch3 = selectBatch(validateManifest(batch3Manifest), 'batch-03');
+  assert.deepEqual(batch1.mdas.map((mda) => mda.slug), ['fct-irs', 'nimc', 'nigeria-immigration-service', 'frsc-drivers-licence', 'cac']);
+  assert.deepEqual(batch2.mdas.map((mda) => mda.slug), BATCH_02_SLUGS);
+  assert.deepEqual(batch3.mdas.map((mda) => mda.slug), BATCH_03_SLUGS);
+  assert.equal(batch2.mdas.length, 5);
+  assert.equal(batch3.mdas.length, 5);
+  assert.throws(() => selectBatch(validateManifest(manifest), 'batch-02'), /batch-02 requires exactly/);
+  assert.throws(() => selectBatch(validateManifest(batch2Manifest), 'batch-01'), /batch-01 requires exactly/);
+  assert.throws(() => selectBatch(validateManifest(manifest), 'batch-03'), /batch-03 requires exactly/);
+  assert.throws(() => selectBatch(validateManifest(batch2Manifest), 'batch-03'), /batch-03 requires exactly/);
+  assert.throws(() => selectBatch(validateManifest(batch3Manifest), 'batch-01'), /batch-01 requires exactly/);
+  assert.throws(() => selectBatch(validateManifest(batch3Manifest), 'batch-02'), /batch-02 requires exactly/);
+});
+
+test('Batch 2 manifest validates free, USD, percentage, formula and conflicting semantics', () => {
+  const validated = validateManifest(batch2Manifest);
+  const report = dryRunReport(validated, 'batch-02');
+  const allServices = validated.mdas.flatMap((mda) => mda.services);
+  assert.equal(report.mdaCount, 5);
+  assert.equal(report.serviceCount, 22);
+  assert.equal(report.feeOptionCount, 22);
+  assert.equal(report.verifiedCount, 21);
+  assert.equal(report.conflictingCount, 1);
+  assert.equal(report.pendingCount, 0);
+  assert.equal(report.uniqueEvidenceCount, 11);
+  assert.equal(report.officialChannelCount, 21);
+  assert.equal(report.duplicateRiskCount, 0);
+  assert.equal(report.writes, 0);
+  assert.equal(report.validationWarnings.some((warning) => warning.includes('jamb/printing-of-result-slip')), false);
+  assert.equal(allServices.find((service) => service.slug === 'birth-registration-child-under-5-npc-registration-centre').amount, null);
+  assert.equal(allServices.find((service) => service.slug === 'online-self-service-birth-registration').currency, 'USD');
+  assert.equal(allServices.find((service) => service.slug === 'deed-of-assignment-gift').percentage, 8);
+  assert.match(allServices.find((service) => service.slug === 'power-of-attorney-registration').formula, /extra copy/);
+  assert.equal(allServices.find((service) => service.slug === 'printing-of-result-slip').verificationStatus, 'conflicting');
+  assert.equal(allServices.find((service) => service.slug === 'printing-of-result-slip').evidence.length, 2);
+});
+
+test('Batch 3 manifest validates pending, USD, variable and shared-evidence semantics', () => {
+  const validated = validateManifest(batch3Manifest);
+  const report = dryRunReport(validated, 'batch-03');
+  const allServices = validated.mdas.flatMap((mda) => mda.services);
+  const nafdacServices = validated.mdas.find((mda) => mda.slug === 'nafdac').services;
+  const sonServices = validated.mdas.find((mda) => mda.slug === 'son').services;
+  assert.equal(report.mdaCount, 5);
+  assert.equal(report.serviceCount, 30);
+  assert.equal(report.feeOptionCount, 30);
+  assert.equal(report.verifiedCount, 25);
+  assert.equal(report.pendingCount, 5);
+  assert.equal(report.conflictingCount, 0);
+  assert.equal(report.uniqueEvidenceCount, 8);
+  assert.equal(report.evidenceLinkCount, 37);
+  assert.equal(report.officialChannelCount, 35);
+  assert.equal(report.duplicateRiskCount, 0);
+  assert.equal(report.writes, 0);
+  assert.ok(nafdacServices.every((service) => service.verificationStatus === 'pending'));
+  assert.equal(nafdacServices.find((service) => service.slug === 'general-nafdac-tariff-register').pricingModel, 'variable');
+  assert.equal(nafdacServices.find((service) => service.slug === 'general-nafdac-tariff-register').amount, null);
+  assert.ok(sonServices.every((service) => service.currency === 'USD'));
+  assert.equal(new Set(sonServices.flatMap((service) => service.evidence.map((source) => source.key))).size, 1);
+  assert.equal(allServices.filter((service) => service.verificationStatus === 'pending').length, 5);
+});
+
 test('dry-run performs no writes and preserves free, formula and conflicting semantics', () => {
   const pool = fakePool();
   const report = dryRunReport(validateManifest(manifest), 'batch-01');
@@ -154,4 +225,73 @@ test('apply path is idempotent, preserves conflicting fees, links evidence, crea
   assert.equal(conflictingFee.verification_status, 'conflicting');
   assert.equal(conflictingFee.amount, null);
   assert.equal(pool.state.fees.filter((fee) => fee.service_id === conflictingService.id).length, 1);
+});
+
+test('Batch 2 apply path is idempotent and preserves USD, percentage and conflicting fees', async () => {
+  const pool = fakePool();
+  const validated = validateManifest(batch2Manifest);
+  const first = await importBatch({ manifest: validated, batch: 'batch-02', pool, actorAdminUserId: null });
+  const second = await importBatch({ manifest: validated, batch: 'batch-02', pool, actorAdminUserId: null });
+  assert.equal(first.mdaCount, 5);
+  assert.equal(first.serviceCount, 22);
+  assert.equal(first.officialChannelCount, 21);
+  assert.equal(first.verificationEvents, 22);
+  assert.equal(second.created, 0);
+  assert.equal(second.updated, 0);
+  assert.equal(second.linked, 0);
+  assert.equal(second.verificationEvents, 0);
+  assert.equal(pool.state.mdas.length, 5);
+  assert.equal(pool.state.services.length, 22);
+  assert.equal(pool.state.fees.length, 22);
+  assert.equal(pool.state.sources.length, 11);
+  assert.equal(pool.state.feeSources.length, 26);
+  assert.equal(pool.state.channels.length, 21);
+  assert.equal(pool.state.verifications.length, 22);
+  const percentageService = pool.state.services.find((service) => service.slug === 'deed-of-assignment-gift');
+  const percentageFee = pool.state.fees.find((fee) => fee.service_id === percentageService.id);
+  assert.equal(percentageFee.pricing_model, 'percentage');
+  assert.equal(percentageFee.percentage, 8);
+  const usdService = pool.state.services.find((service) => service.slug === 'online-self-service-birth-registration');
+  const usdFee = pool.state.fees.find((fee) => fee.service_id === usdService.id);
+  assert.equal(usdFee.currency, 'USD');
+  assert.equal(usdFee.amount, 30);
+  const conflictingService = pool.state.services.find((service) => service.slug === 'printing-of-result-slip');
+  const conflictingFee = pool.state.fees.find((fee) => fee.service_id === conflictingService.id);
+  assert.equal(conflictingFee.verification_status, 'conflicting');
+  assert.equal(conflictingFee.amount, null);
+});
+
+test('Batch 3 apply path is idempotent and preserves pending, USD, variable and shared evidence', async () => {
+  const pool = fakePool();
+  const validated = validateManifest(batch3Manifest);
+  const first = await importBatch({ manifest: validated, batch: 'batch-03', pool, actorAdminUserId: null });
+  const second = await importBatch({ manifest: validated, batch: 'batch-03', pool, actorAdminUserId: null });
+  assert.equal(first.mdaCount, 5);
+  assert.equal(first.serviceCount, 30);
+  assert.equal(first.evidenceLinkCount, 37);
+  assert.equal(first.officialChannelCount, 35);
+  assert.equal(first.verificationEvents, 30);
+  assert.equal(second.created, 0);
+  assert.equal(second.updated, 0);
+  assert.equal(second.linked, 0);
+  assert.equal(second.verificationEvents, 0);
+  assert.equal(pool.state.mdas.length, 5);
+  assert.equal(pool.state.services.length, 30);
+  assert.equal(pool.state.fees.length, 30);
+  assert.equal(pool.state.sources.length, 8);
+  assert.equal(pool.state.feeSources.length, 37);
+  assert.equal(pool.state.channels.length, 35);
+  assert.equal(pool.state.verifications.length, 30);
+  const nafdacServiceIds = new Set(pool.state.services.filter((service) => service.mda_id === pool.state.mdas.find((mda) => mda.slug === 'nafdac').id).map((service) => service.id));
+  assert.ok(pool.state.fees.filter((fee) => nafdacServiceIds.has(fee.service_id)).every((fee) => fee.verification_status === 'pending'));
+  const variableService = pool.state.services.find((service) => service.slug === 'general-nafdac-tariff-register');
+  const variableFee = pool.state.fees.find((fee) => fee.service_id === variableService.id);
+  assert.equal(variableFee.pricing_model, 'variable');
+  assert.equal(variableFee.amount, null);
+  const usdService = pool.state.services.find((service) => service.slug === 'soncap-product-certificate-1-unregistered-status');
+  const usdFee = pool.state.fees.find((fee) => fee.service_id === usdService.id);
+  assert.equal(usdFee.currency, 'USD');
+  assert.equal(usdFee.amount, 500);
+  const sonSource = pool.state.sources.find((source) => source.url === 'https://son.gov.ng/soncap-faq/');
+  assert.equal(pool.state.feeSources.filter((link) => link.source_id === sonSource.id).length, 6);
 });

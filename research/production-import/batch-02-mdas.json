@@ -1,0 +1,743 @@
+{
+  "batch": "batch-02",
+  "mdas": [
+    {
+      "name": "Abuja Geographic Information Systems / FCT Lands",
+      "acronym": "AGIS",
+      "slug": "agis",
+      "jurisdiction": "Federal Capital Territory",
+      "officialWebsite": "https://agis.fcta.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "AGIS is the FCT land-information and land-administration channel used for allocation, title search, consent, registration and related property transactions.",
+      "officialChannels": [
+        {
+          "channelType": "portal",
+          "name": "AGIS Services & Payment Procedure",
+          "url": "https://www.agis.fcta.gov.ng/services/",
+          "instructions": "Obtain the correct AGIS bill first. Follow the official AGIS payment procedure and use the FCT/AGIS Remita route specified by AGIS. Do not pay an unofficial agent."
+        }
+      ],
+      "services": [
+        {
+          "name": "New land application - commercial/residential plot",
+          "slug": "new-land-application-commercial-residential-plot",
+          "pricingModel": "fixed",
+          "amount": 100000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-process-payments",
+              "title": "AGIS processes and payment requirements",
+              "sourceType": "official_process_page",
+              "url": "https://www.agis.fcta.gov.ng/processes-and-payments-requirements/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "Official AGIS process and payment requirements support the stated new land application fee."
+            }
+          ],
+          "officialActionUrl": "https://agis.fcta.gov.ng/new-application/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Complete the official application process, obtain the AGIS bill, pay through the official AGIS/Remita procedure, and submit the required payment evidence with the application."
+        },
+        {
+          "name": "Land title search - private/individual file",
+          "slug": "land-title-search-private-individual-file",
+          "pricingModel": "fixed",
+          "amount": 10000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-process-payments",
+              "title": "AGIS processes and payment requirements",
+              "sourceType": "official_process_page",
+              "url": "https://www.agis.fcta.gov.ng/processes-and-payments-requirements/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "Official AGIS process and payment requirements support the stated private or individual title-search fee."
+            }
+          ],
+          "officialActionUrl": "https://www.agis.fcta.gov.ng/services/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Obtain the title-search bill from AGIS and pay using the official AGIS payment procedure."
+        },
+        {
+          "name": "Land title search - commercial/organisational file",
+          "slug": "land-title-search-commercial-organisational-file",
+          "pricingModel": "fixed",
+          "amount": 20000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-process-payments",
+              "title": "AGIS processes and payment requirements",
+              "sourceType": "official_process_page",
+              "url": "https://www.agis.fcta.gov.ng/processes-and-payments-requirements/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "Official AGIS process and payment requirements support the stated commercial or organisational title-search fee."
+            }
+          ],
+          "officialActionUrl": "https://www.agis.fcta.gov.ng/services/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Obtain the commercial or organisational title-search bill from AGIS and pay using the official AGIS payment procedure."
+        },
+        {
+          "name": "Power of Attorney registration",
+          "slug": "power-of-attorney-registration",
+          "pricingModel": "formula",
+          "amount": null,
+          "currency": "NGN",
+          "formula": "₦102,000 + ₦2,000 per extra copy",
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-title-registration",
+              "title": "AGIS title registration requirements",
+              "sourceType": "official_process_page",
+              "url": "https://agis.fcta.gov.ng/title-registration/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "Official AGIS title-registration requirements publish the Power of Attorney fee formula."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "portal",
+          "paymentGuide": "Follow the title-registration requirements, obtain the official bill, and pay through the official AGIS payment procedure."
+        },
+        {
+          "name": "Deed of Assignment / Gift",
+          "slug": "deed-of-assignment-gift",
+          "pricingModel": "percentage",
+          "amount": null,
+          "currency": "NGN",
+          "percentage": 8,
+          "formula": "8% of property value",
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-title-registration",
+              "title": "AGIS title registration requirements",
+              "sourceType": "official_process_page",
+              "url": "https://agis.fcta.gov.ng/title-registration/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "AGIS assesses this charge as 8% of property value; the property value and resulting amount must be assessed officially."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "portal",
+          "paymentGuide": "AGIS assesses this charge from the property value. Obtain the official assessment before payment."
+        },
+        {
+          "name": "Deed of Sublease",
+          "slug": "deed-of-sublease",
+          "pricingModel": "formula",
+          "amount": null,
+          "currency": "NGN",
+          "formula": "2% of consideration + ₦10,000 consent + ₦10,000 processing + ₦2,000 counterpart copy",
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-title-registration",
+              "title": "AGIS title registration requirements",
+              "sourceType": "official_process_page",
+              "url": "https://agis.fcta.gov.ng/title-registration/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "Official AGIS title-registration requirements publish the Deed of Sublease component formula."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "portal",
+          "paymentGuide": "Obtain the official assessed bill. Preserve each component separately rather than representing a universal fixed total."
+        },
+        {
+          "name": "Consent to legal mortgage",
+          "slug": "consent-to-legal-mortgage",
+          "pricingModel": "formula",
+          "amount": null,
+          "currency": "NGN",
+          "formula": "1% of consideration + ₦10,000 consent + ₦10,000 processing + ₦2,000 counterpart copy",
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-title-registration",
+              "title": "AGIS title registration requirements",
+              "sourceType": "official_process_page",
+              "url": "https://agis.fcta.gov.ng/title-registration/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "Official AGIS title-registration requirements publish the legal-mortgage consent component formula."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "portal",
+          "paymentGuide": "Obtain the official assessed bill. Preserve each component separately."
+        },
+        {
+          "name": "Late recertification of FCC title",
+          "slug": "late-recertification-of-fcc-title",
+          "pricingModel": "fixed",
+          "amount": 150000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-process-payments",
+              "title": "AGIS processes and payment requirements",
+              "sourceType": "official_process_page",
+              "url": "https://www.agis.fcta.gov.ng/processes-and-payments-requirements/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "Official AGIS process and payment requirements support the late FCC title recertification fee."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "portal",
+          "paymentGuide": "Obtain the official AGIS bill and pay through the official AGIS payment procedure."
+        },
+        {
+          "name": "Area Council regularisation exercise",
+          "slug": "area-council-regularisation-exercise",
+          "pricingModel": "fixed",
+          "amount": 5000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "agis-process-payments",
+              "title": "AGIS processes and payment requirements",
+              "sourceType": "official_process_page",
+              "url": "https://www.agis.fcta.gov.ng/processes-and-payments-requirements/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Abuja Geographic Information Systems",
+              "notes": "Official AGIS process and payment requirements support the Area Council regularisation fee."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "portal",
+          "paymentGuide": "Obtain the official AGIS bill and pay through the official AGIS payment procedure."
+        }
+      ]
+    },
+    {
+      "name": "High Court of the Federal Capital Territory",
+      "acronym": "FCT High Court",
+      "slug": "fct-high-court",
+      "jurisdiction": "Federal Capital Territory",
+      "officialWebsite": "https://www.fcthighcourt.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "Affidavits are frequently required for identity, banking, education, employment and administrative processes. The court's VARMS platform publishes walk-in and virtual affidavit prices and provides the application workflow.",
+      "officialChannels": [
+        {
+          "channelType": "portal",
+          "name": "FCT High Court VARMS",
+          "url": "https://varms.fcthighcourt.gov.ng/",
+          "instructions": "Start the affidavit on the official VARMS platform, choose the appropriate route, pay within the official system, complete the form, and follow the Commissioner for Oaths process."
+        }
+      ],
+      "services": [
+        {
+          "name": "Walk-in affidavit",
+          "slug": "walk-in-affidavit",
+          "pricingModel": "fixed",
+          "amount": 2180,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "fct-high-court-varms",
+              "title": "FCT High Court VARMS portal",
+              "sourceType": "official_portal",
+              "url": "https://varms.fcthighcourt.gov.ng/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "High Court of the Federal Capital Territory",
+              "notes": "The official VARMS portal publishes the walk-in affidavit price."
+            }
+          ],
+          "officialActionUrl": "https://varms.fcthighcourt.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Start the affidavit on VARMS and select the walk-in option. Pay only the amount generated by the official platform."
+        },
+        {
+          "name": "Virtual affidavit",
+          "slug": "virtual-affidavit",
+          "pricingModel": "fixed",
+          "amount": 5425,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "fct-high-court-varms",
+              "title": "FCT High Court VARMS portal",
+              "sourceType": "official_portal",
+              "url": "https://varms.fcthighcourt.gov.ng/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "High Court of the Federal Capital Territory",
+              "notes": "The official VARMS portal publishes the virtual affidavit price as all-inclusive."
+            }
+          ],
+          "officialActionUrl": "https://varms.fcthighcourt.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Start the affidavit on VARMS, select the virtual option, pay online, complete the affidavit process and attend the required review with the Commissioner for Oaths."
+        }
+      ]
+    },
+    {
+      "name": "National Population Commission",
+      "acronym": "NPC",
+      "slug": "npc",
+      "jurisdiction": "Federal",
+      "officialWebsite": "https://nationalpopulation.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "Birth registration and attestation are foundational civil-registration services. FeeLens must distinguish free centre-based registration from paid digital self-service services.",
+      "officialChannels": [
+        {
+          "channelType": "website",
+          "name": "NPC Digital Services",
+          "url": "https://nationalpopulation.gov.ng/",
+          "instructions": "Start from the official NPC website and use the appropriate official civil-registration service. Where an online self-service portal is used, pay only through that official portal."
+        }
+      ],
+      "services": [
+        {
+          "name": "Birth registration for child under 5 at NPC registration centre",
+          "slug": "birth-registration-child-under-5-npc-registration-centre",
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "npc-birth-registration-statement",
+              "title": "NPC birth registration statement for the first baby of 2025",
+              "sourceType": "official_statement",
+              "url": "https://nationalpopulation.gov.ng/news/first-lady-welcomes-and-presents-birth-certificate-to-first-baby-of-the-year-2025",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Population Commission",
+              "notes": "The official statement publishes centre-based birth registration for an eligible child under five as free; the source is dated 2025 without an exact publication day in the research record."
+            }
+          ],
+          "officialActionUrl": "https://nationalpopulation.gov.ng/",
+          "officialChannelType": "website",
+          "paymentGuide": "Centre-based registration for an eligible child under five is published as free. Use an NPC registration centre or official NPC channel."
+        },
+        {
+          "name": "Online self-service birth registration",
+          "slug": "online-self-service-birth-registration",
+          "pricingModel": "fixed",
+          "amount": 30,
+          "currency": "USD",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "npc-birthreg-selfservice",
+              "title": "NPC birth registration self-service portal",
+              "sourceType": "official_portal",
+              "url": "https://www.birthreg-selfservice.nationalpopulation.gov.ng/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Population Commission",
+              "notes": "The official NPC self-service portal publishes the online birth-registration charge in USD."
+            }
+          ],
+          "officialActionUrl": "https://www.birthreg-selfservice.nationalpopulation.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Create or sign in to the official self-service portal, complete the registration details and pay the published portal charge. Keep the official amount in USD; do not convert it to NGN."
+        },
+        {
+          "name": "Adult Certificate of Birth (Attestation) self-service",
+          "slug": "adult-certificate-of-birth-attestation-self-service",
+          "pricingModel": "fixed",
+          "amount": 80,
+          "currency": "USD",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "npc-attestation-portal",
+              "title": "NPC attestation portal",
+              "sourceType": "official_portal",
+              "url": "https://attestation.nationalpopulation.gov.ng/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "National Population Commission",
+              "notes": "The official NPC attestation portal publishes the adult Certificate of Birth self-service charge in USD."
+            }
+          ],
+          "officialActionUrl": "https://attestation.nationalpopulation.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official NPC attestation portal, complete identity/NIN requirements and pay only through the official portal. Keep the published amount in USD."
+        }
+      ]
+    },
+    {
+      "name": "Joint Admissions and Matriculation Board",
+      "acronym": "JAMB",
+      "slug": "jamb",
+      "jurisdiction": "Federal",
+      "officialWebsite": "https://www.jamb.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "JAMB registration and post-registration services affect a large student population in Abuja/FCT. Official JAMB materials publish registration and correction-service charges.",
+      "officialChannels": [
+        {
+          "channelType": "portal",
+          "name": "JAMB e-Facility",
+          "url": "https://efacility.jamb.gov.ng/",
+          "instructions": "Sign in to the official JAMB e-Facility, select the required service, generate the transaction/payment instruction, pay using the official workflow, and use an approved CBT centre only where required."
+        }
+      ],
+      "services": [
+        {
+          "name": "2026 Direct Entry registration",
+          "slug": "2026-direct-entry-registration",
+          "pricingModel": "fixed",
+          "amount": 5700,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "jamb-2026-bulletin",
+              "title": "JAMB 2026 official bulletin",
+              "sourceType": "official_bulletin",
+              "url": "https://www.jamb.gov.ng/Bulletin/2026/JAMBulletin_02-03-2026.pdf",
+              "publicationDate": "2026-03-02",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Joint Admissions and Matriculation Board",
+              "notes": "The official JAMB bulletin dated 2 March 2026 publishes the Direct Entry registration fee."
+            }
+          ],
+          "officialActionUrl": "https://efacility.jamb.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Sign in to the official JAMB e-Facility, select Direct Entry registration, generate the transaction and pay using the official workflow."
+        },
+        {
+          "name": "2026 UTME registration without mock",
+          "slug": "2026-utme-registration-without-mock",
+          "pricingModel": "fixed",
+          "amount": 7200,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "jamb-2026-bulletin",
+              "title": "JAMB 2026 official bulletin",
+              "sourceType": "official_bulletin",
+              "url": "https://www.jamb.gov.ng/Bulletin/2026/JAMBulletin_02-03-2026.pdf",
+              "publicationDate": "2026-03-02",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Joint Admissions and Matriculation Board",
+              "notes": "The official JAMB bulletin dated 2 March 2026 publishes the UTME registration fee without mock."
+            }
+          ],
+          "officialActionUrl": "https://efacility.jamb.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Sign in to the official JAMB e-Facility, select UTME registration without mock, generate the transaction and pay using the official workflow."
+        },
+        {
+          "name": "2026 UTME registration with mock",
+          "slug": "2026-utme-registration-with-mock",
+          "pricingModel": "fixed",
+          "amount": 8700,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "jamb-2026-bulletin",
+              "title": "JAMB 2026 official bulletin",
+              "sourceType": "official_bulletin",
+              "url": "https://www.jamb.gov.ng/Bulletin/2026/JAMBulletin_02-03-2026.pdf",
+              "publicationDate": "2026-03-02",
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Joint Admissions and Matriculation Board",
+              "notes": "The official JAMB bulletin dated 2 March 2026 publishes the UTME registration fee with mock."
+            }
+          ],
+          "officialActionUrl": "https://efacility.jamb.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Sign in to the official JAMB e-Facility, select UTME registration with mock, generate the transaction and pay using the official workflow."
+        },
+        {
+          "name": "Correction of data - institution/course, name, DOB, state/LGA, gender, A-level qualification",
+          "slug": "correction-of-data-jamb",
+          "pricingModel": "fixed",
+          "amount": 2500,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "jamb-payment-services",
+              "title": "JAMB official payment services page",
+              "sourceType": "official_fee_page",
+              "url": "https://jamb.gov.ng/payment-Services",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Joint Admissions and Matriculation Board",
+              "notes": "The official payment-services page lists ₦2,500 per listed correction service. Any separately listed CBT service charge remains separate."
+            }
+          ],
+          "officialActionUrl": "https://efacility.jamb.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Sign in to e-Facility, select the correction service, generate the transaction and pay through the official JAMB workflow. Do not combine any CBT service charge into the statutory/service fee unless the official source does so."
+        },
+        {
+          "name": "Printing of result slip",
+          "slug": "printing-of-result-slip",
+          "pricingModel": "unknown",
+          "amount": null,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "conflicting",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "jamb-payment-services",
+              "title": "JAMB official payment services page",
+              "sourceType": "official_fee_page",
+              "url": "https://jamb.gov.ng/payment-Services",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Joint Admissions and Matriculation Board",
+              "notes": "Current official JAMB Payment & Services page lists JAMB Result Slip at ₦1,000 with a separate ₦100 CBT service charge."
+            },
+            {
+              "key": "jamb-2025-training-manual",
+              "title": "JAMB 2025 Training Manual",
+              "sourceType": "official_training_material",
+              "url": "https://www.jamb.gov.ng/PDFs/2025/2025_TRAINING_MANUAL_final.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Joint Admissions and Matriculation Board",
+              "notes": "Official JAMB 2025 Training Manual lists Printing of Result Slip (Coloured) at ₦1,500, with a separate service charge of ₦200 at PRC/PTC or ₦300 at non-JAMB centres."
+            }
+          ],
+          "officialActionUrl": "https://efacility.jamb.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Official JAMB sources currently disagree on the result-slip portal charge. FeeLens therefore does not present one amount as authoritative. Confirm the amount currently displayed by JAMB e-Facility before making payment."
+        }
+      ]
+    },
+    {
+      "name": "Nigerian Export Promotion Council",
+      "acronym": "NEPC",
+      "slug": "nepc",
+      "jurisdiction": "Federal",
+      "officialWebsite": "https://nepc.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "NEPC exporter certification is a practical business service for SMEs and formal exporters. The official e-registration portal and 2026 Service Level Agreement publish current fees.",
+      "officialChannels": [
+        {
+          "channelType": "portal",
+          "name": "NEPC Exporter e-Registration",
+          "url": "https://nepc.gov.ng/ereg/exporter/",
+          "instructions": "Create or sign in to the official e-registration portal, complete the application and uploads, generate the payment instruction, pay through the approved channel, confirm payment status and download the certificate after approval."
+        }
+      ],
+      "services": [
+        {
+          "name": "New exporter registration certificate",
+          "slug": "new-exporter-registration-certificate",
+          "pricingModel": "fixed",
+          "amount": 13500,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nepc-exporter-portal",
+              "title": "NEPC exporter e-registration portal",
+              "sourceType": "official_portal",
+              "url": "https://nepc.gov.ng/ereg/exporter/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Export Promotion Council",
+              "notes": "The official NEPC exporter portal supports the new exporter registration service."
+            },
+            {
+              "key": "nepc-2026-sla",
+              "title": "NEPC E-registration Service Level Agreement 2026",
+              "sourceType": "service_level_agreement",
+              "url": "https://nepc.gov.ng/cms/wp-content/uploads/2026/03/NEPC-E-registration-SLA.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Export Promotion Council",
+              "notes": "The official NEPC SLA is published in March 2026; the exact publication day was not supplied in the research record."
+            }
+          ],
+          "officialActionUrl": "https://nepc.gov.ng/ereg/exporter/start",
+          "officialChannelType": "portal",
+          "paymentGuide": "Create or sign in to the official e-registration portal, complete the application and uploads, generate the payment instruction, pay through the approved channel, confirm payment status and download the certificate after approval."
+        },
+        {
+          "name": "Expired exporter certificate renewal",
+          "slug": "expired-exporter-certificate-renewal",
+          "pricingModel": "fixed",
+          "amount": 7500,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nepc-exporter-portal",
+              "title": "NEPC exporter e-registration portal",
+              "sourceType": "official_portal",
+              "url": "https://nepc.gov.ng/ereg/exporter/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Export Promotion Council",
+              "notes": "The official NEPC exporter portal supports exporter certificate renewal."
+            },
+            {
+              "key": "nepc-2026-sla",
+              "title": "NEPC E-registration Service Level Agreement 2026",
+              "sourceType": "service_level_agreement",
+              "url": "https://nepc.gov.ng/cms/wp-content/uploads/2026/03/NEPC-E-registration-SLA.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Export Promotion Council",
+              "notes": "The official NEPC SLA is published in March 2026; the exact publication day was not supplied in the research record."
+            }
+          ],
+          "officialActionUrl": "https://nepc.gov.ng/ereg/exporter/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official e-registration portal, select the renewal route, generate the payment instruction and pay through the approved channel."
+        },
+        {
+          "name": "Late exporter certificate renewal - after 3 months",
+          "slug": "late-exporter-certificate-renewal-after-3-months",
+          "pricingModel": "fixed",
+          "amount": 12500,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-10-18",
+          "evidence": [
+            {
+              "key": "nepc-exporter-portal",
+              "title": "NEPC exporter e-registration portal",
+              "sourceType": "official_portal",
+              "url": "https://nepc.gov.ng/ereg/exporter/",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Export Promotion Council",
+              "notes": "The official NEPC exporter portal supports late exporter certificate renewal."
+            },
+            {
+              "key": "nepc-2026-sla",
+              "title": "NEPC E-registration Service Level Agreement 2026",
+              "sourceType": "service_level_agreement",
+              "url": "https://nepc.gov.ng/cms/wp-content/uploads/2026/03/NEPC-E-registration-SLA.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-10-18",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Export Promotion Council",
+              "notes": "The official NEPC SLA is published in March 2026; the exact publication day was not supplied in the research record."
+            }
+          ],
+          "officialActionUrl": "https://nepc.gov.ng/ereg/exporter/",
+          "officialChannelType": "portal",
+          "paymentGuide": "Use the official e-registration portal, select the late-renewal route, generate the payment instruction and pay through the approved channel."
+        }
+      ]
+    }
+  ]
+}

@@ -8,8 +8,15 @@ const { pricingModels, sourceTypes, verificationStatuses } = require('../src/val
 
 const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
 const DEFAULT_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-01-mdas.json');
-const BATCH_ALIASES = new Map([['batch-01', 'batch-01'], ['batch-01-mdas', 'batch-01']]);
+const BATCH_ALIASES = new Map([
+  ['batch-01', 'batch-01'], ['batch-01-mdas', 'batch-01'],
+  ['batch-02', 'batch-02'], ['batch-02-mdas', 'batch-02'],
+  ['batch-03', 'batch-03'], ['batch-03-mdas', 'batch-03'],
+]);
 const BATCH_01_SLUGS = ['fct-irs', 'nimc', 'nigeria-immigration-service', 'frsc-drivers-licence', 'cac'];
+const BATCH_02_SLUGS = ['agis', 'fct-high-court', 'npc', 'jamb', 'nepc'];
+const BATCH_03_SLUGS = ['nafdac', 'son', 'ministry-interior-marriage-registry', 'nigerian-copyright-commission', 'ncc'];
+const BATCH_SLUGS = { 'batch-01': BATCH_01_SLUGS, 'batch-02': BATCH_02_SLUGS, 'batch-03': BATCH_03_SLUGS };
 
 const dateValue = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const nullableDate = dateValue.nullable();
@@ -42,6 +49,7 @@ const serviceSchema = z.object({
   pricingModel: z.enum(pricingModels),
   amount: z.number().finite().nonnegative().nullable(),
   currency: z.string().trim().toUpperCase().regex(/^[A-Z]{3}$/),
+  percentage: z.number().finite().nonnegative().nullable().optional().default(null),
   formula: z.string().trim().max(5000).nullable(),
   verificationStatus: z.enum(verificationStatuses),
   lastChecked: dateValue,
@@ -55,6 +63,8 @@ const serviceSchema = z.object({
   if (value.pricingModel === 'free' && value.amount !== null) context.addIssue({ code: 'custom', path: ['amount'], message: 'Free fees must not contain an amount.' });
   if (value.pricingModel === 'formula' && !value.formula) context.addIssue({ code: 'custom', path: ['formula'], message: 'Formula fees require explanatory pricing text.' });
   if (['unknown', 'variable'].includes(value.pricingModel) && value.amount !== null) context.addIssue({ code: 'custom', path: ['amount'], message: `${value.pricingModel} fees must not contain a fixed amount.` });
+  if (value.pricingModel === 'percentage' && (value.percentage === null || value.amount !== null)) context.addIssue({ code: 'custom', path: ['percentage'], message: 'Percentage fees require a percentage and must not contain a fixed amount.' });
+  if (value.pricingModel !== 'percentage' && value.percentage !== null) context.addIssue({ code: 'custom', path: ['percentage'], message: 'Only percentage fees may contain a percentage.' });
 });
 
 const mdaSchema = z.object({
@@ -62,6 +72,7 @@ const mdaSchema = z.object({
   acronym: z.string().trim().min(1).max(50),
   slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   officialWebsite: z.string().url().max(2048),
+  jurisdiction: z.string().trim().max(200).nullable().optional(),
   coverageStatus: z.literal('pilot'),
   description: z.string().trim().min(1).max(5000),
   officialChannels: z.array(channelSchema).min(1),
@@ -101,11 +112,12 @@ function canonicalBatch(batch) { return BATCH_ALIASES.get(String(batch || '').tr
 
 function selectBatch(manifest, batch = 'batch-01') {
   const selectedBatch = canonicalBatch(batch);
-  if (!selectedBatch) throw new Error('Only batch-01 is supported by this importer.');
-  const selected = manifest.mdas.filter((mda) => BATCH_01_SLUGS.includes(mda.slug))
-    .sort((left, right) => BATCH_01_SLUGS.indexOf(left.slug) - BATCH_01_SLUGS.indexOf(right.slug));
-  const excludedMdas = manifest.mdas.filter((mda) => !BATCH_01_SLUGS.includes(mda.slug)).map((mda) => mda.slug);
-  if (selected.length !== BATCH_01_SLUGS.length) throw new Error(`Batch 1 requires exactly these five MDA slugs: ${BATCH_01_SLUGS.join(', ')}.`);
+  if (!selectedBatch || !BATCH_SLUGS[selectedBatch]) throw new Error('Only batch-01, batch-02, and batch-03 are supported by this importer.');
+  const allowedSlugs = BATCH_SLUGS[selectedBatch];
+  const selected = manifest.mdas.filter((mda) => allowedSlugs.includes(mda.slug))
+    .sort((left, right) => allowedSlugs.indexOf(left.slug) - allowedSlugs.indexOf(right.slug));
+  const excludedMdas = manifest.mdas.filter((mda) => !allowedSlugs.includes(mda.slug)).map((mda) => mda.slug);
+  if (selected.length !== allowedSlugs.length) throw new Error(`${selectedBatch} requires exactly these MDA slugs: ${allowedSlugs.join(', ')}.`);
   return { batch: selectedBatch, mdas: selected, excludedMdas };
 }
 
@@ -115,7 +127,7 @@ function nullableEqual(left, right) { return (left ?? null) === (right ?? null);
 function feeValues(service) {
   return {
     pricingModel: service.pricingModel, currency: service.currency, amount: service.amount,
-    minimumAmount: null, maximumAmount: null, percentage: null, formula: service.formula,
+    minimumAmount: null, maximumAmount: null, percentage: service.percentage, formula: service.formula,
     conditions: service.pricingModel === 'variable' ? service.paymentGuide : null,
     label: service.name, notes: service.notes, isCurrent: service.verificationStatus !== 'superseded',
     verificationStatus: service.verificationStatus,
@@ -132,6 +144,7 @@ function countManifest(selected) {
   const identity = (key) => { if (identities.has(key)) duplicateRisk += 1; identities.add(key); };
   let serviceCount = 0;
   let feeOptionCount = 0;
+  let evidenceLinkCount = 0;
   let officialChannelCount = 0;
   for (const mda of selected.mdas) {
     identity(`mda:${mda.slug}`);
@@ -143,6 +156,7 @@ function countManifest(selected) {
       statusCounts[service.verificationStatus] += 1;
       identity(`service:${mda.slug}:${service.slug}`);
       identity(`fee:${mda.slug}:${service.slug}`);
+      evidenceLinkCount += service.evidence.length;
       service.evidence.forEach((source) => sourceKeys.add(source.key));
       if (service.officialActionUrl) {
         officialChannelCount += 1;
@@ -155,15 +169,18 @@ function countManifest(selected) {
     verifiedCount: statusCounts.verified, conflictingCount: statusCounts.conflicting,
     pendingCount: statusCounts.pending, unableToVerifyCount: statusCounts.unable_to_verify,
     supersededCount: statusCounts.superseded, uniqueEvidenceCount: sourceKeys.size,
-    officialChannelCount, duplicateRiskCount: duplicateRisk,
+    evidenceLinkCount, officialChannelCount, duplicateRiskCount: duplicateRisk,
   };
 }
 
 function dryRunReport(manifest, batch) {
   const selected = selectBatch(manifest, batch);
-  const warnings = selected.excludedMdas.length ? [`Excluded non-Batch-1 MDAs: ${selected.excludedMdas.join(', ')}.`] : [];
+  const warnings = selected.excludedMdas.length ? [`Excluded non-${selected.batch} MDAs: ${selected.excludedMdas.join(', ')}.`] : [];
   for (const mda of selected.mdas) for (const service of mda.services) for (const source of service.evidence) {
     if (!source.publicationDate && !source.effectiveDate) warnings.push(`${source.key} has no publication/effective date in the supplied research.`);
+  }
+  for (const mda of selected.mdas) for (const service of mda.services) {
+    if (service.verificationStatus === 'conflicting' && service.evidence.length < 2) warnings.push(`${mda.slug}/${service.slug} remains conflicting and has fewer than two supplied evidence records; recover the missing official source before publishing a definitive amount.`);
   }
   return { ...countManifest(selected), validationWarnings: [...new Set(warnings)], validationErrors: [], writes: 0 };
 }
@@ -187,15 +204,21 @@ async function findOrCreateSource(client, source, actorAdminUserId) {
 async function findOrCreateMda(client, mda, actorAdminUserId) {
   const existing = await client.query('SELECT * FROM mdas WHERE slug=$1 FOR UPDATE', [mda.slug]);
   const values = [mda.name, mda.slug, mda.acronym, mda.description, mda.officialWebsite, mda.coverageStatus, true];
+  const hasJurisdiction = mda.jurisdiction !== undefined;
   if (!existing.rows[0]) {
-    const created = await client.query(`INSERT INTO mdas (name,slug,acronym,description,website_url,coverage_status,is_active) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`, values);
+    const created = hasJurisdiction
+      ? await client.query(`INSERT INTO mdas (name,slug,acronym,description,website_url,coverage_status,is_active,jurisdiction) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`, [...values, mda.jurisdiction])
+      : await client.query(`INSERT INTO mdas (name,slug,acronym,description,website_url,coverage_status,is_active) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`, values);
     await audit(client, actorAdminUserId, 'import.mda.created', 'mda', created.rows[0].id, null, created.rows[0]);
     return { row: created.rows[0], created: true, updated: false };
   }
   const old = existing.rows[0];
-  const changed = ![old.name, old.slug, old.acronym, old.description, old.website_url, old.coverage_status, old.is_active].every((value, index) => nullableEqual(value, values[index]));
+  const changed = ![old.name, old.slug, old.acronym, old.description, old.website_url, old.coverage_status, old.is_active].every((value, index) => nullableEqual(value, values[index]))
+    || (hasJurisdiction && !nullableEqual(old.jurisdiction, mda.jurisdiction));
   if (!changed) return { row: old, created: false, updated: false };
-  const updated = await client.query('UPDATE mdas SET name=$1,acronym=$2,description=$3,website_url=$4,coverage_status=$5,is_active=$6,updated_at=NOW() WHERE id=$7 RETURNING *', [mda.name, mda.acronym, mda.description, mda.officialWebsite, mda.coverageStatus, true, old.id]);
+  const updated = hasJurisdiction
+    ? await client.query('UPDATE mdas SET name=$1,acronym=$2,description=$3,website_url=$4,coverage_status=$5,is_active=$6,jurisdiction=$7,updated_at=NOW() WHERE id=$8 RETURNING *', [mda.name, mda.acronym, mda.description, mda.officialWebsite, mda.coverageStatus, true, mda.jurisdiction, old.id])
+    : await client.query('UPDATE mdas SET name=$1,acronym=$2,description=$3,website_url=$4,coverage_status=$5,is_active=$6,updated_at=NOW() WHERE id=$7 RETURNING *', [mda.name, mda.acronym, mda.description, mda.officialWebsite, mda.coverageStatus, true, old.id]);
   await audit(client, actorAdminUserId, 'import.mda.updated', 'mda', old.id, old, updated.rows[0]);
   return { row: updated.rows[0], created: false, updated: true };
 }
@@ -339,7 +362,7 @@ function parseArguments(argv) {
 function printUsage() { console.log('Usage: node backend/scripts/import-production-manifest.js [manifest.json] [--batch batch-01] [--dry-run|--apply]'); }
 
 function printReport(report, mode, manifestPath, batch) {
-  console.log(JSON.stringify({ mode, manifestPath, batch, mdaCount: report.mdaCount, serviceCount: report.serviceCount, feeOptionCount: report.feeOptionCount, verifiedCount: report.verifiedCount, conflictingCount: report.conflictingCount, pendingCount: report.pendingCount, unableToVerifyCount: report.unableToVerifyCount, supersededCount: report.supersededCount, uniqueEvidenceCount: report.uniqueEvidenceCount, officialChannelCount: report.officialChannelCount, duplicateRiskCount: report.duplicateRiskCount, validationWarnings: report.validationWarnings || [], validationErrors: report.validationErrors || [], writes: report.writes, created: report.created || 0, updated: report.updated || 0, linked: report.linked || 0, verificationEvents: report.verificationEvents || 0 }, null, 2));
+  console.log(JSON.stringify({ mode, manifestPath, batch, mdaCount: report.mdaCount, serviceCount: report.serviceCount, feeOptionCount: report.feeOptionCount, verifiedCount: report.verifiedCount, conflictingCount: report.conflictingCount, pendingCount: report.pendingCount, unableToVerifyCount: report.unableToVerifyCount, supersededCount: report.supersededCount, uniqueEvidenceCount: report.uniqueEvidenceCount, evidenceLinkCount: report.evidenceLinkCount, officialChannelCount: report.officialChannelCount, duplicateRiskCount: report.duplicateRiskCount, validationWarnings: report.validationWarnings || [], validationErrors: report.validationErrors || [], writes: report.writes, created: report.created || 0, updated: report.updated || 0, linked: report.linked || 0, verificationEvents: report.verificationEvents || 0 }, null, 2));
 }
 
 async function main(argv = process.argv.slice(2)) {
@@ -364,4 +387,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, DEFAULT_MANIFEST_PATH, countManifest, dryRunReport, importBatch, manifestSchema, parseArguments, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_SLUGS, BATCH_03_SLUGS, DEFAULT_MANIFEST_PATH, countManifest, dryRunReport, importBatch, manifestSchema, parseArguments, selectBatch, validateManifest };
