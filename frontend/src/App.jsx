@@ -11,6 +11,7 @@ import { MdasPage } from './pages/MdasPage';
 import { MethodologyPage } from './pages/MethodologyPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PrivacyPage } from './pages/PrivacyPage';
+import { PolicyPage } from './pages/PolicyPage';
 import { ServiceDetailPage } from './pages/ServiceDetailPage';
 import { AdminAccountPage } from './pages/admin/AdminAccountPage';
 import { AdminAuditLogsPage } from './pages/admin/AdminAuditLogsPage';
@@ -57,6 +58,7 @@ export default function App() {
           <Route path="/data-sources" element={<DataSourcesPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/policy" element={<PolicyPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

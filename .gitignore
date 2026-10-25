@@ -16,3 +16,6 @@ coverage/
 .DS_Store
 .idea/
 .vscode/
+
+# Generated local package for optional Google Drive upload
+research/evidence/drive-package/
