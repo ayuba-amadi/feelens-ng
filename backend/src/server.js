@@ -1,11 +1,15 @@
-const expressSession = require('express-session');
-const connectPgSimple = require('connect-pg-simple');
-const { createApp } = require('./app');
 const { loadEnv } = require('./config/env');
-const { getPool, closePool } = require('./db/pool');
+const { initSentry } = require('./monitoring/sentry');
 
 async function startServer() {
   const config = loadEnv();
+  initSentry(config);
+
+  const expressSession = require('express-session');
+  const connectPgSimple = require('connect-pg-simple');
+  const { createApp } = require('./app');
+  const { getPool, closePool } = require('./db/pool');
+
   const pool = getPool(config);
   const PgSession = connectPgSimple(expressSession);
   const sessionStore = new PgSession({

@@ -19,7 +19,15 @@ const envSchema = z.object({
   DB_USER: z.string().trim().min(1),
   DB_PASSWORD: z.string().min(1),
   ALLOWED_ORIGINS: z.string().trim().min(1),
-  SESSION_SECRET: z.string().min(32)
+  SESSION_SECRET: z.string().min(32),
+  SENTRY_DSN: z.preprocess(
+    (value) => (value === '' ? undefined : value),
+    z.string().trim().url().optional(),
+  ),
+  SENTRY_RELEASE: z.preprocess(
+    (value) => (value === '' ? undefined : value),
+    z.string().trim().min(1).optional(),
+  )
 });
 
 function loadEnv() {

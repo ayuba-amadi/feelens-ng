@@ -15,6 +15,7 @@
     "node": ">=22.23.3"
   },
   "dependencies": {
+    "@sentry/node": "^11.9.0",
     "argon2": "^0.44.0",
     "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.5",
@@ -27,4 +28,3 @@
     "zod": "^4.1.5"
   }
 }
-
