@@ -64,6 +64,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .mda-logo-normal { width: 2.75rem; height: 2.75rem; }
 .mda-logo-large { width: 3.5rem; height: 3.5rem; }
+.mda-logo-dark { border-color: #0b2638; background: #0b2638; }
 
 .hero-grid {
   background-image: linear-gradient(rgba(23, 121, 76, 0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(23, 121, 76, 0.055) 1px, transparent 1px);

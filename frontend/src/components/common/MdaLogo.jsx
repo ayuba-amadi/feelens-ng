@@ -1,16 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Monogram } from './Monogram';
 
 export function MdaLogo({ name, acronym, slug, size = 'normal' }) {
-  const [imageAvailable, setImageAvailable] = useState(Boolean(slug));
-  const logoSrc = slug ? `/mda-logos/${encodeURIComponent(slug)}.png` : null;
+  const logoSources = slug ? [
+    `/mda-logos/${encodeURIComponent(slug)}.svg`,
+    `/mda-logos/${encodeURIComponent(slug)}.png`
+  ] : [];
+  const [sourceIndex, setSourceIndex] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const logoSrc = logoSources[sourceIndex];
+  const darkSurface = slug === 'ministry-interior-marriage-registry';
 
-  if (!imageAvailable || !logoSrc) return <Monogram name={name} acronym={acronym} size={size} />;
+  useEffect(() => {
+    setSourceIndex(0);
+    setImageLoaded(false);
+  }, [slug]);
+
+  if (!logoSrc) return <Monogram name={name} acronym={acronym} size={size} />;
 
   return <img
-    className={`mda-logo mda-logo-${size === 'large' ? 'large' : 'normal'}`}
+    className={`mda-logo mda-logo-${size === 'large' ? 'large' : 'normal'}${darkSurface ? ' mda-logo-dark' : ''}${imageLoaded ? '' : ' invisible'}`}
     src={logoSrc}
     alt={`${name || 'MDA'} official logo`}
-    onError={() => setImageAvailable(false)}
+    onLoad={() => setImageLoaded(true)}
+    onError={() => {
+      setImageLoaded(false);
+      setSourceIndex((current) => current + 1);
+    }}
   />;
 }

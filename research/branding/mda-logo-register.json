@@ -1,0 +1,167 @@
+[
+  {
+    "mda_name": "FCT Internal Revenue Service",
+    "slug": "fct-irs",
+    "official_website": "https://fctirs.gov.ng/",
+    "logo_source_url": "https://fctirs.gov.ng/wp-content/uploads/2025/10/FCT-IRS-LOGO.png",
+    "asset_filename": "frontend/public/mda-logos/fct-irs.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo asset is served from the FCT-IRS official website."
+  },
+  {
+    "mda_name": "National Identity Management Commission",
+    "slug": "nimc",
+    "official_website": "https://nimc.gov.ng/",
+    "logo_source_url": "https://nimc.gov.ng/logo.svg",
+    "asset_filename": "frontend/public/mda-logos/nimc.svg",
+    "asset_type": "svg",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Official SVG currently embeds a raster logo image inside the SVG wrapper."
+  },
+  {
+    "mda_name": "Nigeria Immigration Service",
+    "slug": "nigeria-immigration-service",
+    "official_website": "https://immigration.gov.ng/",
+    "logo_source_url": "https://immigration.gov.ng/wp-content/uploads/2022/07/nis-logo-Long.fw_.png",
+    "asset_filename": "frontend/public/mda-logos/nigeria-immigration-service.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo asset is served from the Nigeria Immigration Service official website."
+  },
+  {
+    "mda_name": "Federal Road Safety Corps / Nigeria Driver's Licence",
+    "slug": "frsc-drivers-licence",
+    "official_website": "https://nigeriadriverslicence.frsc.gov.ng/",
+    "logo_source_url": "https://nigeriadriverslicence.frsc.gov.ng/assets/images/logo.png",
+    "asset_filename": "frontend/public/mda-logos/frsc-drivers-licence.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo is served by the official FRSC Nigeria Driver's Licence portal."
+  },
+  {
+    "mda_name": "Corporate Affairs Commission",
+    "slug": "cac",
+    "official_website": "https://www.cac.gov.ng/",
+    "logo_source_url": "https://www.cac.gov.ng/logo.png",
+    "asset_filename": "frontend/public/mda-logos/cac.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo path is referenced by the CAC official website homepage."
+  },
+  {
+    "mda_name": "Abuja Geographic Information Systems / FCT Lands",
+    "slug": "agis",
+    "official_website": "https://agis.fcta.gov.ng/fctlands/",
+    "logo_source_url": "https://agis.fcta.gov.ng/fctlands/assets/img/AGISLOGO_100.jpg",
+    "asset_filename": "frontend/public/mda-logos/agis.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Official JPEG was converted to PNG at its original 655x652 dimensions; no upscaling or redraw was applied."
+  },
+  {
+    "mda_name": "High Court of the Federal Capital Territory",
+    "slug": "fct-high-court",
+    "official_website": "https://www.fcthighcourt.gov.ng/",
+    "logo_source_url": "https://www.fcthighcourt.gov.ng/wp-content/uploads/2018/04/logo-fhc.png",
+    "asset_filename": "frontend/public/mda-logos/fct-high-court.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo path is used in the FCT High Court official website header."
+  },
+  {
+    "mda_name": "National Population Commission",
+    "slug": "npc",
+    "official_website": "https://nationalpopulation.gov.ng/",
+    "logo_source_url": "https://nationalpopulation.gov.ng/_next/static/media/logoG-250x45%402x.ca0a4aae.png",
+    "asset_filename": "frontend/public/mda-logos/npc.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo asset is served from the NPC official website build."
+  },
+  {
+    "mda_name": "Joint Admissions and Matriculation Board",
+    "slug": "jamb",
+    "official_website": "https://www.jamb.gov.ng/",
+    "logo_source_url": "https://www.jamb.gov.ng/img/JAMB_logo_transparentBg.png",
+    "asset_filename": "frontend/public/mda-logos/jamb.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo asset is served from the JAMB official website."
+  },
+  {
+    "mda_name": "Nigerian Export Promotion Council",
+    "slug": "nepc",
+    "official_website": "https://nepc.gov.ng/",
+    "logo_source_url": "https://nepc.gov.ng/cms/wp-content/uploads/2018/09/logo-NEPC-left-res2-1.png",
+    "asset_filename": "frontend/public/mda-logos/nepc.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo URL is the official NEPC Organization schema logo and is served from nepc.gov.ng."
+  },
+  {
+    "mda_name": "National Agency for Food and Drug Administration and Control",
+    "slug": "nafdac",
+    "official_website": "https://nafdac.gov.ng/",
+    "logo_source_url": "https://nafdac.gov.ng/wp-content/uploads/2023/09/NAFDAC-Logo-2.png",
+    "asset_filename": "frontend/public/mda-logos/nafdac.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo asset is served from the NAFDAC official website."
+  },
+  {
+    "mda_name": "Standards Organisation of Nigeria",
+    "slug": "son",
+    "official_website": "https://son.gov.ng/",
+    "logo_source_url": "https://son.gov.ng/wp-content/uploads/2022/03/son_png.png",
+    "asset_filename": "frontend/public/mda-logos/son.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo asset is served from the SON official website."
+  },
+  {
+    "mda_name": "Federal Ministry of Interior - Marriage & Civil Registry",
+    "slug": "ministry-interior-marriage-registry",
+    "official_website": "https://candb.interior.gov.ng/marriage/",
+    "logo_source_url": "https://candb.interior.gov.ng/marriage/assets/img/cblogo-white.png",
+    "asset_filename": "frontend/public/mda-logos/ministry-interior-marriage-registry.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Official white-on-transparent portal mark; MdaLogo applies a dark neutral surface for legibility."
+  },
+  {
+    "mda_name": "Nigerian Copyright Commission",
+    "slug": "nigerian-copyright-commission",
+    "official_website": "https://copyright.gov.ng/",
+    "logo_source_url": "https://copyright.gov.ng/wp-content/uploads/2025/12/NCC_Logo__2_-removebg-preview-1.png",
+    "asset_filename": "frontend/public/mda-logos/nigerian-copyright-commission.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo asset is served from the Nigerian Copyright Commission official website."
+  },
+  {
+    "mda_name": "Nigerian Communications Commission",
+    "slug": "ncc",
+    "official_website": "https://ncc.gov.ng/",
+    "logo_source_url": "https://ncc.gov.ng/sites/default/files/Frame%20288.png",
+    "asset_filename": "frontend/public/mda-logos/ncc.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-10-25",
+    "notes": "Logo is the official NCC site-branding image served from ncc.gov.ng."
+  }
+]
