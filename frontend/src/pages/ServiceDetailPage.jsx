@@ -15,7 +15,7 @@ export function ServiceDetailPage() {
   const { slug } = useParams();
   const state = useApiResource((options) => publicApi.getServiceBySlug(slug, options), [slug]);
   if (state.status === 'loading') return <div className="page-shell py-8"><LoadingState label="Loading service details…" /></div>;
-  if (state.status === 'error') return <div className="page-shell py-8"><ErrorState title={state.error?.code === 'not_found' ? 'Service not found' : 'Service details are not available'} description={state.error?.code === 'not_found' ? 'This public service record does not exist in FeeLens.' : 'The public API did not return this service record.'} /></div>;
+  if (state.status === 'error') return <div className="page-shell py-8"><ErrorState title={state.error?.code === 'not_found' ? 'Service not found' : 'Service details are not available'} description={state.error?.code === 'not_found' ? 'This public service record does not exist in FeeLens.' : 'FeeLens could not load this service record. Please try again shortly.'} /></div>;
 
   const service = state.data || {};
   const status = valueOf(service, 'verificationStatus', 'verification_status', 'status');

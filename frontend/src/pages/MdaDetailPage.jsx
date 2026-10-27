@@ -31,7 +31,7 @@ export function MdaDetailPage() {
     : (services.length ? formatCount(services.filter((service) => ['conflicting', 'unable_to_verify'].includes(String(valueOf(service, 'verificationStatus', 'verification_status', 'status') || '').toLowerCase())).length) : '—');
 
   if (mdaState.status === 'loading') return <div className="page-shell py-8"><LoadingState label="Loading MDA profile…" /></div>;
-  if (mdaState.status === 'error') return <div className="page-shell py-8"><ErrorState title={mdaState.error?.code === 'not_found' ? 'MDA not found' : 'MDA profile is not available'} description={mdaState.error?.code === 'not_found' ? 'This public MDA record does not exist in FeeLens.' : 'The public API did not return this MDA profile.'} /></div>;
+  if (mdaState.status === 'error') return <div className="page-shell py-8"><ErrorState title={mdaState.error?.code === 'not_found' ? 'MDA not found' : 'MDA profile is not available'} description={mdaState.error?.code === 'not_found' ? 'This public MDA record does not exist in FeeLens.' : 'FeeLens could not load this MDA profile. Please try again shortly.'} /></div>;
 
   const officialChannels = valueOf(mda, 'officialChannels', 'official_channels') || [];
   const name = valueOf(mda, 'name', 'fullName') || 'Unnamed MDA';
