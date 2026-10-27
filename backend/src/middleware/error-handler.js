@@ -1,3 +1,5 @@
+const { logDatabaseError } = require('../utils/database-errors');
+
 function errorHandler(error, req, res, next) {
   if (res.headersSent) {
     return next(error);
@@ -13,7 +15,8 @@ function errorHandler(error, req, res, next) {
   const safeMessage = status >= 500 ? 'Internal server error.' : (error.message || 'Request failed.');
 
   if (status >= 500) {
-    console.error('Unhandled application error.');
+    if (error?.code) logDatabaseError(error, 'request');
+    else console.error('Unhandled application error.');
   }
 
   const response = { error: safeMessage };

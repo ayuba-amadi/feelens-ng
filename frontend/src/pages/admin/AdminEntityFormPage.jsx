@@ -160,7 +160,7 @@ function MdaFields({ form, set, errors }) {
       <FormSection title="Coverage and official presence">
         <div className="admin-form-grid">
           <Field label="Official website" name="websiteUrl" error={errors.websiteUrl}>{(props) => <Input {...props} type="url" value={form.websiteUrl || ''} onChange={(e) => set('websiteUrl', e.target.value)} />}</Field>
-          <Field label="Coverage status" name="coverageStatus" required error={errors.coverageStatus}>{(props) => <Select {...props} value={form.coverageStatus} onChange={(e) => set('coverageStatus', e.target.value)}>{coverageStatuses.map((status) => <option key={status} value={status}>{status.replaceAll('_', ' ')}</option>)}</Select>}</Field>
+          <Field label="Publication status" name="coverageStatus" required error={errors.coverageStatus}>{(props) => <Select {...props} value={form.coverageStatus} onChange={(e) => set('coverageStatus', e.target.value)}>{coverageStatuses.map((status) => <option key={status} value={status}>{status === 'pilot' ? 'Published' : status === 'roadmap' ? 'Planned' : status.replaceAll('_', ' ')}</option>)}</Select>}</Field>
           <Field label="Record state" name="isActive">{(props) => <Select {...props} value={String(form.isActive)} onChange={(e) => set('isActive', e.target.value === 'true')}><option value="true">Active</option><option value="false">Inactive / archived</option></Select>}</Field>
         </div>
       </FormSection>

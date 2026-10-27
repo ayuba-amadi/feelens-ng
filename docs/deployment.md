@@ -64,3 +64,17 @@ Do not put these values in source control. Apache must forward `/api/*` to Node 
 - Do not deploy unverified service, MDA, or fee data.
 - Do not imply government endorsement in application copy, branding, or UI.
 
+
+## Current production checks and credential drift recovery
+
+Run checks from their own package directories, not the repository root: `cd backend && npm test && npm run lint`; separately `cd frontend && npm run lint && npm run build`. These commands do not require Python or ripgrep on the cPanel host.
+
+From `backend/`, run `node scripts/production-smoke-check.js https://feelens.ng` to check the five public endpoints. A non-200 response, timeout or network failure produces a nonzero exit. Run `node scripts/db-diagnostic.js` in the application environment to check required DB configuration, TCP/authentication and schema visibility without printing credentials. It does not write data. The schema check confirms visibility, not every table or permission.
+
+For a suspected `28P01` incident, first confirm the configured application's existing credential is available securely to an authorized operator, identify the intended PostgreSQL role and check TCP separately. Compare configuration and role state without displaying or copying secrets into logs, shell history, tickets or chat. If drift is confirmed, an authorized cPanel operator can use UAPI `Postgresql::set_password` to synchronize the role to the existing application credential through a secure operator-controlled mechanism. Do not place passwords in command arguments or logs. Coordinate any change, preserve the existing application credential, and do not change unrelated roles. Then run the DB diagnostic and smoke check, verify application login and public counts, and review monitoring. If unable to safely access the credential or UAPI, stop and involve the hosting administrator. This procedure is incident guidance, not authorization to change credentials.
+
+Serve fingerprinted `dist/assets/` with long-lived immutable caching, and HTML with revalidation; verify actual Apache headers before enabling the policy. Keep a rollback copy of the previous frontend and backend release. No migrations are needed for this refinement.
+
+## Rollback for this release
+
+Before release, retain the exact currently deployed frontend files and backend code and record the release paths. If validation fails after an authorized release, restore those previous files, restart the Node application through the normal operator procedure when backend code was changed, and rerun the read-only smoke checks, admin login verification and monitoring review. Escalate persistent database failures without changing credentials or roles as part of the rollback. No schema migration is involved in this release.

@@ -29,6 +29,7 @@ const sentryBuildPlugin = canUploadSentrySourceMaps
 export default defineConfig({
   plugins: [react(), ...(sentryBuildPlugin ? [sentryBuildPlugin] : [])],
   build: {
+    assetsInlineLimit: 0,
     sourcemap: canUploadSentrySourceMaps ? 'hidden' : false,
   },
 });

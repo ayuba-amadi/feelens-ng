@@ -10,7 +10,7 @@ const configs = {
     title: 'MDAs', description: 'Manage institutions covered by FeeLens.', singular: 'MDA',
     empty: 'Create an MDA before adding services.',
     summary: (item) => item.entityType || item.jurisdiction || 'Entity details not set',
-    meta: (item) => `${item.coverageStatus?.replaceAll('_', ' ') || 'pilot'} · ${item.isActive ? 'Active' : 'Inactive'}`,
+    meta: (item) => `${item.coverageStatus === 'pilot' ? 'published' : item.coverageStatus?.replaceAll('_', ' ') || 'published'} · ${item.isActive ? 'Active' : 'Inactive'}`,
   },
   services: {
     title: 'Services', description: 'Maintain service information, requirements and procedures.', singular: 'service',

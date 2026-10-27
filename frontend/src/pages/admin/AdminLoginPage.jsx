@@ -52,13 +52,13 @@ export function AdminLoginPage() {
               <div className="relative">
                 <input {...props} type={showPassword ? 'text' : 'password'} autoComplete="current-password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="admin-input pr-12" required />
                 <button type="button" onClick={() => setShowPassword((value) => !value)} className="absolute inset-y-0 right-1 grid w-10 place-items-center text-slate-500" aria-label={showPassword ? 'Hide password' : 'Show password'}>
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff aria-hidden="true" className="h-4 w-4" /> : <Eye aria-hidden="true" className="h-4 w-4" />}
                 </button>
               </div>
             )}
           </Field>
           <button type="submit" disabled={saving} className="primary-button w-full">
-            {saving ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LockKeyhole className="h-4 w-4" />}
+            {saving ? <LoaderCircle aria-hidden="true" className="h-4 w-4 animate-spin" /> : <LockKeyhole aria-hidden="true" className="h-4 w-4" />}
             {saving ? 'Signing in…' : 'Sign in'}
           </button>
           <p className="text-center text-xs leading-5 text-slate-500">No public registration is available. Citizen access to FeeLens does not require an account.</p>

@@ -1,34 +1,35 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { ProtectedAdminRoute } from './components/admin/ProtectedAdminRoute';
 import { SiteLayout } from './components/layout/SiteLayout';
 import { AdminAuthProvider } from './context/AdminAuthContext';
-import { AboutPage } from './pages/AboutPage';
-import { DataSourcesPage } from './pages/DataSourcesPage';
-import { HomePage } from './pages/HomePage';
-import { MdaDetailPage } from './pages/MdaDetailPage';
-import { MdasPage } from './pages/MdasPage';
-import { MethodologyPage } from './pages/MethodologyPage';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { PrivacyPage } from './pages/PrivacyPage';
-import { PolicyPage } from './pages/PolicyPage';
-import { ServiceDetailPage } from './pages/ServiceDetailPage';
-import { AdminAccountPage } from './pages/admin/AdminAccountPage';
-import { AdminAuditLogsPage } from './pages/admin/AdminAuditLogsPage';
-import { AdminChannelsPage } from './pages/admin/AdminChannelsPage';
-import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
-import { AdminEntityDetailPage } from './pages/admin/AdminEntityDetailPage';
-import { AdminEntityFormPage } from './pages/admin/AdminEntityFormPage';
-import { AdminEntityListPage } from './pages/admin/AdminEntityListPage';
-import { AdminFoiPage } from './pages/admin/AdminFoiPage';
-import { AdminLoginPage } from './pages/admin/AdminLoginPage';
-import { AdminUsersPage } from './pages/admin/AdminUsersPage';
-import { AdminVerificationsPage } from './pages/admin/AdminVerificationsPage';
+const AboutPage = lazy(() => import('./pages/AboutPage').then((module) => ({ default: module.AboutPage })));
+const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage').then((module) => ({ default: module.DataSourcesPage })));
+const HomePage = lazy(() => import('./pages/HomePage').then((module) => ({ default: module.HomePage })));
+const MdaDetailPage = lazy(() => import('./pages/MdaDetailPage').then((module) => ({ default: module.MdaDetailPage })));
+const MdasPage = lazy(() => import('./pages/MdasPage').then((module) => ({ default: module.MdasPage })));
+const MethodologyPage = lazy(() => import('./pages/MethodologyPage').then((module) => ({ default: module.MethodologyPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then((module) => ({ default: module.PrivacyPage })));
+const PolicyPage = lazy(() => import('./pages/PolicyPage').then((module) => ({ default: module.PolicyPage })));
+const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage').then((module) => ({ default: module.ServiceDetailPage })));
+const AdminAccountPage = lazy(() => import('./pages/admin/AdminAccountPage').then((module) => ({ default: module.AdminAccountPage })));
+const AdminAuditLogsPage = lazy(() => import('./pages/admin/AdminAuditLogsPage').then((module) => ({ default: module.AdminAuditLogsPage })));
+const AdminChannelsPage = lazy(() => import('./pages/admin/AdminChannelsPage').then((module) => ({ default: module.AdminChannelsPage })));
+const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage').then((module) => ({ default: module.AdminDashboardPage })));
+const AdminEntityDetailPage = lazy(() => import('./pages/admin/AdminEntityDetailPage').then((module) => ({ default: module.AdminEntityDetailPage })));
+const AdminEntityFormPage = lazy(() => import('./pages/admin/AdminEntityFormPage').then((module) => ({ default: module.AdminEntityFormPage })));
+const AdminEntityListPage = lazy(() => import('./pages/admin/AdminEntityListPage').then((module) => ({ default: module.AdminEntityListPage })));
+const AdminFoiPage = lazy(() => import('./pages/admin/AdminFoiPage').then((module) => ({ default: module.AdminFoiPage })));
+const AdminLoginPage = lazy(() => import('./pages/admin/AdminLoginPage').then((module) => ({ default: module.AdminLoginPage })));
+const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage').then((module) => ({ default: module.AdminUsersPage })));
+const AdminVerificationsPage = lazy(() => import('./pages/admin/AdminVerificationsPage').then((module) => ({ default: module.AdminVerificationsPage })));
 
 export default function App() {
   return (
     <AdminAuthProvider>
-      <Routes>
+      <Suspense fallback={<div role="status" className="page-shell py-8">Loading page…</div>}><Routes>
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route element={<ProtectedAdminRoute />}>
           <Route element={<AdminLayout />}>
@@ -61,7 +62,7 @@ export default function App() {
           <Route path="/policy" element={<PolicyPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
-      </Routes>
+      </Routes></Suspense>
     </AdminAuthProvider>
   );
 }

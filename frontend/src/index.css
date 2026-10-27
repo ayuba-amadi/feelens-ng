@@ -25,9 +25,10 @@ body {
 h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); }
 
 button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+input::placeholder, textarea::placeholder { color: #475569 !important; opacity: 1; }
 
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 3px solid rgba(23, 121, 76, 0.35);
+  outline: 3px solid #16794c !important;
   outline-offset: 3px;
 }
 

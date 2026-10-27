@@ -1,4 +1,5 @@
 const express = require('express');
+const { logDatabaseError } = require('../utils/database-errors');
 
 function createHealthRouter(pool) {
   const router = express.Router();
@@ -12,6 +13,7 @@ function createHealthRouter(pool) {
       await pool.query('SELECT 1');
       return res.status(200).json({ status: 'ok' });
     } catch (error) {
+      logDatabaseError(error, 'health check');
       return res.status(503).json({
         status: 'unavailable',
         error: 'Database unavailable.'

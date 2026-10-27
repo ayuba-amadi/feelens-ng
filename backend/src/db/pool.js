@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const { loadEnv } = require('../config/env');
+const { logDatabaseError } = require('../utils/database-errors');
 
 let pool;
 
@@ -21,8 +22,8 @@ function getPool(config = loadEnv()) {
       connectionTimeoutMillis: 5_000
     });
 
-    pool.on('error', () => {
-      console.error('Unexpected database pool error.');
+    pool.on('error', (error) => {
+      logDatabaseError(error, 'pool');
     });
   }
 
