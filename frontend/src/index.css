@@ -27,7 +27,10 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); }
 button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 input::placeholder, textarea::placeholder { color: #475569 !important; opacity: 1; }
 
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+.public-site input, .public-site select { border-color: #64748b; }
+.public-site input:focus, .public-site select:focus { border-color: #16794c; }
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
   outline: 3px solid #16794c !important;
   outline-offset: 3px;
 }

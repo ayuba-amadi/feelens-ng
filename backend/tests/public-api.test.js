@@ -91,6 +91,7 @@ test('MDA listing is paginated, active-only, and exposes public fields', async (
     const response = await request(baseUrl, '/public/mdas?page=1&pageSize=25');
     assert.equal(response.status, 200);
     assert.equal(response.body.items[0].slug, 'active-mda');
+    assert.equal(response.body.items[0].id, undefined);
     assert.equal(response.body.pagination.total, 1);
     assert.equal(response.body.items[0].total_count, undefined);
     assert.equal(JSON.stringify(response.body).includes('password_hash'), false);
@@ -106,6 +107,19 @@ test('inactive MDA detail is not publicly visible', async () => {
     const response = await request(baseUrl, '/public/mdas/inactive-mda');
     assert.equal(response.status, 404);
     assert.deepEqual(response.body, { error: 'MDA not found' });
+  });
+});
+
+test('public MDA detail strips internal identifiers recursively while retaining public slugs', async () => {
+  const pool = poolFor(() => ({ rows: [{ id: 7, slug: 'public-mda', sessionId: 'private', evidenceSummary: 'private', officialChannels: [{ id: 8, mdaId: 7, name: 'Official office', notes: 'private' }] }] }));
+  await withServer(createApp({ config, pool }), async (baseUrl) => {
+    const response = await request(baseUrl, '/public/mdas/public-mda');
+    assert.equal(response.status, 200);
+    assert.equal(response.body.mda.slug, 'public-mda');
+    assert.deepEqual(response.body.mda.officialChannels, [{ name: 'Official office' }]);
+    assert.equal(response.body.mda.id, undefined);
+    assert.equal(response.body.mda.sessionId, undefined);
+    assert.equal(response.body.mda.evidenceSummary, undefined);
   });
 });
 
@@ -158,7 +172,9 @@ test('service detail exposes only current fee options, preserves unknown/conflic
       assert.match(sql, /f\.verification_status <> 'superseded'/);
       return { rows: [
         { id: 21, pricingModel: 'unknown', amount: null, verificationStatus: 'conflicting', sources: [{ id: 31, title: 'Approved schedule', sourceType: 'approved_fee_schedule', publisher: 'MDA', url: 'https://source.example.invalid' }] },
-        { id: 22, pricingModel: 'fixed', amount: '100.00', verificationStatus: 'verified', sources: [] },
+        { id: 22, pricingModel: 'fixed', amount: '100.00', verificationStatus: 'verified', sources: [{ id: 32, title: 'Other notice', sourceType: 'official_notice', publisher: 'MDA', url: 'https://notice.example.invalid' }, { id: 31, title: 'Approved schedule', sourceType: 'approved_fee_schedule', publisher: 'MDA', url: 'https://source.example.invalid' }] },
+        { id: 23, pricingModel: 'unknown', amount: null, verificationStatus: 'pending', sources: [], evidenceSummary: 'private review', actorAdminUserId: 5, notes: 'private notes' },
+        { id: 24, pricingModel: 'free', amount: null, verificationStatus: 'verified', sources: [] },
       ] };
     }
     if (sql.includes('FROM official_channels')) {
@@ -175,9 +191,21 @@ test('service detail exposes only current fee options, preserves unknown/conflic
     assert.equal(response.status, 200);
     const service = response.body.service;
     assert.equal(service.verificationStatus, 'conflicting');
-    assert.equal(service.feeOptions.length, 2);
+    assert.equal(service.feeOptions.length, 4);
     assert.equal(service.feeOptions[0].amount, null);
     assert.equal(service.feeOptions[0].verificationStatus, 'conflicting');
+    assert.deepEqual(service.feeOptions[0].sources.map((source) => source.title), ['Approved schedule']);
+    assert.deepEqual(service.feeOptions[1].sources.map((source) => source.title), ['Other notice', 'Approved schedule']);
+    assert.deepEqual(service.feeOptions[2].sources, []);
+    assert.equal(service.feeOptions[2].pricingModel, 'unknown');
+    assert.equal(service.feeOptions[3].pricingModel, 'free');
+    assert.equal(service.feeOptions[2].evidenceSummary, undefined);
+    assert.equal(service.feeOptions[2].actorAdminUserId, undefined);
+    assert.deepEqual(service.sources.map((source) => source.title), ['Approved schedule', 'Other notice']);
+    assert.equal(service.id, undefined);
+    assert.equal(service.feeOptions[0].id, undefined);
+    assert.equal(service.feeOptions[0].sources[0].id, undefined);
+    assert.equal(service.officialChannels[0].id, undefined);
     assert.equal(service.sources[0].title, 'Approved schedule');
     assert.equal(service.officialChannels[0].channelType, 'portal');
     assert.equal(JSON.stringify(response.body).includes('notes'), false);
@@ -203,6 +231,9 @@ test('inactive service detail safely returns 404', async () => {
 test('public source register is evidence-linked, paginated, and excludes internal notes', async () => {
   const pool = poolFor((sql, values) => {
     assert.match(sql, /JOIN fee_sources fs/);
+    assert.match(sql, /afs\.source_id = src\.id/);
+    assert.match(sql, /ase\.slug AS service_slug/);
+    assert.match(sql, /af\.is_current = TRUE/);
     assert.match(sql, /f\.is_current = TRUE/);
     assert.match(sql, /f\.verification_status <> 'superseded'/);
     assert.deepEqual(values, ['official_website', 25, 0]);
@@ -211,12 +242,16 @@ test('public source register is evidence-linked, paginated, and excludes interna
       url: 'https://mda.example.invalid', documentReference: null,
       publicationDate: null, effectiveDate: null, accessedAt: '2026-10-01T00:00:00.000Z',
       retrievedDate: '2026-10-01T00:00:00.000Z', total_count: '1',
+      associations: [{ mdaSlug: 'mda', mdaName: 'MDA', serviceSlug: 'service', serviceName: 'Service', verificationStatus: 'verified' }],
     }] };
   });
   await withServer(createApp({ config, pool }), async (baseUrl) => {
     const response = await request(baseUrl, '/public/sources?sourceType=official_website');
     assert.equal(response.status, 200);
     assert.equal(response.body.items[0].title, 'Official page');
+    assert.equal(response.body.items[0].id, undefined);
+    assert.equal(response.body.items[0].sourceTypeLabel, 'Official website');
+    assert.equal(response.body.items[0].associations[0].serviceSlug, 'service');
     assert.equal(response.body.items[0].notes, undefined);
     assert.equal(JSON.stringify(response.body).includes('internal'), false);
   });

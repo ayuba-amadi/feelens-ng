@@ -35,7 +35,7 @@ export function formatCurrency(amount, currency = 'NGN') {
 export function formatFee(option) {
   const model = String(valueOf(option, 'pricingModel', 'pricing_model', 'model') || 'unknown').toLowerCase();
   const currency = valueOf(option, 'currency') || 'NGN';
-  if (model === 'free') return { label: 'Free', detail: 'No fee is listed for this option.' };
+  if (model === 'free') return { label: 'Free', detail: 'Recorded as free; check the verification status and evidence.' };
   if (model === 'fixed') { const amount = formatCurrency(valueOf(option, 'amount'), currency); return amount ? { label: amount, detail: 'Fixed fee' } : { label: 'Fixed fee', detail: 'Amount not provided.' }; }
   if (model === 'range') { const minimum = formatCurrency(valueOf(option, 'minAmount', 'minimumAmount', 'min_amount'), currency); const maximum = formatCurrency(valueOf(option, 'maxAmount', 'maximumAmount', 'max_amount'), currency); return { label: minimum && maximum ? `${minimum} – ${maximum}` : 'Fee range', detail: 'Range varies by the details of the service.' }; }
   if (model === 'percentage') { const percentage = valueOf(option, 'percentage'); return { label: percentage !== undefined ? `${percentage}%` : 'Percentage fee', detail: 'Calculated as a percentage.' }; }
@@ -46,3 +46,9 @@ export function formatFee(option) {
 
 export function asArray(value) { return Array.isArray(value) ? value : []; }
 
+
+export function formatSourceType(value) {
+  const labels = { OFFICIAL_FAQ: 'Official FAQ', OFFICIAL_WEBSITE: 'Official website', OFFICIAL_PORTAL: 'Official portal', GAZETTE: 'Government Gazette', CIRCULAR: 'Official Circular', REGULATION: 'Regulation', FEE_SCHEDULE: 'Official Fee Schedule', APPROVED_FEE_SCHEDULE: 'Official Fee Schedule', STATUTORY_INSTRUMENT: 'Statutory Instrument', OFFICIAL_NOTICE: 'Official Notice', OFFICIAL_DOCUMENT: 'Official Document' };
+  if (!value) return null;
+  return labels[String(value).toUpperCase()] || String(value).toLowerCase().replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+}

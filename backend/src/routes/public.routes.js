@@ -11,6 +11,21 @@ const {
 const PUBLIC_FEE_WHERE = "f.is_current = TRUE AND f.verification_status <> 'superseded'";
 const PUBLIC_SERVICE_WHERE = 's.is_active = TRUE AND m.is_active = TRUE';
 
+// Database identifiers and governance metadata are needed internally for joins,
+// but are not part of the public API contract. Public slugs remain unchanged.
+function publicResponse(value) {
+  if (Array.isArray(value)) return value.map(publicResponse);
+  if (!value || typeof value !== 'object' || value instanceof Date) return value;
+  const result = Object.fromEntries(Object.entries(value)
+    .filter(([key]) => !/^(id|.*_id|.*Id|notes|checkedBy|reviewerName|verificationMethod|evidenceSummary|previousValues|newValues|password_hash)$/.test(key))
+    .map(([key, item]) => [key, publicResponse(item)]));
+  if (typeof result.sourceType === 'string') {
+    const labels = { official_faq: 'Official FAQ', official_website: 'Official website', official_portal: 'Official portal', gazette: 'Government Gazette', fee_schedule: 'Official Fee Schedule', approved_fee_schedule: 'Official Fee Schedule', statutory_instrument: 'Statutory Instrument' };
+    result.sourceTypeLabel = labels[result.sourceType.toLowerCase()] || result.sourceType.replaceAll('_', ' ').replace(/^./, (c) => c.toUpperCase());
+  }
+  return result;
+}
+
 const PUBLIC_FEE_FIELDS = `
   f.id,
   f.pricing_model AS "pricingModel",
@@ -197,6 +212,12 @@ function serviceSort(sort) {
 
 function createPublicRouter(pool) {
   const router = express.Router();
+
+  router.use((req, res, next) => {
+    const json = res.json.bind(res);
+    res.json = (body) => json(publicResponse(body));
+    next();
+  });
 
   router.get('/stats', async (req, res, next) => {
     try {
@@ -434,7 +455,6 @@ function createPublicRouter(pool) {
             sources.push(source);
           }
         }
-        delete fee.sources;
       }
       const summary = summaryResult.rows[0] || { verified: 0, pending: 0, conflicting: 0, unableToVerify: 0 };
       const publicService = {
@@ -486,7 +506,26 @@ function createPublicRouter(pool) {
       const result = await pool.query(`
         SELECT public_sources.*, COUNT(*) OVER() AS total_count
           FROM (
-            SELECT DISTINCT ${PUBLIC_SOURCE_FIELDS}
+            SELECT DISTINCT ${PUBLIC_SOURCE_FIELDS},
+              COALESCE((
+                SELECT jsonb_agg(jsonb_build_object(
+                  'mdaSlug', a.mda_slug, 'mdaName', a.mda_name,
+                  'serviceSlug', a.service_slug, 'serviceName', a.service_name,
+                  'verificationStatus', a.verification_status
+                ) ORDER BY a.mda_slug, a.service_slug, a.verification_status)
+                FROM (
+                  SELECT DISTINCT am.slug AS mda_slug, am.name AS mda_name,
+                    ase.slug AS service_slug, ase.name AS service_name,
+                    af.verification_status
+                  FROM fee_sources afs
+                  JOIN fee_options af ON af.id = afs.fee_option_id
+                  JOIN services ase ON ase.id = af.service_id
+                  JOIN mdas am ON am.id = ase.mda_id
+                  WHERE afs.source_id = src.id AND af.is_current = TRUE
+                    AND af.verification_status <> 'superseded'
+                    AND ase.is_active = TRUE AND am.is_active = TRUE
+                ) a
+              ), '[]'::jsonb) AS associations
               FROM sources src
               JOIN fee_sources fs ON fs.source_id = src.id
               JOIN fee_options f ON f.id = fs.fee_option_id

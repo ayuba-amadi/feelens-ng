@@ -155,6 +155,18 @@ export const publicApi = {
   async getSources(params = {}, options) {
     return normalizeList(await apiRequest(`/public/sources${queryString(params)}`, options), ['items', 'sources'], normalizeSource);
   },
+
+  async getAllSources(options) {
+    const items = [];
+    let page = 1;
+    let result;
+    do {
+      result = await publicApi.getSources({ page, pageSize: 100 }, options);
+      items.push(...result.items);
+      page += 1;
+    } while (result.hasMore && result.items.length);
+    return { items, total: result.total ?? items.length };
+  },
 };
 
 // Keep the original name available for components outside the public pages.
