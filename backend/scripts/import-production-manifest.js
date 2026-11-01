@@ -15,6 +15,7 @@ const NIMC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-impo
 const NIS_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/nis-service-catalogue.json');
 const FRSC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/frsc-service-catalogue.json');
 const NPC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/npc-service-catalogue.json');
+const JAMB_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/jamb-service-catalogue.json');
 const BATCH_ALIASES = new Map([
   ['batch-01', 'batch-01'], ['batch-01-mdas', 'batch-01'],
   ['batch-02', 'batch-02'], ['batch-02-mdas', 'batch-02'],
@@ -576,11 +577,73 @@ function buildNpcManifest(baseManifest, catalogue) {
   return { ...baseManifest, mdas: baseManifest.mdas.map((item) => item.slug === 'npc' ? mda : item) };
 }
 
+function buildJambManifest(baseManifest, catalogue) {
+  const sourceRecords = catalogue.sources || {};
+  const mda = {
+    ...catalogue.mda,
+    services: catalogue.services.map((row) => {
+      const evidenceFor = (sourceKeys, page, evidenceNote) => sourceKeys.map((key) => {
+        const source = sourceRecords[key];
+        if (!source) throw new Error(`JAMB catalogue row ${row.slug} references missing source ${key}.`);
+        return { key, ...source, pageOrSection: page || source.documentReference || null, notes: evidenceNote || source.notes };
+      });
+      const feeOptions = row.feeOptions.map((option) => ({
+        pricingModel: option.pricingModel,
+        amount: option.amount ?? null,
+        minimumAmount: option.minimumAmount ?? null,
+        maximumAmount: option.maximumAmount ?? null,
+        currency: option.currency,
+        percentage: option.percentage ?? null,
+        formula: option.formula ?? null,
+        conditions: option.conditions ?? null,
+        label: option.label || row.name,
+        notes: option.notes || row.notes || null,
+        verificationStatus: option.verificationStatus,
+        evidence: evidenceFor(option.sourceKeys, option.page, option.evidenceNote),
+        paymentGuide: row.paymentGuide,
+      }));
+      if (!feeOptions.length) throw new Error(`JAMB catalogue row ${row.slug} has no fee options.`);
+      const statuses = new Set(feeOptions.map((option) => option.verificationStatus));
+      const verificationStatus = statuses.has('conflicting') ? 'conflicting'
+        : statuses.has('pending') ? 'pending'
+          : statuses.has('unable_to_verify') ? 'unable_to_verify' : 'verified';
+      const first = feeOptions[0];
+      return {
+        name: row.name,
+        slug: row.slug,
+        description: row.description || null,
+        category: row.category || 'JAMB services',
+        jurisdiction: row.jurisdiction || 'Federal',
+        requirements: row.requirements || [],
+        processSteps: row.processSteps || [],
+        pricingModel: first.pricingModel,
+        amount: first.amount,
+        minimumAmount: first.minimumAmount,
+        maximumAmount: first.maximumAmount,
+        currency: first.currency,
+        percentage: first.percentage,
+        formula: first.formula,
+        conditions: first.conditions,
+        verificationStatus,
+        lastChecked: '2026-11-01',
+        evidence: first.evidence,
+        officialActionUrl: row.officialActionUrl || null,
+        officialChannelType: row.officialChannelType || 'portal',
+        paymentGuide: row.paymentGuide,
+        notes: row.notes || null,
+        feeOptions,
+      };
+    }),
+  };
+  return { ...baseManifest, mdas: baseManifest.mdas.map((item) => item.slug === 'jamb' ? mda : item) };
+}
+
 function loadManifest(manifestPath) {
   const resolvedPath = path.resolve(manifestPath);
   const baseManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   if (resolvedPath === BATCH_02_MANIFEST_PATH) {
-    return buildNpcManifest(baseManifest, JSON.parse(fs.readFileSync(NPC_CATALOGUE_PATH, 'utf8')));
+    const withNpc = buildNpcManifest(baseManifest, JSON.parse(fs.readFileSync(NPC_CATALOGUE_PATH, 'utf8')));
+    return buildJambManifest(withNpc, JSON.parse(fs.readFileSync(JAMB_CATALOGUE_PATH, 'utf8')));
   }
   if (resolvedPath !== DEFAULT_MANIFEST_PATH) return baseManifest;
   const withFctirs = buildFctirsManifest(baseManifest, JSON.parse(fs.readFileSync(FCTIRS_CATALOGUE_PATH, 'utf8')));
@@ -920,6 +983,16 @@ async function importMda(client, mda, actorAdminUserId) {
 function canonicalizeImportManifest(manifest, batch) {
   const selectedBatch = canonicalBatch(batch);
 
+  if (selectedBatch === 'batch-02') {
+    let canonical = manifest;
+    if (canonical.mdas?.some((mda) => mda.slug === 'npc')) {
+      canonical = buildNpcManifest(canonical, JSON.parse(fs.readFileSync(NPC_CATALOGUE_PATH, 'utf8')));
+    }
+    if (canonical.mdas?.some((mda) => mda.slug === 'jamb')) {
+      canonical = buildJambManifest(canonical, JSON.parse(fs.readFileSync(JAMB_CATALOGUE_PATH, 'utf8')));
+    }
+    return canonical;
+  }
   if (selectedBatch !== 'batch-01') return manifest;
 
   let canonical = manifest;
@@ -1016,4 +1089,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, JAMB_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, selectBatch, validateManifest };

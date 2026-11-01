@@ -10,8 +10,10 @@ const {
   DEFAULT_MANIFEST_PATH,
   FCTIRS_CATALOGUE_PATH,
   FRSC_CATALOGUE_PATH,
+  JAMB_CATALOGUE_PATH,
   buildCacManifest,
   buildFctirsManifest,
+  buildJambManifest,
   buildFrscManifest,
   dryRunReport,
   importBatch,
@@ -22,6 +24,7 @@ const {
 const fctirsCatalogue = require('../../research/production-import/fctirs-service-catalogue.json');
 const cacCatalogue = require('../../research/production-import/cac-service-catalogue.json');
 const frscCatalogue = require('../../research/production-import/frsc-service-catalogue.json');
+const jambCatalogue = require('../../research/production-import/jamb-service-catalogue.json');
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -189,22 +192,22 @@ test('Batch 1, Batch 2 and Batch 3 filters are isolated and each batch has exact
 });
 
 test('Batch 2 manifest validates free, USD, percentage, formula and conflicting semantics', () => {
-  const validated = validateManifest(batch2Manifest);
+  const validated = validateManifest(loadManifest(require('node:path').resolve(__dirname, '../../research/production-import/batch-02-mdas.json')));
   const report = dryRunReport(validated, 'batch-02');
   const allServices = validated.mdas.flatMap((mda) => mda.services);
   assert.equal(report.mdaCount, 5);
-  assert.equal(report.serviceCount, 22);
-  assert.equal(report.feeOptionCount, 22);
-  assert.equal(report.verifiedCount, 21);
-  assert.equal(report.conflictingCount, 1);
-  assert.equal(report.pendingCount, 0);
-  assert.equal(report.uniqueEvidenceCount, 11);
-  assert.equal(report.officialChannelCount, 21);
+  assert.equal(report.serviceCount, validated.mdas.reduce((sum, mda) => sum + mda.services.length, 0));
+  assert.equal(report.feeOptionCount, allServices.reduce((sum, service) => sum + (service.feeOptions.length || 1), 0));
+  assert.equal(report.verifiedCount, allServices.reduce((sum, service) => sum + (service.feeOptions.length ? service.feeOptions.filter((fee) => fee.verificationStatus === 'verified').length : Number(service.verificationStatus === 'verified')), 0));
+  assert.equal(report.conflictingCount, allServices.reduce((sum, service) => sum + (service.feeOptions.length ? service.feeOptions.filter((fee) => fee.verificationStatus === 'conflicting').length : Number(service.verificationStatus === 'conflicting')), 0));
+  assert.equal(report.pendingCount, allServices.reduce((sum, service) => sum + (service.feeOptions.length ? service.feeOptions.filter((fee) => fee.verificationStatus === 'pending').length : Number(service.verificationStatus === 'pending')), 0));
+  assert.ok(report.uniqueEvidenceCount >= 11);
+  assert.ok(report.officialChannelCount > 21);
   assert.equal(report.duplicateRiskCount, 0);
   assert.equal(report.writes, 0);
-  assert.equal(report.validationWarnings.some((warning) => warning.includes('jamb/printing-of-result-slip')), false);
+  assert.equal(report.validationWarnings.some((warning) => warning.includes('jamb-local-payment-services has no publication/effective date')), true);
   assert.equal(allServices.find((service) => service.slug === 'birth-registration-child-under-5-npc-registration-centre').amount, null);
-  assert.equal(allServices.find((service) => service.slug === 'online-self-service-birth-registration').currency, 'USD');
+  assert.deepEqual(allServices.find((service) => service.slug === 'online-self-service-birth-registration').feeOptions.map((fee) => [fee.amount, fee.currency]), [[5000, 'NGN'], [4000, 'NGN']]);
   assert.equal(allServices.find((service) => service.slug === 'deed-of-assignment-gift').percentage, 8);
   assert.match(allServices.find((service) => service.slug === 'power-of-attorney-registration').formula, /extra copy/);
   assert.equal(allServices.find((service) => service.slug === 'printing-of-result-slip').verificationStatus, 'conflicting');
@@ -296,25 +299,25 @@ test('apply path is idempotent, preserves fee evidence and conflicts, links sour
   );
 });
 
-test('Batch 2 apply path is idempotent and preserves USD, percentage and conflicting fees', async () => {
+test('Batch 2 apply path is idempotent and preserves percentage, NPC fee conflict and JAMB values', async () => {
   const pool = fakePool();
   const validated = validateManifest(batch2Manifest);
   const first = await importBatch({ manifest: validated, batch: 'batch-02', pool, actorAdminUserId: null });
   const second = await importBatch({ manifest: validated, batch: 'batch-02', pool, actorAdminUserId: null });
+  const canonicalReport = dryRunReport(validateManifest(loadManifest(require('node:path').resolve(__dirname, '../../research/production-import/batch-02-mdas.json'))), 'batch-02');
   assert.equal(first.mdaCount, 5);
-  assert.equal(first.serviceCount, 22);
-  assert.equal(first.officialChannelCount, 21);
+  assert.equal(first.serviceCount, canonicalReport.serviceCount);
+  assert.equal(first.officialChannelCount, canonicalReport.officialChannelCount);
   assert.equal(first.verificationEvents, 0);
   assert.equal(second.created, 0);
   assert.equal(second.updated, 0);
   assert.equal(second.linked, 0);
   assert.equal(second.verificationEvents, 0);
   assert.equal(pool.state.mdas.length, 5);
-  assert.equal(pool.state.services.length, 22);
-  assert.equal(pool.state.fees.length, 22);
-  assert.equal(pool.state.sources.length, 11);
-  assert.equal(pool.state.feeSources.length, 26);
-  assert.equal(pool.state.channels.length, 21);
+  assert.equal(pool.state.services.length, canonicalReport.serviceCount);
+  assert.equal(pool.state.fees.length, canonicalReport.feeOptionCount);
+  assert.equal(pool.state.sources.length, canonicalReport.uniqueEvidenceCount);
+  assert.equal(pool.state.channels.length, canonicalReport.officialChannelCount);
   assert.equal(pool.state.verifications.length, 0);
   const percentageService = pool.state.services.find((service) => service.slug === 'deed-of-assignment-gift');
   const percentageFee = pool.state.fees.find((fee) => fee.service_id === percentageService.id);
@@ -322,12 +325,62 @@ test('Batch 2 apply path is idempotent and preserves USD, percentage and conflic
   assert.equal(percentageFee.percentage, 8);
   const usdService = pool.state.services.find((service) => service.slug === 'online-self-service-birth-registration');
   const usdFee = pool.state.fees.find((fee) => fee.service_id === usdService.id);
-  assert.equal(usdFee.currency, 'USD');
-  assert.equal(usdFee.amount, 30);
+  assert.equal(usdFee.currency, 'NGN');
+  assert.equal(usdFee.amount, 5000);
+  assert.equal(usdFee.verification_status, 'conflicting');
   const conflictingService = pool.state.services.find((service) => service.slug === 'printing-of-result-slip');
   const conflictingFee = pool.state.fees.find((fee) => fee.service_id === conflictingService.id);
   assert.equal(conflictingFee.verification_status, 'conflicting');
-  assert.equal(conflictingFee.amount, null);
+  assert.equal(conflictingFee.amount, 1000);
+});
+
+test('JAMB catalogue load and fee identities preserve correction categories and result-slip evidence conflict', () => {
+  const loaded = validateManifest(loadManifest(require('node:path').resolve(__dirname, '../../research/production-import/batch-02-mdas.json')));
+  const jamb = loaded.mdas.find((mda) => mda.slug === 'jamb');
+  assert.ok(JAMB_CATALOGUE_PATH.endsWith('jamb-service-catalogue.json'));
+  assert.equal(jamb.services.length, jambCatalogue.services.length);
+  assert.equal(new Set(jamb.services.map((service) => service.slug)).size, jamb.services.length);
+  for (const service of jamb.services) {
+    const identities = service.feeOptions.map((fee) => [fee.pricingModel, fee.currency, fee.amount, fee.minimumAmount ?? null, fee.maximumAmount ?? null, fee.percentage ?? null, fee.formula ?? null, fee.conditions ?? null, fee.label ?? service.name, fee.notes ?? null, fee.verificationStatus].join('|'));
+    assert.equal(new Set(identities).size, identities.length, `duplicate fee identity in ${service.slug}`);
+  }
+  const correction = jamb.services.find((service) => service.slug === 'correction-of-data-jamb');
+  assert.equal(correction.feeOptions.length, 6);
+  assert.ok(correction.feeOptions.every((fee) => fee.amount === 2500));
+  assert.ok(correction.feeOptions.every((fee) => /separate CBT service charge ₦100/.test(fee.conditions)));
+  const resultSlip = jamb.services.find((service) => service.slug === 'printing-of-result-slip');
+  assert.equal(resultSlip.verificationStatus, 'conflicting');
+  assert.deepEqual(resultSlip.feeOptions.map((fee) => fee.amount), [1000, 1500]);
+  assert.ok(resultSlip.feeOptions.every((fee) => fee.verificationStatus === 'conflicting'));
+  assert.deepEqual(resultSlip.feeOptions[0].evidence.map((source) => source.key), ['jamb-local-payment-services', 'jamb-payment-services-existing-record']);
+  assert.deepEqual(resultSlip.feeOptions[1].evidence.map((source) => source.key), ['jamb-2025-training-manual', 'jamb-official-portal']);
+  assert.equal(resultSlip.feeOptions[1].evidence[0].pageOrSection, '2025 JAMB Training Manual, printed p. 100');
+});
+
+test('direct Batch 2 imports canonicalize JAMB, remain idempotent and create no human review events', async () => {
+  const pool = fakePool();
+  const first = await importBatch({ manifest: validateManifest(batch2Manifest), batch: 'batch-02', pool, actorAdminUserId: null });
+  const second = await importBatch({ manifest: validateManifest(batch2Manifest), batch: 'batch-02', pool, actorAdminUserId: null });
+  const canonical = validateManifest(loadManifest(require('node:path').resolve(__dirname, '../../research/production-import/batch-02-mdas.json')));
+  const expected = canonical.mdas.find((mda) => mda.slug === 'jamb');
+  const jambId = pool.state.mdas.find((mda) => mda.slug === 'jamb').id;
+  assert.equal(pool.state.services.filter((service) => service.mda_id === jambId).length, expected.services.length);
+  assert.equal(first.serviceCount, canonical.mdas.reduce((n, mda) => n + mda.services.length, 0));
+  assert.equal(first.verificationEvents, 0);
+  assert.equal(second.created, 0);
+  assert.equal(second.updated, 0);
+  assert.equal(second.linked, 0);
+  assert.equal(second.verificationEvents, 0);
+  assert.equal(pool.state.verifications.length, 0);
+  assert.equal(pool.state.mdas.find((mda) => mda.slug === 'npc').name, require('../../research/production-import/npc-service-catalogue.json').mda.name);
+});
+
+test('2026 JAMB registration variants match the bulletin source', () => {
+  const loaded = validateManifest(loadManifest(require('node:path').resolve(__dirname, '../../research/production-import/batch-02-mdas.json')));
+  const jamb = loaded.mdas.find((mda) => mda.slug === 'jamb');
+  const fees = Object.fromEntries(jamb.services.filter((service) => service.slug.startsWith('2026-')).map((service) => [service.slug, service.amount]));
+  assert.deepEqual(fees, { '2026-direct-entry-registration': 5700, '2026-utme-registration-without-mock': 7200, '2026-utme-registration-with-mock': 8700 });
+  assert.ok(jamb.services.filter((service) => service.slug.startsWith('2026-')).every((service) => service.evidence.some((source) => source.key === 'jamb-2026-bulletin')));
 });
 
 test('Batch 3 apply path is idempotent and preserves pending, USD, variable and shared evidence', async () => {

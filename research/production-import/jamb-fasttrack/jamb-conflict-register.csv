@@ -1,0 +1,5 @@
+service_slug,issue,source_key,source_value,separate_charge,disposition,verification_status
+printing-of-result-slip,Result slip fee differs by recorded official source,jamb-local-payment-services,"JAMB result slip ₦1,000","CBT service charge ₦100",Retain as one conflicting source value; do not select an amount,conflicting
+printing-of-result-slip,Result slip fee differs by recorded official source,jamb-payment-services-existing-record,"JAMB result slip ₦1,000","CBT service charge ₦100",Retain existing repository evidence record,conflicting
+printing-of-result-slip,Coloured result-slip portal charge differs from Payment & Services,jamb-2025-training-manual,"Printed p. 100: portal charge ₦1,500","PRC/PTC ₦200 or non-JAMB centre ₦300",Retain as conflicting; do not add centre charges to portal charge,conflicting
+printing-of-result-slip,Portal corroborates manual portal amount,jamb-official-portal,"Print Result Slip ₦1,500","Separate centre charge not stated in portal evidence",Retain as corroborating official evidence; Payment & Services value still conflicts,conflicting

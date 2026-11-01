@@ -1,0 +1,159 @@
+{
+  "version": "2026-11-01-jamb-evidence-reconstruction",
+  "status": "source_supported_pending_authorised_human_review",
+  "mda": {
+    "name": "Joint Admissions and Matriculation Board",
+    "acronym": "JAMB",
+    "slug": "jamb",
+    "officialWebsite": "https://www.jamb.gov.ng/",
+    "jurisdiction": "Federal",
+    "coverageStatus": "pilot",
+    "description": "JAMB registration and post-registration services reconstructed from official JAMB payment and service material, the 2026 bulletin and the 2025 training manual.",
+    "officialChannels": [
+      { "channelType": "portal", "name": "JAMB e-Facility", "url": "https://efacility.jamb.gov.ng/", "contactValue": null, "instructions": "Use JAMB e-Facility for the service route stated by JAMB. CBT centre charges and other third-party charges remain separate from JAMB fees." },
+      { "channelType": "website", "name": "JAMB Payment & Services", "url": "https://jamb.gov.ng/payment-Services", "contactValue": null, "instructions": "Consult the official JAMB payment and services list for service and separately stated CBT charges." }
+    ]
+  },
+  "sources": {
+    "jamb-local-payment-services": {
+      "title": "JOINT ADMISSIONS AND MATRICULATION BOARD — PAYMENT & SERVICES",
+      "sourceType": "official_fee_page",
+      "url": "https://jamb.gov.ng/payment-Services",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "documentReference": "Local evidence copy: research/repo/JAMB_PAYMENT & SERVICES.pdf, 1 page. Its browser capture metadata shows 31 October 2026; this is not treated as a publication or effective date.",
+      "evidenceTier": 2,
+      "publisher": "Joint Admissions and Matriculation Board",
+      "notes": "Full one-page source lists JAMB fees and separately lists CBT service charges. Absence of a fee on this page is not evidence that a service is free."
+    },
+    "jamb-2026-bulletin": {
+      "title": "JAMB Bulletin, Volume 4 No. 74, 2 March 2026",
+      "sourceType": "official_bulletin",
+      "url": "https://www.jamb.gov.ng/Bulletin/2026/JAMBulletin_02-03-2026.pdf",
+      "publicationDate": "2026-03-02",
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "documentReference": "Archived repository copy: research/evidence/archive/jamb/JAMBulletin_02-03-2026.pdf, 31 pages; registration fees in pp. 5-6 and 27.",
+      "evidenceTier": 2,
+      "publisher": "Joint Admissions and Matriculation Board",
+      "notes": "States Direct Entry ₦5,700; UTME without mock ₦7,200; UTME with mock ₦8,700. Its fee breakdown separately itemises application fee, reading text, CBT centre charges and bank charges."
+    },
+    "jamb-2025-training-manual": {
+      "title": "Manual for Officials of 2025 UTME",
+      "sourceType": "official_training_material",
+      "url": "https://www.jamb.gov.ng/PDFs/2025/2025_TRAINING_MANUAL_final.pdf",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "documentReference": "Archived repository copy: research/evidence/archive/jamb/2025_TRAINING_MANUAL_final.pdf, 142 pages. PDF metadata creation date is 4 April 2025 and is not asserted as publication date.",
+      "evidenceTier": 2,
+      "publisher": "Joint Admissions and Matriculation Board",
+      "notes": "Operational and registration guidance, including a 2025 registration fee breakdown and separate CBT/bank charges. The online-service fee table on printed p. 100 lists coloured result-slip printing with its portal charge and separate centre charges."
+    },
+    "jamb-official-portal": {
+      "title": "JAMB Portal — Print Result Slip",
+      "sourceType": "official_portal",
+      "url": "https://portal.jamb.gov.ng/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "documentReference": "Official JAMB portal service label and ₦1,500 amount supplied for this reconciliation.",
+      "evidenceTier": 2,
+      "publisher": "Joint Admissions and Matriculation Board",
+      "notes": "Portal corroborates the ₦1,500 Print Result Slip amount. It does not resolve the conflict with the Payment & Services listing; no separate centre charge is inferred from this portal evidence."
+    },
+    "jamb-payment-services-existing-record": {
+      "title": "JAMB official payment services page — existing repository evidence record",
+      "sourceType": "official_fee_page",
+      "url": "https://jamb.gov.ng/payment-Services",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "documentReference": "Existing Batch 2 JAMB evidence record; JAMB Result Slip ₦1,000 plus separate ₦100 CBT service charge.",
+      "evidenceTier": 2,
+      "publisher": "Joint Admissions and Matriculation Board",
+      "notes": "Retained as previously recorded evidence for the result-slip conflict. The local one-page source independently shows the same service and separate charge."
+    }
+  },
+  "services": [
+    {
+      "name": "2026 Direct Entry registration", "slug": "2026-direct-entry-registration", "description": "Registration for the 2026 JAMB Direct Entry exercise.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Use the official JAMB registration and payment route. The source lists JAMB and ancillary charge components separately; confirm the amount due in the official workflow.", "notes": "The 2026 bulletin states the registration fee. The 2025 training manual details 2025 requirements and is not used to infer 2026 requirements.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 5700, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "2026 Direct Entry registration; ancillary charges are separately identified in JAMB materials.", "label": "Direct Entry registration (2026)", "notes": "JAMB registration fee only; do not combine separate bank, CBT or other charges.", "verificationStatus": "verified", "sourceKeys": ["jamb-2026-bulletin"], "page": "Bulletin pp. 5-6, 27", "evidenceNote": "Direct Entry (DE): ₦5,700." }]
+    },
+    {
+      "name": "2026 UTME registration without mock", "slug": "2026-utme-registration-without-mock", "description": "Registration for the 2026 UTME without mock examination selection.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Use the official JAMB registration and payment route. Ancillary charges remain separate.", "notes": "2026 registration fee is supported by the bulletin. Requirements and process details are not inferred from the 2025 manual.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 7200, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "2026 UTME without mock.", "label": "UTME registration without mock (2026)", "notes": "JAMB registration package fee; bank, CBT and other ancillary charges are not folded into this amount.", "verificationStatus": "verified", "sourceKeys": ["jamb-2026-bulletin"], "page": "Bulletin pp. 5-6, 27", "evidenceNote": "UTME Only (without Mock): ₦7,200." }]
+    },
+    {
+      "name": "2026 UTME registration with mock", "slug": "2026-utme-registration-with-mock", "description": "Registration for the 2026 UTME with mock examination selection.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Use the official JAMB registration and payment route. Ancillary charges remain separate.", "notes": "2026 registration fee is supported by the bulletin. Requirements and process details are not inferred from the 2025 manual.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 8700, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "2026 UTME with mock.", "label": "UTME registration with mock (2026)", "notes": "JAMB registration package fee; bank, CBT and other ancillary charges are not folded into this amount.", "verificationStatus": "verified", "sourceKeys": ["jamb-2026-bulletin"], "page": "Bulletin pp. 5-6, 27", "evidenceNote": "UTME with Mock: ₦8,700." }]
+    },
+    {
+      "name": "Condonment of illegal admission (foreign/local)", "slug": "condonment-of-illegal-admission-jamb", "description": "JAMB payment list service; detailed eligibility and process are not stated in the checked source.", "category": "Admission services", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the applicable service and amount through official JAMB channels before payment.", "notes": "CBT service charge listed separately: ₦300.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 10000, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Foreign/local; separately listed CBT service charge ₦300.", "label": "Condonment of illegal admission (foreign/local)", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 1", "evidenceNote": "CONDONMENT OF ILLEGAL ADMISSION (FOREIGN/LOCAL): fee ₦10,000; CBT service charge ₦300." }]
+    },
+    {
+      "name": "Application for transfer (foreign/local)", "slug": "application-for-transfer-jamb", "description": "JAMB payment list service; detailed eligibility and process are not stated in the checked source.", "category": "Admission services", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the applicable service and amount through official JAMB channels before payment.", "notes": "CBT service charge listed separately: ₦300.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 7000, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Foreign/local; separately listed CBT service charge ₦300.", "label": "Application for transfer (foreign/local)", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 2", "evidenceNote": "APPLICATION FOR TRANSFER (FOREIGN/LOCAL): fee ₦7,000; CBT service charge ₦300." }]
+    },
+    {
+      "name": "Change of admission letter with registration number", "slug": "change-of-admission-letter-with-registration-number-jamb", "description": "JAMB payment list service; detailed eligibility and process are not stated in the checked source.", "category": "Admission services", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the applicable service and amount through official JAMB channels before payment.", "notes": "CBT service charge listed separately: ₦300.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 5000, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "With registration number; separately listed CBT service charge ₦300.", "label": "Change of admission letter with registration number", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 3", "evidenceNote": "CHANGE OF ADMISSION LETTER WITH REGISTRATION NUMBER: fee ₦5,000; CBT service charge ₦300." }]
+    },
+    {
+      "name": "Fresh application admission letter with JAMB registration number", "slug": "fresh-application-admission-letter-jamb", "description": "JAMB payment list service; detailed eligibility and process are not stated in the checked source.", "category": "Admission services", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the applicable service and amount through official JAMB channels before payment.", "notes": "CBT service charge listed separately: ₦300.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 5000, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Fresh application with JAMB registration number; separately listed CBT service charge ₦300.", "label": "Fresh application admission letter", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 4", "evidenceNote": "FRESH APPLICATION ADMISSION LETTER WITH JAMB REGISTRATION NUMBER: fee ₦5,000; CBT service charge ₦300." }]
+    },
+    {
+      "name": "UTME registration", "slug": "utme-registration-jamb", "description": "Generic UTME registration service listed on JAMB Payment & Services; the page does not distinguish the 2026 registration variants.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Consult the current JAMB registration notice for the applicable exercise and use the official payment route.", "notes": "The generic payment page lists ₦3,500 and separately lists ₦700 CBT service charge. The specific 2026 products are represented separately above; this generic page entry is retained as its own source-listed service.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 3500, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Generic UTME registration listing; separately listed CBT registration service charge ₦700.", "label": "UTME registration (generic listing)", "notes": "JAMB listed fee only; separately listed CBT charge excluded. Exercise/year not specified on the local source copy.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 5", "evidenceNote": "UTME REGISTRATION: fee ₦3,500; CBT service charge ₦700." }]
+    },
+    {
+      "name": "DE registration", "slug": "de-registration-jamb", "description": "Direct Entry registration service listed on JAMB Payment & Services; exercise/year is not specified on the page.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Consult the current JAMB registration notice for the applicable exercise and use the official payment route.", "notes": "CBT service charge listed separately: ₦700.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 3500, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "DE registration; exercise/year not stated; separately listed CBT registration service charge ₦700.", "label": "DE registration (generic listing)", "notes": "JAMB listed fee only; separate CBT charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 6", "evidenceNote": "DE REGISTRATION: fee ₦3,500; CBT service charge ₦700." }]
+    },
+    {
+      "name": "National Open University of Nigeria registration", "slug": "noun-registration-jamb", "description": "NOUN registration service listed on JAMB Payment & Services.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the current registration exercise and follow the official JAMB route.", "notes": "CBT service charge listed separately: ₦700.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 3500, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "NOUN registration; separately listed CBT service charge ₦700.", "label": "NOUN registration", "notes": "JAMB fee only; separate CBT charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 7", "evidenceNote": "NATIONAL OPEN UNIVERSITY of NIGERIA REGISTRATION: fee ₦3,500; CBT service charge ₦700." }]
+    },
+    {
+      "name": "Distance learning registration", "slug": "distance-learning-registration-jamb", "description": "Distance learning registration service listed on JAMB Payment & Services.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the current registration exercise and follow the official JAMB route.", "notes": "CBT service charge listed separately: ₦700.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 3500, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Distance learning registration; separately listed CBT service charge ₦700.", "label": "Distance learning registration", "notes": "JAMB fee only; separate CBT charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 8", "evidenceNote": "DISTANCE LEARNING REGISTRATION: fee ₦3,500; CBT service charge ₦700." }]
+    },
+    {
+      "name": "Sandwich registration", "slug": "sandwich-registration-jamb", "description": "Sandwich registration service listed on JAMB Payment & Services.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the current registration exercise and follow the official JAMB route.", "notes": "CBT service charge listed separately: ₦700.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 10000, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Sandwich registration; separately listed CBT service charge ₦700.", "label": "Sandwich registration", "notes": "JAMB fee only; separate CBT charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 9", "evidenceNote": "SANDWICH REGISTRATION: fee ₦10,000; CBT service charge ₦700." }]
+    },
+    {
+      "name": "Part-time registration", "slug": "part-time-registration-jamb", "description": "Part-time registration service listed on JAMB Payment & Services.", "category": "Registration", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the current registration exercise and follow the official JAMB route.", "notes": "CBT service charge listed separately: ₦700.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 10000, "minimumAmount": null, "maximumAmount": null, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Part-time registration; separately listed CBT service charge ₦700.", "label": "Part-time registration", "notes": "JAMB fee only; separate CBT charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 10", "evidenceNote": "PART-TIME REGISTRATION: fee ₦10,000; CBT service charge ₦700." }]
+    },
+    {
+      "name": "Correction of data - institution/course, name, date of birth, state/LGA, gender, A-level qualification", "slug": "correction-of-data-jamb", "description": "Correction of data service listing with six categories, each priced at ₦2,500 on the JAMB payment page.", "category": "Post-registration services", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Select the applicable correction category on JAMB e-Facility. Keep the JAMB fee separate from the separately listed ₦100 CBT service charge.", "notes": "Categories listed individually by JAMB: institution/course; name; date of birth; state/LGA; gender; A-level qualification. CBT printing/correction/uploading service charge: ₦100 separately. Requirements and detailed steps are not stated in the checked page.",
+      "feeOptions": [
+        { "pricingModel": "fixed", "amount": 2500, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Correction category: institution/course; separate CBT service charge ₦100.", "label": "Correction of institution/course", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 11(a)", "evidenceNote": "APPLICATION FOR CORRECTION OF DATA — Institution/Course: ₦2,500; CBT service charge ₦100." },
+        { "pricingModel": "fixed", "amount": 2500, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Correction category: name; separate CBT service charge ₦100.", "label": "Correction of name", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 11(b)", "evidenceNote": "APPLICATION FOR CORRECTION OF DATA — Name: ₦2,500; CBT service charge ₦100." },
+        { "pricingModel": "fixed", "amount": 2500, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Correction category: date of birth; separate CBT service charge ₦100.", "label": "Correction of date of birth", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 11(c)", "evidenceNote": "APPLICATION FOR CORRECTION OF DATA — Date of Birth: ₦2,500; CBT service charge ₦100." },
+        { "pricingModel": "fixed", "amount": 2500, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Correction category: state/LGA; separate CBT service charge ₦100.", "label": "Correction of state/LGA", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 11(d)", "evidenceNote": "APPLICATION FOR CORRECTION OF DATA — State/LGA: ₦2,500; CBT service charge ₦100." },
+        { "pricingModel": "fixed", "amount": 2500, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Correction category: gender; separate CBT service charge ₦100.", "label": "Correction of gender", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 11(e)", "evidenceNote": "APPLICATION FOR CORRECTION OF DATA — Gender: ₦2,500; CBT service charge ₦100." },
+        { "pricingModel": "fixed", "amount": 2500, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Correction category: A-level qualification; separate CBT service charge ₦100.", "label": "Correction of A-level qualification", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 11(f)", "evidenceNote": "APPLICATION FOR CORRECTION OF DATA — A'level Qualification: ₦2,500; CBT service charge ₦100." }
+      ]
+    },
+    {
+      "name": "Printing of result slip", "slug": "printing-of-result-slip", "description": "Result-slip printing service with conflicting official JAMB amounts.", "category": "Post-registration services", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://portal.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Official JAMB sources list different result-slip charges. Confirm the applicable current amount through JAMB before payment; CBT/centre service charges remain separate from the portal charge.", "notes": "Do not present a single authoritative fee until the conflict is resolved. Payment & Services lists JAMB Result Slip ₦1,000 plus separate CBT charge ₦100. The 2025 Training Manual printed p. 100 lists coloured result-slip portal charge ₦1,500, PRC/PTC service charge ₦200 or non-JAMB centre service charge ₦300. The JAMB portal also lists Print Result Slip ₦1,500. All portal/JAMB amounts and centre charges remain separate.",
+      "feeOptions": [
+        { "pricingModel": "fixed", "amount": 1000, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Payment & Services page value; CBT service charge ₦100 separately listed.", "label": "Result slip (Payment & Services listing)", "notes": "JAMB amount; CBT charge excluded. Conflict retained.", "verificationStatus": "conflicting", "sourceKeys": ["jamb-local-payment-services", "jamb-payment-services-existing-record"], "page": "p. 1, row 12", "evidenceNote": "JAMB RESULT SLIP: ₦1,000; CBT SERVICE CHARGE: ₦100 separately listed." },
+        { "pricingModel": "fixed", "amount": 1500, "currency": "NGN", "percentage": null, "formula": null, "conditions": "2025 Training Manual printed p. 100: coloured result-slip portal charge; separate service charge ₦200 at PRC/PTC or ₦300 at non-JAMB centres.", "label": "Printing of Result Slip (Coloured) — 2025 manual", "notes": "Portal charge ₦1,500. PRC/PTC and non-JAMB centre service charges are separate and excluded.", "verificationStatus": "conflicting", "sourceKeys": ["jamb-2025-training-manual", "jamb-official-portal"], "page": "2025 JAMB Training Manual, printed p. 100", "evidenceNote": "The manual table states Printing of Result Slip (Coloured), Portal Charge ₦1,500, Service Charge at PRC/PTC ₦200 (₦300 for non-JAMB Centres). JAMB portal corroborates a Print Result Slip amount of ₦1,500." }
+      ]
+    },
+    {
+      "name": "Retrieve registration number", "slug": "retrieve-registration-number-jamb", "description": "JAMB payment list service; detailed eligibility and process are not stated in the checked source.", "category": "Post-registration services", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the applicable service and amount through official JAMB channels before payment.", "notes": "CBT service charge listed separately: ₦100.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 1000, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Separately listed CBT service charge ₦100.", "label": "Retrieve registration number", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 13", "evidenceNote": "RETRIEVE REGISTRATION NUMBER: fee ₦1,000; CBT service charge ₦100." }]
+    },
+    {
+      "name": "JAMB admission letter", "slug": "jamb-admission-letter", "description": "JAMB admission-letter service; detailed eligibility and process are not stated in the checked source.", "category": "Admission services", "jurisdiction": "Federal", "requirements": [], "processSteps": [], "processingStandard": null, "officialActionUrl": "https://efacility.jamb.gov.ng/", "officialChannelType": "portal", "paymentGuide": "Confirm the applicable service and amount through official JAMB channels before payment.", "notes": "CBT service charge listed separately: ₦100.",
+      "feeOptions": [{ "pricingModel": "fixed", "amount": 1000, "currency": "NGN", "percentage": null, "formula": null, "conditions": "Separately listed CBT service charge ₦100.", "label": "JAMB admission letter", "notes": "JAMB fee only; CBT service charge excluded.", "verificationStatus": "verified", "sourceKeys": ["jamb-local-payment-services"], "page": "p. 1, row 14", "evidenceNote": "JAMB ADMISSION LETTER: fee ₦1,000; CBT service charge ₦100." }]
+    }
+  ]
+}

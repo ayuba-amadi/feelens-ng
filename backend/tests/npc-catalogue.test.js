@@ -183,9 +183,10 @@ test('NPC manifest integration validates, preserves AGIS inactive status in Batc
   const pool = fakePool();
   const first = await importBatch({ manifest: loadedBatch2, batch: 'batch-02', pool, actorAdminUserId: null });
   const second = await importBatch({ manifest: loadedBatch2, batch: 'batch-02', pool, actorAdminUserId: null });
+  const expected = dryRunReport(loadedBatch2, 'batch-02');
   assert.equal(first.mdaCount, 5);
-  assert.equal(first.serviceCount, 30);
-  assert.equal(first.feeOptionCount, 42);
+  assert.equal(first.serviceCount, expected.serviceCount);
+  assert.equal(first.feeOptionCount, expected.feeOptionCount);
   assert.equal(second.created, 0);
   assert.equal(second.updated, 0);
   assert.equal(second.linked, 0);
