@@ -1,0 +1,274 @@
+{
+  "version": "2026-11-01-neco-evidence-reconstruction",
+  "status": "historical_source_supported_not_current_publication",
+  "temporalClassification": "HISTORICAL_OR_SUPERSEDED",
+  "mda": {
+    "name": "National Examinations Council",
+    "acronym": "NECO",
+    "slug": "neco",
+    "officialWebsite": "https://neco.gov.ng/",
+    "jurisdiction": "Federal",
+    "coverageStatus": "inactive",
+    "description": "Evidence catalogue for fees and processes documented in NECO’s 2026 SSCE Internal Guidelines. It is historical and intentionally excluded from active importer batches.",
+    "officialChannels": [
+      {
+        "channelType": "portal",
+        "name": "NECO SSCE Internal portal and guidance",
+        "url": "https://neco.gov.ng/exams/ssce-internal",
+        "contactValue": null,
+        "instructions": "The 2026 guidelines direct schools to NECO portal workflows and their State Coordinator."
+      }
+    ]
+  },
+  "sources": {
+    "neco-2026-guidelines": {
+      "title": "Registration Guidelines for the 2026 Senior School Certificate Examination (SSCE) Internal",
+      "sourceType": "official_guideline",
+      "url": "https://neco.gov.ng/2026%20GUIDELINES.pdf",
+      "publicationDate": null,
+      "effectiveDate": "2026-01-19",
+      "lastChecked": "2026-11-01",
+      "documentReference": "Local source: research/repo/NECO_2026 GUIDELINES.pdf; 7 pages. PDF metadata creation/modification 2026-01-22; not asserted as publication date.",
+      "evidenceTier": 1,
+      "publisher": "National Examinations Council",
+      "notes": "Official NECO guidance explicitly for SSCE Internal 2026. All monetary values below are cycle-bound, and are historical as of 2026-11-01."
+    }
+  },
+  "services": [
+    {
+      "name": "SSCE Internal registration fee",
+      "slug": "ssce-internal-registration-fee",
+      "description": "SSCE Internal registration fee documented for 2026 SSCE Internal examination cycle. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+      "category": "Registration",
+      "jurisdiction": "Federal",
+      "requirements": [
+        "School-based SS 3 candidates only; private candidates are excluded.",
+        "Valid NIN is compulsory.",
+        "Candidate biodata, passport photograph in school uniform, subjects and 10-finger biometric data.",
+        "School portal access/claim and State Coordinator activation; signed validation documents as applicable."
+      ],
+      "processSteps": [
+        "School accesses or claims its NECO portal using official school email and phone.",
+        "Install the 2026 offline application and enter candidate biodata including NIN; capture photograph and biometric data.",
+        "Validate candidate details offline, print photocards and validation list, obtain candidate signatures, and submit validation documents to the State Coordinator.",
+        "After school activation, pay into NECO TSA through the school portal/Remita and verify using the 12-digit RRR.",
+        "Upload selected candidates online; registration is complete only when online upload yields a registration number."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://neco.gov.ng/exams/ssce-internal",
+      "officialChannelType": "portal",
+      "paymentGuide": "For registration, pay into NECO TSA on Remita through the school NECO portal; verify payment using the RRR. Separate Stamp Duty, Service and Remita charges apply. For other fees/materials, follow the official school portal/State Coordinator route.",
+      "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: candidate registration. Source page 4-5. Exact source wording: “₦30,000.00 only per candidate inclusive of Four-Figure Mathematical Tables and Waterproof Certificate Jacket/Folder.”",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 30000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Per school-based candidate. Includes four-figure mathematical tables and waterproof certificate jacket/folder. Stamp duty, service and Remita charges also apply; amount non-refundable. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+          "label": "SSCE Internal registration fee",
+          "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: candidate registration.",
+          "verificationStatus": "superseded",
+          "sourceKeys": [
+            "neco-2026-guidelines"
+          ],
+          "page": "PDF p. 4-5",
+          "evidenceNote": "Source wording: “₦30,000.00 only per candidate inclusive of Four-Figure Mathematical Tables and Waterproof Certificate Jacket/Folder.”"
+        }
+      ]
+    },
+    {
+      "name": "E-photo album",
+      "slug": "e-photo-album",
+      "description": "E-photo album documented for 2026 SSCE Internal examination cycle. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+      "category": "Registration materials",
+      "jurisdiction": "Federal",
+      "requirements": [
+        "Applies only in the documented 2026 SSCE Internal context."
+      ],
+      "processSteps": [
+        "Follow the school portal and State Coordinator procedure described in the official 2026 guidelines."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://neco.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "For registration, pay into NECO TSA on Remita through the school NECO portal; verify payment using the RRR. Separate Stamp Duty, Service and Remita charges apply. For other fees/materials, follow the official school portal/State Coordinator route.",
+      "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school purchase. Source page 5. Exact source wording: “A pair of the e-Photo Album ... costs Two Thousand Seven Hundred Naira (N2,700) only per pair.”",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 2700,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Per pair; each e-photo album has provision for 171 candidates. Council generates albums and sends a copy to each school. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+          "label": "E-photo album",
+          "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school purchase.",
+          "verificationStatus": "superseded",
+          "sourceKeys": [
+            "neco-2026-guidelines"
+          ],
+          "page": "PDF p. 5",
+          "evidenceNote": "Source wording: “A pair of the e-Photo Album ... costs Two Thousand Seven Hundred Naira (N2,700) only per pair.”"
+        }
+      ]
+    },
+    {
+      "name": "SSCE syllabus copy",
+      "slug": "ssce-syllabus-copy",
+      "description": "SSCE syllabus copy documented for 2026 SSCE Internal examination cycle. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+      "category": "Registration materials",
+      "jurisdiction": "Federal",
+      "requirements": [
+        "Applies only in the documented 2026 SSCE Internal context."
+      ],
+      "processSteps": [
+        "Follow the school portal and State Coordinator procedure described in the official 2026 guidelines."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://neco.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "For registration, pay into NECO TSA on Remita through the school NECO portal; verify payment using the RRR. Separate Stamp Duty, Service and Remita charges apply. For other fees/materials, follow the official school portal/State Coordinator route.",
+      "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school purchase. Source page 5. Exact source wording: “The syllabus for NECO SSCE is available at the cost of Two Thousand Naira (N2,000.00) only per copy.”",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 2000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Per copy; each school is advised to have at least four copies. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+          "label": "SSCE syllabus copy",
+          "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school purchase.",
+          "verificationStatus": "superseded",
+          "sourceKeys": [
+            "neco-2026-guidelines"
+          ],
+          "page": "PDF p. 5",
+          "evidenceNote": "Source wording: “The syllabus for NECO SSCE is available at the cost of Two Thousand Naira (N2,000.00) only per copy.”"
+        }
+      ]
+    },
+    {
+      "name": "Unviable centre fee",
+      "slug": "unviable-centre-fee",
+      "description": "Unviable centre fee documented for 2026 SSCE Internal examination cycle. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+      "category": "Centre administration",
+      "jurisdiction": "Federal",
+      "requirements": [
+        "Applies only in the documented 2026 SSCE Internal context."
+      ],
+      "processSteps": [
+        "Follow the school portal and State Coordinator procedure described in the official 2026 guidelines."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://neco.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "For registration, pay into NECO TSA on Remita through the school NECO portal; verify payment using the RRR. Separate Stamp Duty, Service and Remita charges apply. For other fees/materials, follow the official school portal/State Coordinator route.",
+      "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school/centre. Source page 4-5. Exact source wording: “Unviable Centre Fee is N70,000.00; any school registering less than twenty candidates is deemed unviable.”",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 70000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "School registering fewer than 20 candidates is unviable; fee applies if it wishes to hold the examination at its school. Initial instalment payment should cover at least 20 candidates to avoid this surcharge. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+          "label": "Unviable centre fee",
+          "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school/centre.",
+          "verificationStatus": "superseded",
+          "sourceKeys": [
+            "neco-2026-guidelines"
+          ],
+          "page": "PDF p. 4-5",
+          "evidenceNote": "Source wording: “Unviable Centre Fee is N70,000.00; any school registering less than twenty candidates is deemed unviable.”"
+        }
+      ]
+    },
+    {
+      "name": "Late registration penalty",
+      "slug": "late-registration-penalty",
+      "description": "Late registration penalty documented for 2026 SSCE Internal examination cycle. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+      "category": "Late registration",
+      "jurisdiction": "Federal",
+      "requirements": [
+        "Applies only in the documented 2026 SSCE Internal context."
+      ],
+      "processSteps": [
+        "Follow the school portal and State Coordinator procedure described in the official 2026 guidelines."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://neco.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "For registration, pay into NECO TSA on Remita through the school NECO portal; verify payment using the RRR. Separate Stamp Duty, Service and Remita charges apply. For other fees/materials, follow the official school portal/State Coordinator route.",
+      "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school pays per candidate. Source page 5-6. Exact source wording: “Late Registration attracts a Penalty of additional N5,000.00 per candidate.”",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 5000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Additional per-candidate penalty during the expressly stated late registration window, 26–29 May 2026. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+          "label": "Late registration penalty",
+          "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school pays per candidate.",
+          "verificationStatus": "superseded",
+          "sourceKeys": [
+            "neco-2026-guidelines"
+          ],
+          "page": "PDF p. 5-6",
+          "evidenceNote": "Source wording: “Late Registration attracts a Penalty of additional N5,000.00 per candidate.”"
+        }
+      ]
+    },
+    {
+      "name": "Non-validation penalty",
+      "slug": "non-validation-penalty",
+      "description": "Non-validation penalty documented for 2026 SSCE Internal examination cycle. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+      "category": "Correction/change charge",
+      "jurisdiction": "Federal",
+      "requirements": [
+        "Applies only in the documented 2026 SSCE Internal context."
+      ],
+      "processSteps": [
+        "Follow the school portal and State Coordinator procedure described in the official 2026 guidelines."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://neco.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "For registration, pay into NECO TSA on Remita through the school NECO portal; verify payment using the RRR. Separate Stamp Duty, Service and Remita charges apply. For other fees/materials, follow the official school portal/State Coordinator route.",
+      "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school pays per candidate. Source page 3. Exact source wording: “The penalty fee for non-validation is Ten Thousand Naira (N10,000.00) only per candidate, irrespective of the nature of the non-validation.”",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 10000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Per candidate irrespective of the nature of non-validation; applies to specified correction requests after online upload. Passport-photo changes only before registration closes; other specified corrections may be entertained before examination. This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed.",
+          "label": "Non-validation penalty",
+          "notes": "This fee applies to the 2026 SSCE Internal examination cycle and should not be treated as a timeless NECO fee. The source lists the registration period as 19 January–25 May 2026 and late registration as 26–29 May 2026; these dates have elapsed. Applicant/payer category: school pays per candidate.",
+          "verificationStatus": "superseded",
+          "sourceKeys": [
+            "neco-2026-guidelines"
+          ],
+          "page": "PDF p. 3",
+          "evidenceNote": "Source wording: “The penalty fee for non-validation is Ten Thousand Naira (N10,000.00) only per candidate, irrespective of the nature of the non-validation.”"
+        }
+      ]
+    }
+  ]
+}

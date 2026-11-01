@@ -16,6 +16,7 @@ const NIS_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-impor
 const FRSC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/frsc-service-catalogue.json');
 const NPC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/npc-service-catalogue.json');
 const JAMB_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/jamb-service-catalogue.json');
+const NECO_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/neco-service-catalogue.json');
 const BATCH_ALIASES = new Map([
   ['batch-01', 'batch-01'], ['batch-01-mdas', 'batch-01'],
   ['batch-02', 'batch-02'], ['batch-02-mdas', 'batch-02'],
@@ -638,6 +639,10 @@ function buildJambManifest(baseManifest, catalogue) {
   return { ...baseManifest, mdas: baseManifest.mdas.map((item) => item.slug === 'jamb' ? mda : item) };
 }
 
+// NECO is deliberately not wired into an active batch. This loader makes the
+// detailed evidence catalogue available for validation/reconciliation only.
+function loadNecoCatalogue() { return JSON.parse(fs.readFileSync(NECO_CATALOGUE_PATH, 'utf8')); }
+
 function loadManifest(manifestPath) {
   const resolvedPath = path.resolve(manifestPath);
   const baseManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -1089,4 +1094,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, JAMB_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, selectBatch, validateManifest };
