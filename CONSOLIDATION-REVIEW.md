@@ -6,7 +6,7 @@
 
 The temporary recovery checkout and its claim-audit checkpoint, log, and prior review were unavailable. The former report of 75 processed and 930 remaining options cannot be independently recovered from this repository. No prior claim audit is being asserted as recovered. A new audit checkpoint starts at the first option in the currently available Batch 1 manifest; it records zero completed reviews.
 
-The persistent branch is `consolidation-review-persistent-2026-11-01`, based on the existing `ui-refinement-2026-10-27` HEAD. Existing root-worktree changes were preserved. This review file and fresh audit checkpoint are new local changes; nothing has been committed or pushed.
+The persistent branch is `consolidation-review-persistent-2026-11-01`, based on the existing `ui-refinement-2026-10-27` HEAD. Existing root-worktree changes were preserved. The review checkpoint was committed and pushed as recorded below.
 
 ## Artifacts present
 
@@ -16,7 +16,7 @@ The persistent branch is `consolidation-review-persistent-2026-11-01`, based on 
 - Source PDFs in `research/repo/` include the NIMC February 2026 charter, NIS 2026 SLA, FRSC reviewed SLA, Siraki / Ministry of Interior document, JAMB payment/services material, NECO 2026 guidelines, CAC, NIPC, NDPC, NAFDAC, NCC, SON, NEPC, MANCAP, FCT-IRS, and other agency evidence.
 - Archived PDFs also exist under `research/evidence/archive/` for NIS 2025, JAMB 2025 and 2026, CAC 2025, and NEPC.
 - Only the NIMC charter and NIS 2026 SLA are present as PDFs under `frontend/public/sources/`. The confidential FRSC SLA and research-only Siraki PDF remain under research storage and were not found in public assets.
-- Migrations 001–004 and the untracked `database/migrations/005_unpublish-agis.sql` exist. Migration 005 has not been applied; no rollback migration for 005 was found.
+- Migrations 001–004 and `database/migrations/005_unpublish-agis.sql` exist. Migration 005 is included in the review checkpoint but has not been applied; no rollback migration for 005 was found.
 - The batch selection changes are present in the uncommitted importer at `backend/scripts/import-production-manifest.js`. They are covered by importer regression tests.
 
 The three batch dry runs resolve 15 MDAs and 77 unique service slugs. Their combined normalized fee-option count is 1,066 (Batch 1: 994; Batch 2: 42; Batch 3: 30). This is the fresh checkpoint's available universe, not a reconstruction of the former 1,005-option audit.
@@ -65,6 +65,17 @@ The UI uses the distinct label **“Source-supported — awaiting human review�
 
 ## Remaining release limits
 
-No preview deployment configuration or configured preview environment was found. Deployment notes describe a cPanel setup with environment-managed PostgreSQL requirements. There is no database available for checking the persisted review ledger or AGIS state, so deployed status counts and persisted AGIS state remain unavailable. No database was contacted and migration 005 was not applied. The historical NECO/JAMB database projection and live source-link behaviour also remain unverified. The Batch 2 JAMB printing-of-result-slip record is explicitly conflicting and includes a 2025 manual; no active NECO record is present in the three batch manifests, while a NECO 2026 guideline PDF exists only in research storage. No commit, push, or deployment was made, as requested.
+No preview deployment configuration or configured preview environment was found. The repository has no Vercel project/configuration, CI/CD deploy workflow, or deployment script. `frontend`'s `npm run preview` only runs Vite's local preview server; the deployment notes describe cPanel production setup, not a review target. A preview requires the hosting owner to provision a staging/preview site, configure nonproduction backend/API settings and credentials, and provide that host's deployment command. No preview URL is available.
 
-No commit, push, or deployment was made. This remains a review checkpoint, not publication readiness.
+There is no database available for checking the persisted review ledger or AGIS state, so deployed status counts and persisted AGIS state remain unavailable. No database was contacted and migration 005 was not applied. The historical NECO/JAMB database projection and live source-link behaviour also remain unverified. The Batch 2 JAMB printing-of-result-slip record is explicitly conflicting and includes a 2025 manual; no active NECO record is present in the three batch manifests, while a NECO 2026 guideline PDF exists only in research storage.
+
+## Commit, push, and deployment status
+
+- Checkpoint commit: `ec8abbf292d8f0b094b89b42a5ac6c87a696451c` — `chore: prepare evidence review checkpoint`.
+- Pushed branch: `consolidation-review-persistent-2026-11-01` to `origin` (`https://github.com/ayuba-amadi/feelens-ng.git`).
+- Commit contents: 43 intended FeeLens files changed, including the provenance projection/tests, review UI, catalogues/matrices, review checkpoint, AGIS migration file, and two intentionally public source PDFs. Local audit logs, recovery patches, and research-only PDFs were excluded.
+- Local validation at commit: backend tests 65/65; provenance/importer/catalogue tests 20/20; frontend tests 3/3; backend syntax/lint; frontend lint/build; Batch 1–3 dry runs with zero writes; duplicate/slug, public PDF, AGIS static, and `git diff --check` passed.
+- Deployment: **not performed**. No review deployment target, host project identifier, deployment workflow, or preview credentials are configured in the repository.
+- No production database was contacted and no migration was applied. Migration 005 is committed for review only and remains unapplied.
+
+This is a review checkpoint, not a fully human-verified fee publication or a claim of publication readiness. The 1,003 source-supported options remain awaiting authorised human review.
