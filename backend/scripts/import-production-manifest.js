@@ -740,6 +740,27 @@ function feeValues(service) {
   };
 }
 
+function normalizedIdentityNumber(value) {
+  return value === null || value === undefined ? null : Number(value);
+}
+
+function feeIdentityKey(value) {
+  return JSON.stringify([
+    value.pricingModel ?? value.pricing_model,
+    value.currency,
+    normalizedIdentityNumber(value.amount),
+    normalizedIdentityNumber(value.minimumAmount ?? value.min_amount),
+    normalizedIdentityNumber(value.maximumAmount ?? value.max_amount),
+    normalizedIdentityNumber(value.percentage),
+    value.formula ?? null,
+    value.conditions ?? null,
+    value.label ?? null,
+    value.notes ?? null,
+    value.isCurrent ?? value.is_current,
+    value.verificationStatus ?? value.verification_status,
+  ]);
+}
+
 function countManifest(selected) {
   const statusCounts = Object.fromEntries(verificationStatuses.map((status) => [status, 0]));
   const sourceKeys = new Set();
@@ -1031,6 +1052,43 @@ async function reconcileInteriorVerificationClaims(client, mdaId, actorAdminUser
   return { updated: updatedCount };
 }
 
+async function reconcileNpcJambCurrentFees(client, mdaSlug, serviceId, service, actorAdminUserId) {
+  if (!['npc', 'jamb'].includes(mdaSlug)) return { updated: 0 };
+
+  const canonicalOptions = service.feeOptions?.length ? service.feeOptions : [service];
+  const canonicalCurrentIdentities = new Set(canonicalOptions
+    .map((option) => feeValues({ ...service, ...option }))
+    .filter((fee) => fee.isCurrent)
+    .map(feeIdentityKey));
+  const currentFees = await client.query(
+    `SELECT *
+       FROM fee_options
+      WHERE service_id = $1
+        AND is_current = TRUE
+      FOR UPDATE`,
+    [serviceId],
+  );
+  let updatedCount = 0;
+
+  for (const fee of currentFees.rows) {
+    if (canonicalCurrentIdentities.has(feeIdentityKey(fee))) continue;
+
+    const updated = await client.query(
+      `UPDATE fee_options
+          SET is_current = FALSE,
+              verification_status = 'superseded',
+              updated_at = NOW()
+        WHERE id = $1
+        RETURNING *`,
+      [fee.id],
+    );
+    await audit(client, actorAdminUserId, 'import.fee.superseded', 'fee_option', fee.id, fee, updated.rows[0]);
+    updatedCount += 1;
+  }
+
+  return { updated: updatedCount };
+}
+
 async function importMda(client, mda, actorAdminUserId) {
   const counters = { created: 0, updated: 0, linked: 0, verificationEvents: 0 };
   const mdaResult = await findOrCreateMda(client, mda, actorAdminUserId);
@@ -1058,6 +1116,14 @@ async function importMda(client, mda, actorAdminUserId) {
     const serviceResult = await findOrCreateService(client, mdaResult.row.id, service, actorAdminUserId);
     counters.created += serviceResult.created ? 1 : 0;
     counters.updated += serviceResult.updated ? 1 : 0;
+    const feeReconciliation = await reconcileNpcJambCurrentFees(
+      client,
+      mda.slug,
+      serviceResult.row.id,
+      service,
+      actorAdminUserId,
+    );
+    counters.updated += feeReconciliation.updated;
     const feeOptions = service.feeOptions?.length ? service.feeOptions : [service];
     for (const option of feeOptions) {
       const optionService = { ...service, ...option, evidence: option.evidence || service.evidence, paymentGuide: option.paymentGuide || service.paymentGuide };
@@ -1190,4 +1256,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_MANIFEST_PATH, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, INTERIOR_CATALOGUE_PATH, INTERIOR_LEGACY_FEES, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildInteriorManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, reconcileInteriorVerificationClaims, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_MANIFEST_PATH, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, INTERIOR_CATALOGUE_PATH, INTERIOR_LEGACY_FEES, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildInteriorManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, feeIdentityKey, feeValues, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, reconcileInteriorVerificationClaims, reconcileNpcJambCurrentFees, selectBatch, validateManifest };

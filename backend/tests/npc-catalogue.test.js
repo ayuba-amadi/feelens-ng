@@ -59,6 +59,9 @@ function fakePool() {
         const row = { id: nextId('sources'), title: values[0], source_type: values[1], evidence_tier: values[2], publisher: values[3], url: values[4], publication_date: values[6], effective_date: values[7], accessed_at: values[8], notes: values[9] };
         state.sources.push(row); return { rows: [clone(row)] };
       }
+      if (sql.includes('FROM fee_options') && sql.includes('is_current = TRUE') && sql.includes('FOR UPDATE')) {
+        return { rows: state.fees.filter((row) => row.service_id === values[0] && row.is_current === true).map(clone) };
+      }
       if (sql.startsWith('SELECT * FROM fee_options')) {
         const row = state.fees.find((item) => item.service_id === values[0] && item.pricing_model === values[1] && item.currency === values[2]
           && item.amount === values[3] && item.min_amount === values[4] && item.max_amount === values[5]
@@ -66,6 +69,11 @@ function fakePool() {
           && item.label === values[9] && item.notes === values[10] && item.is_current === values[11]
           && item.verification_status === values[12]);
         return { rows: row ? [clone(row)] : [] };
+      }
+      if (sql.startsWith('UPDATE fee_options') && sql.includes("verification_status = 'superseded'")) {
+        const row = state.fees.find((fee) => fee.id === values[0]);
+        Object.assign(row, { is_current: false, verification_status: 'superseded' });
+        return { rows: [clone(row)] };
       }
       if (sql.startsWith('INSERT INTO fee_options')) {
         const row = { id: nextId('fees'), service_id: values[0], pricing_model: values[1], currency: values[2], amount: values[3], min_amount: values[4], max_amount: values[5], percentage: values[6], formula: values[7], conditions: values[8], label: values[9], notes: values[10], is_current: values[11], verification_status: values[12], verified_at: values[13], next_review_at: values[14] };

@@ -18,6 +18,7 @@ const {
   buildInteriorManifest,
   buildFrscManifest,
   dryRunReport,
+  feeIdentityKey,
   importBatch,
   loadManifest,
   selectBatch,
@@ -171,6 +172,60 @@ function fakePool() {
   return { state, connect: async () => client };
 }
 
+function seedNpcJambLegacyState(pool) {
+  const canonical = validateManifest(loadManifest(require('node:path').resolve(__dirname, '../../research/production-import/batch-02-mdas.json')));
+  const legacyFees = [
+    { id: 37, mda: 'npc', service: 'birth-registration-child-under-5-npc-registration-centre', model: 'free', currency: 'NGN', amount: null, label: 'Birth registration for child under 5 at NPC registration centre', status: 'verified', sourceId: 13 },
+    { id: 38, mda: 'npc', service: 'online-self-service-birth-registration', model: 'fixed', currency: 'USD', amount: 30, label: 'Online self-service birth registration', status: 'verified', sourceId: 14 },
+    { id: 39, mda: 'npc', service: 'adult-certificate-of-birth-attestation-self-service', model: 'fixed', currency: 'USD', amount: 80, label: 'Adult Certificate of Birth (Attestation) self-service', status: 'verified', sourceId: 15 },
+    { id: 40, mda: 'jamb', service: '2026-direct-entry-registration', model: 'fixed', currency: 'NGN', amount: 5700, label: '2026 Direct Entry registration', status: 'verified', sourceId: 16 },
+    { id: 41, mda: 'jamb', service: '2026-utme-registration-without-mock', model: 'fixed', currency: 'NGN', amount: 7200, label: '2026 UTME registration without mock', status: 'verified', sourceId: 16 },
+    { id: 42, mda: 'jamb', service: '2026-utme-registration-with-mock', model: 'fixed', currency: 'NGN', amount: 8700, label: '2026 UTME registration with mock', status: 'verified', sourceId: 16 },
+    { id: 43, mda: 'jamb', service: 'correction-of-data-jamb', model: 'fixed', currency: 'NGN', amount: 2500, label: 'Correction of data - institution/course, name, DOB, state/LGA, gender, A-level qualification', status: 'verified', sourceId: 16 },
+    { id: 44, mda: 'jamb', service: 'printing-of-result-slip', model: 'unknown', currency: 'NGN', amount: null, label: 'Printing of result slip', status: 'conflicting', sourceId: 16 },
+  ];
+  const mdaIds = { npc: 3, jamb: 4 };
+  let serviceId = 36;
+
+  for (const slug of ['npc', 'jamb']) {
+    const mda = canonical.mdas.find((item) => item.slug === slug);
+    pool.state.mdas.push({
+      id: mdaIds[slug], name: mda.name, slug: mda.slug, acronym: mda.acronym,
+      description: mda.description, website_url: mda.officialWebsite,
+      coverage_status: mda.coverageStatus, is_active: mda.coverageStatus !== 'inactive',
+      jurisdiction: mda.jurisdiction,
+    });
+    const services = new Set(legacyFees.filter((fee) => fee.mda === slug).map((fee) => fee.service));
+    for (const serviceSlug of services) {
+      const service = mda.services.find((item) => item.slug === serviceSlug);
+      serviceId += 1;
+      pool.state.services.push({
+        id: serviceId, mda_id: mdaIds[slug], name: service.name, slug: service.slug,
+        description: service.description, category: service.category,
+        jurisdiction: service.jurisdiction, requirements: clone(service.requirements),
+        process_steps: clone(service.processSteps), notes: service.notes, is_active: true,
+      });
+    }
+  }
+
+  for (const fee of legacyFees) {
+    const service = pool.state.services.find((item) => item.slug === fee.service);
+    pool.state.fees.push({
+      id: fee.id, service_id: service.id, pricing_model: fee.model,
+      currency: fee.currency, amount: fee.amount, min_amount: null, max_amount: null,
+      percentage: null, formula: null, conditions: null, label: fee.label,
+      notes: null, is_current: true, verification_status: fee.status,
+      created_at: '2026-10-18T11:23:06.948Z', updated_at: '2026-10-18T11:23:06.948Z',
+    });
+    pool.state.feeSources.push({ fee_option_id: fee.id, source_id: fee.sourceId, excerpt: 'Preserved legacy evidence link.' });
+  }
+
+  pool.state.ids.mdas = 5;
+  pool.state.ids.services = serviceId;
+  pool.state.ids.fees = 44;
+  return { legacyFees, canonical };
+}
+
 test('Batch 1 manifest validates and has the expected research shape', () => {
   const validated = validateManifest(manifest);
   const report = dryRunReport(validated, 'batch-01');
@@ -228,6 +283,47 @@ test('Batch 2 manifest validates free, USD, percentage, formula and conflicting 
   assert.match(allServices.find((service) => service.slug === 'power-of-attorney-registration').formula, /extra copy/);
   assert.equal(allServices.find((service) => service.slug === 'printing-of-result-slip').verificationStatus, 'conflicting');
   assert.equal(allServices.find((service) => service.slug === 'printing-of-result-slip').evidence.length, 2);
+});
+
+test('Batch 2 supersedes only stale NPC/JAMB legacy fee identities and preserves their history', async () => {
+  const pool = fakePool();
+  const { legacyFees, canonical } = seedNpcJambLegacyState(pool);
+  const legacyLinks = pool.state.feeSources.map((link) => `${link.fee_option_id}:${link.source_id}`);
+  const first = await importBatch({ manifest: validateManifest(batch2Manifest), batch: 'batch-02', pool, actorAdminUserId: null });
+
+  assert.equal(first.verificationEvents, 0);
+  assert.equal(pool.state.verifications.length, 0);
+  assert.equal(pool.state.audits.filter((entry) => entry.action === 'import.fee.superseded').length, 8);
+  assert.ok(legacyLinks.every((link) => pool.state.feeSources.some((item) => `${item.fee_option_id}:${item.source_id}` === link)));
+
+  for (const slug of ['npc', 'jamb']) {
+    const expectedMda = canonical.mdas.find((mda) => mda.slug === slug);
+    const mda = pool.state.mdas.find((item) => item.slug === slug);
+    const services = pool.state.services.filter((service) => service.mda_id === mda.id);
+    const serviceIds = new Set(services.map((service) => service.id));
+    const currentFees = pool.state.fees.filter((fee) => serviceIds.has(fee.service_id) && fee.is_current);
+    const expectedCount = expectedMda.services.reduce((count, service) => count + (service.feeOptions?.length || 1), 0);
+    assert.equal(services.length, expectedMda.services.length, `${slug} canonical service count`);
+    assert.equal(currentFees.length, expectedCount, `${slug} canonical current fee count`);
+    assert.equal(new Set(currentFees.map(feeIdentityKey)).size, currentFees.length, `${slug} duplicate current fee identities`);
+    assert.ok(services.every((service) => service.is_active), `${slug} services remain active`);
+  }
+
+  for (const legacy of legacyFees) {
+    const fee = pool.state.fees.find((item) => item.id === legacy.id);
+    assert.ok(fee, `legacy fee ${legacy.id} remains stored`);
+    assert.equal(fee.is_current, false, `legacy fee ${legacy.id} is historical`);
+    assert.equal(fee.verification_status, 'superseded', `legacy fee ${legacy.id} is superseded`);
+    assert.ok(pool.state.audits.some((entry) => entry.action === 'import.fee.superseded' && entry.entityId === legacy.id));
+  }
+
+  const supersessionAudits = pool.state.audits.filter((entry) => entry.action === 'import.fee.superseded').length;
+  const second = await importBatch({ manifest: validateManifest(batch2Manifest), batch: 'batch-02', pool, actorAdminUserId: null });
+  assert.equal(second.created, 0);
+  assert.equal(second.updated, 0);
+  assert.equal(second.linked, 0);
+  assert.equal(second.verificationEvents, 0);
+  assert.equal(pool.state.audits.filter((entry) => entry.action === 'import.fee.superseded').length, supersessionAudits);
 });
 
 test('Batch 3 manifest validates pending, USD, variable and shared-evidence semantics', () => {
