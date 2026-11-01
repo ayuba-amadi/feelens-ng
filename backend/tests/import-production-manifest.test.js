@@ -11,9 +11,11 @@ const {
   FCTIRS_CATALOGUE_PATH,
   FRSC_CATALOGUE_PATH,
   JAMB_CATALOGUE_PATH,
+  INTERIOR_CATALOGUE_PATH,
   buildCacManifest,
   buildFctirsManifest,
   buildJambManifest,
+  buildInteriorManifest,
   buildFrscManifest,
   dryRunReport,
   importBatch,
@@ -25,6 +27,7 @@ const fctirsCatalogue = require('../../research/production-import/fctirs-service
 const cacCatalogue = require('../../research/production-import/cac-service-catalogue.json');
 const frscCatalogue = require('../../research/production-import/frsc-service-catalogue.json');
 const jambCatalogue = require('../../research/production-import/jamb-service-catalogue.json');
+const interiorCatalogue = require('../../research/production-import/interior-marriage-service-catalogue.json');
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -56,7 +59,7 @@ function fakePool() {
         if (hasJurisdiction) row.jurisdiction = values[6];
         return { rows: [clone(row)] };
       }
-      if (sql.includes('FROM services') && sql.includes('slug = ANY')) {
+      if (sql.includes('FROM services') && sql.includes('slug = ANY') && !sql.includes('JOIN services')) {
         const slugs = values[1];
         return {
           rows: state.services
@@ -65,6 +68,19 @@ function fakePool() {
         };
       }
       if (sql.startsWith('SELECT * FROM services')) return { rows: state.services.filter((row) => row.mda_id === values[0] && row.slug === values[1]).map(clone) };
+      if (sql.includes('SELECT fee.*') && sql.includes('FROM fee_options fee')) {
+        const mdaId = values[0];
+        const bySlug = { 'ordinary-marriage-application': 75000, 'special-marriage-application': 100000, 'marriage-document-verification': 50000, 'marriage-certified-true-copy': 50000, 'marriage-change-of-venue-request': 150000 };
+        return { rows: state.fees.filter((fee) => {
+          const service = state.services.find((item) => item.id === fee.service_id);
+          return service?.mda_id === mdaId && values[1].includes(service.slug) && bySlug[service.slug] === fee.amount && fee.is_current === true && fee.verification_status === 'verified';
+        }).map(clone) };
+      }
+      if (sql.startsWith('UPDATE fee_options') && sql.includes("verification_status = 'pending'")) {
+        const row = state.fees.find((fee) => fee.id === values[0]);
+        Object.assign(row, { verification_status: 'pending', verified_at: null });
+        return { rows: [clone(row)] };
+      }
       if (sql.startsWith('INSERT INTO services')) {
         const row = { id: nextId('services'), mda_id: values[0], name: values[1], slug: values[2], description: values[3], category: values[4], jurisdiction: values[5], requirements: JSON.parse(values[6]), process_steps: JSON.parse(values[7]), notes: values[8], is_active: values[9] };
         state.services.push(row); return { rows: [clone(row)] };
@@ -215,7 +231,7 @@ test('Batch 2 manifest validates free, USD, percentage, formula and conflicting 
 });
 
 test('Batch 3 manifest validates pending, USD, variable and shared-evidence semantics', () => {
-  const validated = validateManifest(batch3Manifest);
+  const validated = validateManifest(loadManifest(require('node:path').resolve(__dirname, '../../research/production-import/batch-03-mdas.json')));
   const report = dryRunReport(validated, 'batch-03');
   const allServices = validated.mdas.flatMap((mda) => mda.services);
   const nafdacServices = validated.mdas.find((mda) => mda.slug === 'nafdac').services;
@@ -223,8 +239,8 @@ test('Batch 3 manifest validates pending, USD, variable and shared-evidence sema
   assert.equal(report.mdaCount, 5);
   assert.equal(report.serviceCount, 30);
   assert.equal(report.feeOptionCount, 30);
-  assert.equal(report.verifiedCount, 25);
-  assert.equal(report.pendingCount, 5);
+  assert.equal(report.verifiedCount, 20);
+  assert.equal(report.pendingCount, 10);
   assert.equal(report.conflictingCount, 0);
   assert.equal(report.uniqueEvidenceCount, 8);
   assert.equal(report.evidenceLinkCount, 37);
@@ -236,7 +252,51 @@ test('Batch 3 manifest validates pending, USD, variable and shared-evidence sema
   assert.equal(nafdacServices.find((service) => service.slug === 'general-nafdac-tariff-register').amount, null);
   assert.ok(sonServices.every((service) => service.currency === 'USD'));
   assert.equal(new Set(sonServices.flatMap((service) => service.evidence.map((source) => source.key))).size, 1);
-  assert.equal(allServices.filter((service) => service.verificationStatus === 'pending').length, 5);
+  assert.equal(allServices.filter((service) => service.verificationStatus === 'pending').length, 10);
+  const interior = validated.mdas.find((mda) => mda.slug === 'ministry-interior-marriage-registry');
+  assert.deepEqual(interior.services.map((service) => service.slug), interiorCatalogue.services.map((service) => service.slug));
+  assert.ok(interior.services.every((service) => service.verificationStatus === 'pending' && service.evidence[0].url === 'https://candb.interior.gov.ng/marriage/'));
+  assert.ok(INTERIOR_CATALOGUE_PATH.endsWith('interior-marriage-service-catalogue.json'));
+});
+
+test('Interior detailed catalogue has supported unique fee identities and no combined ancillary charges', () => {
+  const built = validateManifest(buildInteriorManifest(batch3Manifest, interiorCatalogue));
+  const interior = built.mdas.find((mda) => mda.slug === 'ministry-interior-marriage-registry');
+  assert.equal(interior.services.length, 5);
+  assert.equal(new Set(interior.services.map((service) => service.slug)).size, 5);
+  const identities = interior.services.flatMap((service) => service.feeOptions.map((fee) => `${service.slug}|${fee.label}|${fee.conditions}|${fee.amount}|${fee.currency}`));
+  assert.equal(new Set(identities).size, identities.length);
+  assert.ok(interior.services.every((service) => service.feeOptions[0].verificationStatus === 'pending'));
+  assert.ok(interior.services.every((service) => service.feeOptions[0].evidence.length === 1 && service.feeOptions[0].evidence[0].evidenceTier <= 2));
+  assert.ok(interior.services.every((service) => service.feeOptions[0].amount !== null));
+  assert.ok(interior.services.every((service) => !/remita|bank|agent|portal charge.*₦/i.test(`${service.paymentGuide} ${service.notes}`)));
+  const unrelated = batch3Manifest.mdas.filter((mda) => mda.slug !== 'ministry-interior-marriage-registry');
+  for (const mda of unrelated) {
+    const actual = built.mdas.find((item) => item.slug === mda.slug);
+    assert.deepEqual(actual.services.map((service) => [service.slug, service.amount, service.verificationStatus]), mda.services.map((service) => [service.slug, service.amount, service.verificationStatus]));
+  }
+  assert.deepEqual(batch3Manifest.mdas.map((mda) => mda.slug), BATCH_03_SLUGS);
+});
+
+test('Interior overlay preserves fee identity while demoting only matched legacy verification claims', async () => {
+  const pool = fakePool();
+  const raw = validateManifest(batch3Manifest);
+  const first = await importBatch({ manifest: raw, batch: 'batch-03', pool, actorAdminUserId: null });
+  const interiorId = pool.state.mdas.find((mda) => mda.slug === 'ministry-interior-marriage-registry').id;
+  for (const service of pool.state.services.filter((item) => item.mda_id === interiorId)) {
+    const fee = pool.state.fees.find((item) => item.service_id === service.id);
+    fee.verification_status = 'verified';
+    fee.verified_at = 'legacy';
+  }
+  const second = await importBatch({ manifest: raw, batch: 'batch-03', pool, actorAdminUserId: null });
+  assert.equal(second.created, 0, JSON.stringify(pool.state.fees.filter((fee) => pool.state.services.find((service) => service.id === fee.service_id)?.mda_id === interiorId)));
+  assert.equal(second.linked, 0);
+  assert.equal(second.verificationEvents, 0);
+  assert.equal(second.updated, 5);
+  assert.ok(pool.state.fees.filter((fee) => pool.state.services.find((service) => service.id === fee.service_id)?.mda_id === interiorId).every((fee) => fee.verification_status === 'pending' && fee.is_current));
+  assert.ok(pool.state.audits.filter((audit) => audit.action === 'import.fee.verification_downgraded').length === 5);
+  assert.equal(pool.state.verifications.length, 0);
+  assert.ok(first.serviceCount > 0);
 });
 
 test('dry-run performs no writes and preserves free, formula and conflicting semantics', () => {
@@ -416,6 +476,11 @@ test('Batch 3 apply path is idempotent and preserves pending, USD, variable and 
   assert.equal(usdFee.amount, 500);
   const sonSource = pool.state.sources.find((source) => source.url === 'https://son.gov.ng/soncap-faq/');
   assert.equal(pool.state.feeSources.filter((link) => link.source_id === sonSource.id).length, 6);
+  const interiorId = pool.state.mdas.find((mda) => mda.slug === 'ministry-interior-marriage-registry').id;
+  const interiorServices = pool.state.services.filter((service) => service.mda_id === interiorId);
+  assert.equal(interiorServices.length, 5);
+  assert.ok(interiorServices.every((service) => pool.state.fees.find((fee) => fee.service_id === service.id).verification_status === 'pending'));
+  assert.equal(pool.state.audits.some((audit) => audit.action === 'import.verification.created'), false);
 });
 
 

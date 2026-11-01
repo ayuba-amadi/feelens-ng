@@ -1,0 +1,240 @@
+{
+  "version": "2026-11-01-interior-marriage-evidence-reconstruction",
+  "status": "official-portal-source-supported-pending-human-review",
+  "mda": {
+    "name": "Federal Ministry of Interior - Marriage & Civil Registry",
+    "acronym": "FMI",
+    "slug": "ministry-interior-marriage-registry",
+    "officialWebsite": "https://interior.gov.ng/",
+    "jurisdiction": "Federal",
+    "coverageStatus": "pilot",
+    "description": "Marriage and civil registry service claims based on the five services and amounts publicly displayed by the Ministry-linked marriage portal. FeeLens verification remains pending human review.",
+    "officialChannels": [
+      {
+        "channelType": "portal",
+        "name": "Federal Ministry of Interior Marriage Portal",
+        "url": "https://candb.interior.gov.ng/marriage/",
+        "contactValue": null,
+        "instructions": "Use the public service information and official Get Started/login links. The evidence review did not authenticate or submit an application."
+      }
+    ]
+  },
+  "sources": {
+    "interior-marriage-portal": {
+      "title": "Marriage & Civil Registry Services — Marriage Portal",
+      "sourceType": "official_portal",
+      "url": "https://candb.interior.gov.ng/marriage/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "pageOrSection": "Public landing page, Marriage & Civil Registry Services service cards",
+      "documentReference": "Live public portal reviewed 2026-11-01; fee and service cards visible without sign-in.",
+      "evidenceTier": 2,
+      "publisher": "Federal Ministry of Interior",
+      "notes": "Public page displays the five service names, fee amounts and short descriptions. The Ministry homepage links to this marriage portal. Page provides no publication/effective date and does not separately itemize portal, Remita, bank or other charges."
+    },
+    "interior-ministry-portal-link": {
+      "title": "Federal Ministry of Interior official website",
+      "sourceType": "official_website",
+      "url": "https://interior.gov.ng/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "pageOrSection": "Homepage, More e-services → Marriage Services",
+      "documentReference": "Live page reviewed 2026-11-01; hyperlink resolves to candb.interior.gov.ng/marriage.",
+      "evidenceTier": 1,
+      "publisher": "Federal Ministry of Interior",
+      "notes": "Official Ministry homepage labels and links the marriage portal as Marriage Services. Establishes the portal relationship, not the service fees."
+    }
+  },
+  "services": [
+    {
+      "name": "Ordinary marriage application",
+      "slug": "ordinary-marriage-application",
+      "description": "Apply for an ordinary marriage online.",
+      "category": "Marriage registration",
+      "jurisdiction": "Federal",
+      "requirements": [],
+      "processSteps": [
+        "The public portal provides a service-specific description and Get Started/login link. Further application steps are behind authentication and were not inspected."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://candb.interior.gov.ng/marriage/login",
+      "officialChannelType": "portal",
+      "paymentGuide": "The public Ministry portal displays this amount. Any additional payment, portal or transaction charge is not stated on the public page; confirm the amount shown in the official workflow before payment.",
+      "notes": "FeeLens evidence status is pending human review. No requirements, application details, publication/effective date or separate ancillary charge is inferred from the public landing page.",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 75000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": null,
+          "label": "Ordinary marriage application",
+          "notes": null,
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "interior-marriage-portal"
+          ],
+          "pageOrSection": "Public landing page, Marriage & Civil Registry Services",
+          "evidenceNote": "Portal card: Ordinary marriage application — ₦75,000. Apply for an ordinary marriage online."
+        }
+      ]
+    },
+    {
+      "name": "Special marriage application",
+      "slug": "special-marriage-application",
+      "description": "Apply for a special marriage online.",
+      "category": "Marriage registration",
+      "jurisdiction": "Federal",
+      "requirements": [],
+      "processSteps": [
+        "The public portal provides a service-specific description and Get Started/login link. Further application steps are behind authentication and were not inspected."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://candb.interior.gov.ng/marriage/login",
+      "officialChannelType": "portal",
+      "paymentGuide": "The public Ministry portal displays this amount. Any additional payment, portal or transaction charge is not stated on the public page; confirm the amount shown in the official workflow before payment.",
+      "notes": "FeeLens evidence status is pending human review. No requirements, application details, publication/effective date or separate ancillary charge is inferred from the public landing page.",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 100000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": null,
+          "label": "Special marriage application",
+          "notes": null,
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "interior-marriage-portal"
+          ],
+          "pageOrSection": "Public landing page, Marriage & Civil Registry Services",
+          "evidenceNote": "Portal card: Special marriage application — ₦100,000. Apply for a special marriage online."
+        }
+      ]
+    },
+    {
+      "name": "Marriage document verification",
+      "slug": "marriage-document-verification",
+      "description": "Verify required documents instantly.",
+      "category": "Document verification",
+      "jurisdiction": "Federal",
+      "requirements": [],
+      "processSteps": [
+        "The public portal provides a service-specific description and Get Started/login link. Further application steps are behind authentication and were not inspected."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://candb.interior.gov.ng/marriage/login",
+      "officialChannelType": "portal",
+      "paymentGuide": "The public Ministry portal displays this amount. Any additional payment, portal or transaction charge is not stated on the public page; confirm the amount shown in the official workflow before payment.",
+      "notes": "FeeLens evidence status is pending human review. No requirements, application details, publication/effective date or separate ancillary charge is inferred from the public landing page.",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 50000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": null,
+          "label": "Marriage document verification",
+          "notes": null,
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "interior-marriage-portal"
+          ],
+          "pageOrSection": "Public landing page, Marriage & Civil Registry Services",
+          "evidenceNote": "Portal card: Marriage document verification — ₦50,000. Verify required documents instantly."
+        }
+      ]
+    },
+    {
+      "name": "Certified True Copy",
+      "slug": "marriage-certified-true-copy",
+      "description": "Get certified true copies of documents.",
+      "category": "Certified copies",
+      "jurisdiction": "Federal",
+      "requirements": [],
+      "processSteps": [
+        "The public portal provides a service-specific description and Get Started/login link. Further application steps are behind authentication and were not inspected."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://candb.interior.gov.ng/marriage/login",
+      "officialChannelType": "portal",
+      "paymentGuide": "The public Ministry portal displays this amount. Any additional payment, portal or transaction charge is not stated on the public page; confirm the amount shown in the official workflow before payment.",
+      "notes": "FeeLens evidence status is pending human review. No requirements, application details, publication/effective date or separate ancillary charge is inferred from the public landing page.",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 50000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": null,
+          "label": "Certified True Copy",
+          "notes": null,
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "interior-marriage-portal"
+          ],
+          "pageOrSection": "Public landing page, Marriage & Civil Registry Services",
+          "evidenceNote": "Portal card: Certified True Copy — ₦50,000. Get certified true copies of documents."
+        }
+      ]
+    },
+    {
+      "name": "Change of venue request",
+      "slug": "marriage-change-of-venue-request",
+      "description": "Apply to change registry venue smoothly.",
+      "category": "Venue change",
+      "jurisdiction": "Federal",
+      "requirements": [],
+      "processSteps": [
+        "The public portal provides a service-specific description and Get Started/login link. Further application steps are behind authentication and were not inspected."
+      ],
+      "processingStandard": null,
+      "officialActionUrl": "https://candb.interior.gov.ng/marriage/login",
+      "officialChannelType": "portal",
+      "paymentGuide": "The public Ministry portal displays this amount. Any additional payment, portal or transaction charge is not stated on the public page; confirm the amount shown in the official workflow before payment.",
+      "notes": "FeeLens evidence status is pending human review. No requirements, application details, publication/effective date or separate ancillary charge is inferred from the public landing page.",
+      "feeOptions": [
+        {
+          "pricingModel": "fixed",
+          "amount": 150000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": null,
+          "label": "Change of venue request",
+          "notes": null,
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "interior-marriage-portal"
+          ],
+          "pageOrSection": "Public landing page, Marriage & Civil Registry Services",
+          "evidenceNote": "Portal card: Change of venue request — ₦150,000. Apply to change registry venue smoothly."
+        }
+      ]
+    }
+  ],
+  "excludedServiceCandidates": [
+    {
+      "name": "Marriage Notice Board / public marriage applications",
+      "slug": null,
+      "status": "UNABLE_TO_VERIFY",
+      "reason": "The public portal map exposes a Marriage Notice Board page, but it only identifies public marriage applications; it does not establish a distinct Ministry service, fee, requirements or workflow. Excluded from active service catalogue."
+    }
+  ]
+}

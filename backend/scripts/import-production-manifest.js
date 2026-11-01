@@ -17,6 +17,15 @@ const FRSC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-impo
 const NPC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/npc-service-catalogue.json');
 const JAMB_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/jamb-service-catalogue.json');
 const NECO_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/neco-service-catalogue.json');
+const BATCH_03_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-03-mdas.json');
+const INTERIOR_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/interior-marriage-service-catalogue.json');
+const INTERIOR_LEGACY_FEES = {
+  'ordinary-marriage-application': 75000,
+  'special-marriage-application': 100000,
+  'marriage-document-verification': 50000,
+  'marriage-certified-true-copy': 50000,
+  'marriage-change-of-venue-request': 150000,
+};
 const BATCH_ALIASES = new Map([
   ['batch-01', 'batch-01'], ['batch-01-mdas', 'batch-01'],
   ['batch-02', 'batch-02'], ['batch-02-mdas', 'batch-02'],
@@ -643,12 +652,57 @@ function buildJambManifest(baseManifest, catalogue) {
 // detailed evidence catalogue available for validation/reconciliation only.
 function loadNecoCatalogue() { return JSON.parse(fs.readFileSync(NECO_CATALOGUE_PATH, 'utf8')); }
 
+function buildInteriorManifest(baseManifest, catalogue) {
+  const sources = catalogue.sources || {};
+  const mda = {
+    ...catalogue.mda,
+    services: catalogue.services.map((row) => {
+      const feeOptions = row.feeOptions.map((option) => ({
+        pricingModel: option.pricingModel,
+        amount: option.amount ?? null,
+        minimumAmount: option.minimumAmount ?? null,
+        maximumAmount: option.maximumAmount ?? null,
+        currency: option.currency,
+        percentage: option.percentage ?? null,
+        formula: option.formula ?? null,
+        conditions: option.conditions ?? null,
+        label: option.label || row.name,
+        notes: option.notes ?? null,
+        verificationStatus: option.verificationStatus,
+        evidence: option.sourceKeys.map((key) => {
+          if (!sources[key]) throw new Error(`Interior catalogue row ${row.slug} references missing source ${key}.`);
+          return { key, ...sources[key], pageOrSection: option.pageOrSection || sources[key].pageOrSection, notes: option.evidenceNote || sources[key].notes };
+        }),
+        paymentGuide: row.paymentGuide,
+      }));
+      if (!feeOptions.length) throw new Error(`Interior catalogue row ${row.slug} has no fee options.`);
+      const first = feeOptions[0];
+      return {
+        name: row.name, slug: row.slug, description: row.description || null,
+        category: row.category || 'Marriage and civil registry services',
+        jurisdiction: row.jurisdiction || 'Federal', requirements: row.requirements || [],
+        processSteps: row.processSteps || [], pricingModel: first.pricingModel,
+        amount: first.amount, minimumAmount: first.minimumAmount, maximumAmount: first.maximumAmount,
+        currency: first.currency, percentage: first.percentage, formula: first.formula,
+        conditions: first.conditions, verificationStatus: 'pending', lastChecked: '2026-11-01',
+        evidence: first.evidence, officialActionUrl: row.officialActionUrl || null,
+        officialChannelType: row.officialChannelType || 'portal', paymentGuide: row.paymentGuide,
+        notes: row.notes || null, feeOptions,
+      };
+    }),
+  };
+  return { ...baseManifest, mdas: baseManifest.mdas.map((item) => item.slug === 'ministry-interior-marriage-registry' ? mda : item) };
+}
+
 function loadManifest(manifestPath) {
   const resolvedPath = path.resolve(manifestPath);
   const baseManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   if (resolvedPath === BATCH_02_MANIFEST_PATH) {
     const withNpc = buildNpcManifest(baseManifest, JSON.parse(fs.readFileSync(NPC_CATALOGUE_PATH, 'utf8')));
     return buildJambManifest(withNpc, JSON.parse(fs.readFileSync(JAMB_CATALOGUE_PATH, 'utf8')));
+  }
+  if (resolvedPath === BATCH_03_MANIFEST_PATH) {
+    return buildInteriorManifest(baseManifest, JSON.parse(fs.readFileSync(INTERIOR_CATALOGUE_PATH, 'utf8')));
   }
   if (resolvedPath !== DEFAULT_MANIFEST_PATH) return baseManifest;
   const withFctirs = buildFctirsManifest(baseManifest, JSON.parse(fs.readFileSync(FCTIRS_CATALOGUE_PATH, 'utf8')));
@@ -942,6 +996,41 @@ async function reconcileFctirsObsoleteRecords(client, mdaId, actorAdminUserId) {
   return counters;
 }
 
+async function reconcileInteriorVerificationClaims(client, mdaId, actorAdminUserId) {
+  const slugs = Object.keys(INTERIOR_LEGACY_FEES);
+  const legacyFees = await client.query(
+    `SELECT fee.*
+       FROM fee_options fee
+       JOIN services service ON service.id = fee.service_id
+      WHERE service.mda_id = $1
+        AND service.slug = ANY($2::text[])
+        AND fee.amount = CASE service.slug
+          WHEN 'ordinary-marriage-application' THEN 75000
+          WHEN 'special-marriage-application' THEN 100000
+          WHEN 'marriage-document-verification' THEN 50000
+          WHEN 'marriage-certified-true-copy' THEN 50000
+          WHEN 'marriage-change-of-venue-request' THEN 150000
+        END
+        AND fee.is_current = TRUE
+        AND fee.verification_status = 'verified'
+      FOR UPDATE OF fee`,
+    [mdaId, slugs],
+  );
+  let updatedCount = 0;
+  for (const fee of legacyFees.rows) {
+    const updated = await client.query(
+      `UPDATE fee_options
+          SET verification_status = 'pending', verified_at = NULL, updated_at = NOW()
+        WHERE id = $1
+        RETURNING *`,
+      [fee.id],
+    );
+    await audit(client, actorAdminUserId, 'import.fee.verification_downgraded', 'fee_option', fee.id, fee, updated.rows[0]);
+    updatedCount += 1;
+  }
+  return { updated: updatedCount };
+}
+
 async function importMda(client, mda, actorAdminUserId) {
   const counters = { created: 0, updated: 0, linked: 0, verificationEvents: 0 };
   const mdaResult = await findOrCreateMda(client, mda, actorAdminUserId);
@@ -958,6 +1047,10 @@ async function importMda(client, mda, actorAdminUserId) {
       mdaResult.row.id,
       actorAdminUserId,
     );
+    counters.updated += reconciliation.updated;
+  }
+  if (mda.slug === 'ministry-interior-marriage-registry') {
+    const reconciliation = await reconcileInteriorVerificationClaims(client, mdaResult.row.id, actorAdminUserId);
     counters.updated += reconciliation.updated;
   }
 
@@ -997,6 +1090,9 @@ function canonicalizeImportManifest(manifest, batch) {
       canonical = buildJambManifest(canonical, JSON.parse(fs.readFileSync(JAMB_CATALOGUE_PATH, 'utf8')));
     }
     return canonical;
+  }
+  if (selectedBatch === 'batch-03' && manifest.mdas?.some((mda) => mda.slug === 'ministry-interior-marriage-registry')) {
+    return buildInteriorManifest(manifest, JSON.parse(fs.readFileSync(INTERIOR_CATALOGUE_PATH, 'utf8')));
   }
   if (selectedBatch !== 'batch-01') return manifest;
 
@@ -1094,4 +1190,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_MANIFEST_PATH, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, INTERIOR_CATALOGUE_PATH, INTERIOR_LEGACY_FEES, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildInteriorManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, reconcileInteriorVerificationClaims, selectBatch, validateManifest };
