@@ -1,0 +1,2046 @@
+service_number,service_name,base_service,subtype,requirements_raw,application_mode_raw,timeline_working_days_raw,fee_raw,procedure_raw,sla_pdf_page,pricing_model_hint,inherited_fields,extraction_status
+1,Account Creation,Account Creation,Public User,Means of Identification,"Online
+(https://icrp.cac.gov.n
+g)",1,"Public User: Free; Accredited Agent Individual: 10,000; Accredited Agent Firm: 50,000","1. Visit
+https://icrp.cac.gov.
+ng
+2. Click on Sign Up
+3. Fill out the account
+creation form and
+Upload relevant
+document(s)
+4. Make payment
+(where applicable)",4,tiered_or_formula,[],extracted
+2,Availability (Name Search),Availability (Name Search),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"1,000","1. Log into account on
+https://icrp.cac.gov.
+ng
+2. Click on New
+Reservation
+3. Select Business
+Classification
+(from drop down)
+and Select
+Business Type
+(from drop down)
+4. Click Continue and
+enter Proposed
+Name
+5. Select Nature of
+Business Category
+and Specific
+Nature of
+Business (from
+drop downs)
+6. Click Check
+Availability and If
+available, Click
+Continue to
+Payment",5,fixed,[],extracted
+3,Name Substitution,Name Substitution,,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"1,000","1. Log into account on
+https://icrp.cac.gov.
+ng
+2. Click on
+Registration Tab
+Select the Name to
+be substituted and
+Click on Action
+then select
+Substitute Name
+and enter New
+Proposed Name
+3. Click Proceed to
+Payment",5,fixed,[],extracted
+4,Consent — For use of the word Group,Consent,For use of the word Group,"• Status Report
+of all the
+companies
+forming the
+Group","Online
+(https://icrp.cac.gov.n
+g)",1,"5,000","1. Log into account on
+https://icrp.cac.gov.
+ng
+2. Click on Apply for
+Consent, select",5,fixed,[],extracted
+5,Registration of Business Name,Registration of Business Name,,"• Means of
+Identification of
+Proprietor(s)
+• Passport
+photograph of
+Proprietor(s)
+• Signature of
+Proprietor(s)","Online
+(https://icrp.cac.gov.n
+g)",1,"20,000","1. Log on to the iCRP
+2. On the Registration
+Tab on your dashboard.
+a. Click
+Register a
+New
+Business
+b. Type the
+Availability
+Code of the
+already
+reserved
+name.
+Alternatively, go to the Name
+Reservation Tab
+a. click on Action
+b. select Go to
+Business
+Registration
+3. Fill out the registration
+form, verify all details on
+the preview page.",8,fixed,[],extracted
+6,Registration of Company,Registration of Company,,"• Means of
+Identification of
+Director(s),
+Shareholder(s),
+Secretary where
+applicable
+• Signatures of
+Director(s),
+Shareholder(s),
+Secretary where
+applicable, and
+witness
+• Proficiency certificate
+(where applicable)
+• “Letter of No
+Objection” (where
+applicable)
+• Approval-in-Principle
+(where applicable)
+• Residence Permit
+(where applicable)",,,"10,000 for every N
+1,000,000 or part
+thereof (Small and
+Other than Small
+Companies)
+20,000 for every N
+1,000,000 or part
+thereof (Public
+Companies)
+Stamp duty:
+• 0.75% of the total
+value of the share
+capital in the case
+of a company
+limited by shares
+• 1,000 Naira in the
+case of a
+company limited
+by guarantee","1. Log on to the iCRP
+2. On the Registration Tab
+on your dashboard.
+a. Click
+Register a
+New
+Business
+b. Type the
+Availability
+Code of the
+already
+reserved
+name.
+Alternatively, go to the Name
+Reservation Tab
+a. click on Action
+b. select Go to
+Business
+Registration
+3. Fill out the registration
+form, verify all details on
+the preview page and
+click Back to make
+necessary change(s) or
+Proceed to payment.",9,tiered_or_formula,[],extracted
+7,Incorporation of Incorporated Trustees,Incorporation of Incorporated Trustees,,"• Means of
+Identification of
+Trustees and
+Secretary (if any)
+• Signature of Trustees,
+Secretary (if any), and
+Chairman
+• Trustees’ Declaration
+form
+• Newspaper
+publications (2)
+• Minutes of meeting","Online
+(https://icrp.cac.gov.n
+g)",1,"40,000","1. Log on to the iCRP
+2. On the Registration
+Tab on your dashboard.
+a. Click
+Register a
+New
+Business
+b. Type the
+Availability
+Code of the
+already
+reserved
+name.
+Alternatively, go to the “Name
+Requiring Consent” Tab",9,fixed,[],extracted
+8,Registration of Limited Partnership,Registration of Limited Partnership,,"• Means of Identification
+of Partners
+• Passport photograph of
+Partners
+• Signature of Partners","Online
+(https://icrp.cac.gov.n
+g)",1,"30,000","1. Log on to the iCRP
+2. On the Registration
+Tab on your dashboard:
+a. Click
+Register a
+New
+Business
+b. Type the
+Availability
+Code of the
+already
+reserved
+name.
+Alternatively, go to the Name
+Reservation Tab
+a. click on Action
+b. select Go to
+Business
+Registration
+3. Fill out the registration
+form, verify all details on
+the preview page and
+click Back to make
+necessary change(s) or
+Proceed to payment.",10,fixed,[],extracted
+9,Registration of Limited Liability Partnership,Registration of Limited Liability Partnership,,"• Means of
+Identification of
+Partners
+• Signature of Partners","Online
+(https://icrp.cac.gov.n
+g)",1,"40,000","1. Log on to the iCRP
+2. On the Registration
+Tab on your dashboard.
+a. Click
+Register a
+New
+Business
+b. Type the
+Availability",10,fixed,[],extracted
+10,Change of Name — Business Name,Change of Name,Business Name,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log on to iCRP
+2. Obtain new name
+reservation
+Else obtain Consent for new
+name (where applicable)
+3. Fill out application Form
+4. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+5. Upload document (where
+applicable)",11,fixed,[],extracted
+11,Change of Name — Company,Change of Name,Company,• Special Resolution,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000 (Small
+Company)
+20,000 (Company
+other than Small and
+LTD/GTE)
+50,000 (Public
+Company)","1. Log on to iCRP
+2. Obtain new name
+reservation
+Else obtain Consent for new
+name (where applicable)
+3. Fill out application Form
+4. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+5. Upload document (where
+applicable)",11,tiered_or_formula,"['application_mode', 'timeline', 'procedure']",extracted
+12,Change of Name — Incorporated Trustees,Change of Name,Incorporated Trustees,"• Minutes of meeting
+signed by the existing
+Chairman and
+Secretary (if any) on
+record
+• Newspaper
+publications (2)
+• Public notice","Online
+(https://icrp.cac.gov.n
+g)",2,"25,000","1. Log on to iCRP
+2. Obtain new name
+reservation
+Else obtain Consent for new
+name (where applicable)
+3. Fill out application Form
+4. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+5. Upload document (where
+applicable)",11,fixed,"['application_mode', 'timeline', 'procedure']",extracted
+13,Change of Name — Limited Partnership,Change of Name,Limited Partnership,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log on to iCRP
+2. Obtain new name
+reservation
+Else obtain Consent for new
+name (where applicable)
+3. Fill out application Form
+4. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+5. Upload document (where
+applicable)",11,fixed,"['application_mode', 'timeline', 'procedure']",extracted
+14,Change of Name — Limited Liability Partnership,Change of Name,Limited Liability Partnership,"• Special
+Resolution","Online
+(https://icrp.cac.gov.n
+g)",2,"20,000","1. Log on to iCRP
+2. Obtain new name
+reservation
+Else obtain Consent for new
+name (where applicable)
+3. Fill out application Form
+4. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+5. Upload document (where
+applicable)",11,fixed,"['application_mode', 'timeline', 'procedure']",extracted
+15,Increase in Share Capital and Allotment of Shares,Increase in Share Capital and Allotment of Shares,,"• Resolution
+• Regulatory
+Approval (where
+applicable)","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000 for every
+1,000,000 or part
+thereof for Small and
+Other than Small
+Companies","1. Log into the iCRP
+2. Fill out the Increase in
+Share Capital and
+Allotment form",11,tiered_or_formula,[],extracted
+16,Reduction in Share Capital,Reduction in Share Capital,,"• Special
+Resolution for
+the Reduction in
+Share Capital
+• Court Order
+• Minutes of
+Meeting
+• Regulatory
+Approval (where
+applicable)","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 (Small
+Company)
+10,000 (Company
+other than Small)
+20,000 (Public
+Companies)","1. Log into the iCRP
+2. Fill out the Reduction in
+Share Capital form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",12,tiered_or_formula,[],extracted
+17,Mortgages/Debentures/Charges,Mortgages/Debentures/Charges,,"• Stamped deed
+with counterpart
+copy duly dated
+and executed by
+the parties
+(under seal
+where
+applicable).
+• Copy of existing
+charge in the
+case of up
+stamping,
+variation,
+supplemental
+deed)
+• Court order for
+extension of
+time in the case
+of late filing of
+charges","Online
+(https://icrp.cac.gov.n
+g)",2,"25,000 or 0.35% of the
+amount secured by the
+charge whichever is
+higher
+Stamp duty: 0.75% of
+the total value of the
+Charge","0. Log into the iCRP
+1. Fill out the Registration of
+Charge form
+2. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+3. Upload document",12,tiered_or_formula,[],extracted
+18,Satisfaction of /Deed of Release,Satisfaction of /Deed of Release,,"• Stamped Deed
+of Release
+• Where debt has
+been taken over
+by another
+party, evidence
+of the take
+over before
+release by that other party
+• Evidence of
+registration of
+charge","Online
+(https://icrp.cac.gov.n
+g)",2,"25,000","1. Log into the iCRP
+2. Fill in the Satisfaction of
+Charge form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",13,fixed,[],extracted
+19,Conversion (Re-Registration),Conversion (Re-Registration),,"• Special
+Resolution","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+LTD/GTE companies
+10,000 for other than
+small company
+20,000 for public
+company
+Stamp duty: 1,000 for
+amended Memart","1. Log into the iCRP
+2. Fill out the Re-registration
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",13,tiered_or_formula,[],extracted
+20,Alteration of Memorandum and Articles,Alteration of Memorandum and Articles,,"• Special
+Resolution
+stating the
+altered clause(s)
+• CTC of Court
+order (where
+there is
+application to
+Court and
+alteration of
+objects is
+sanctioned by
+Court)","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+LTD/GTE companies
+10,000 for other than
+small company
+20,000 for public
+company
+Stamp duty: 1,000 for
+amended Memart","1. Log into the iCRP
+2. Fill out the Registration of
+Charge form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",13,tiered_or_formula,[],extracted
+21,"Allotment, Surrender, Transfer & Transmission of Shares","Allotment, Surrender, Transfer & Transmission of Shares",,"• Resolution
+• Death
+Certificate/Letter
+of","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+LTD/GTE companies","1. Log into the iCRP
+2. Fill out the Transfer|
+Transmission| Surrender|",13,tiered_or_formula,[],extracted
+22,Notice of Appointment of Secretary or Changes in their Particulars,Notice of Appointment of Secretary or Changes in their Particulars,,"• Means of
+Identification
+for individual
+• Certificate of
+registration for
+Corporate
+Secretary
+• Appointment
+Letter/Resoluti
+on
+• Acceptance
+Letter","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the
+Appointment/Change of
+Secretary form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",14,tiered_or_formula,[],extracted
+23,Notice of Appointment of Director or Changes in their Particulars,Notice of Appointment of Director or Changes in their Particulars,,"• Means of
+Identification
+• Evidence of
+resignation
+where
+applicable
+• Copy of Death
+certificate or
+proof of death in
+case of
+deceased
+director.","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the
+Appointment/Change of
+Director form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",14,tiered_or_formula,[],extracted
+24,Notice of Change in Registered Address or Head Office Address,Notice of Change in Registered Address or Head Office Address,,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Change of
+Registered/Head Office
+Address form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment",14,tiered_or_formula,[],extracted
+25,Change in Principal Place of Business or Branch Address for Business Name,Change in Principal Place of Business or Branch Address for Business Name,,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Principal Place of
+Business form,
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment",15,fixed,[],extracted
+26,Notice of Change in Registered Address of Incorporated Trustees,Notice of Change in Registered Address of Incorporated Trustees,,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change of
+Registered Address form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment",15,fixed,[],extracted
+27,Change in Principal Place of Business for Limited Partnerships,Change in Principal Place of Business for Limited Partnerships,,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Principal Place of
+Business form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment",15,fixed,[],extracted
+28,Notice of Change in Registered Address for Limited Liability Partnership,Notice of Change in Registered Address for Limited Liability Partnership,,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change of
+Registered/Head Office
+Address form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment.",15,fixed,[],extracted
+29,Notice of Person with Significant Control (PSC) - Company,Notice of Person with Significant Control (PSC) - Company,,"Means of identification of
+the Person with Significant
+Control","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Change in
+PSC form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",15,tiered_or_formula,[],extracted
+30,Change in Particulars of Person with Significant Control (PSC) – Company,Change in Particulars of Person with Significant Control (PSC) – Company,,"Means of identification of
+the Person with Significant
+Control","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Change in
+PSC form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",16,tiered_or_formula,[],extracted
+31,Cessation of Person with Significant Control (PSC) – Company,Cessation of Person with Significant Control (PSC) – Company,,"Means of identification of
+the Person with Significant
+Control","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Cessation of
+PSC form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",16,tiered_or_formula,[],extracted
+32,Notice of Person with Significant Control (PSC) – Limited Liability Partnership,Notice of Person with Significant Control (PSC) – Limited Liability Partnership,,"Means of identification of
+the Person with Significant
+Control","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Change in
+PSC form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",16,tiered_or_formula,[],extracted
+33,Change in Particulars of Person with Significant Control (PSC) - Limited Liability Partnership,Change in Particulars of Person with Significant Control (PSC) - Limited Liability Partnership,,"Means of identification of
+the Person with Significant
+Control","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Change in
+PSC form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",16,tiered_or_formula,[],extracted
+34,Cessation of Person with Significant Control (PSC) - Limited Liability Partnership,Cessation of Person with Significant Control (PSC) - Limited Liability Partnership,,"Means of identification of
+the Person with Significant
+Control","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small and
+Ltd/Gte companies
+10,000 for other than
+small company
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Cessation of
+PSC form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment",16,tiered_or_formula,[],extracted
+35,Statement of Affairs (Fourteenth Schedule),Statement of Affairs (Fourteenth Schedule),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for Small
+companies
+10,000 for Company
+other than Small
+20,000 for Public
+Company","1. Log into the iCRP
+2. Fill out the Fourteenth
+Schedule form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",17,tiered_or_formula,[],extracted
+36,Annual Return — Business Name,Annual Return,Business Name,"• Audited
+Financial
+Statements for
+Companies
+(Small
+Companies
+exempted),
+Limited Liability
+Partnerships
+and
+Incorporated
+Trustees
+• Financial
+Statements for
+Limited
+Partnerships
+and Business
+Names","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Annual Return
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",17,fixed,[],extracted
+37,Annual Return — Company,Annual Return,Company,,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000 (for Ltd/Gte)
+5,000 (for company
+with
+100,000 - 100M
+Share Capital)
+100,000 (for company
+with
+Above 100M – 500M
+Share Capital)
+150,000 (for company
+with
+Above 500M -1B
+Share Capital)
+200,000 (for company
+with above 1B Share
+Capital)","1. Log into the iCRP
+2. Fill out the Annual Return
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",17,tiered_or_formula,"['application_mode', 'timeline', 'procedure']",extracted
+38,Annual Return — Incorporated Trustees,Annual Return,Incorporated Trustees,,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Annual Return
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",17,fixed,"['application_mode', 'timeline', 'procedure']",extracted
+39,Annual Return — Limited Partnership,Annual Return,Limited Partnership,,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Annual Return
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",17,fixed,"['application_mode', 'timeline', 'procedure']",extracted
+40,Annual Return — Limited Liability Partnership,Annual Return,Limited Liability Partnership,,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Annual Return
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",17,fixed,"['application_mode', 'timeline', 'procedure']",extracted
+41,Change of Trustee,Change of Trustee,,"• Minutes of
+meeting
+• Means of
+identification for
+new trustee(s)
+• Public notice","Online
+https://icrp.cac.gov.ng",2,"10,000","1. Log into the iCRP
+2. Fill out the Change
+Trustees form
+3. Verify all details on the
+preview page and click
+Back to make necessary",17,fixed,[],extracted
+42,Amendment of Constitution,Amendment of Constitution,,"• Minutes of
+meeting
+• Public notice
+• Newspaper
+publications","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Amendment of
+Constitution form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",18,fixed,[],extracted
+43,Change of Secretary of Incorporated Trustees,Change of Secretary of Incorporated Trustees,,"• Minutes of
+meeting
+• Means of
+identification of
+the new
+Secretary","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change of
+Secretary form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",18,fixed,[],extracted
+44,Appointment of Chairman,Appointment of Chairman,,"• Minutes of
+meeting
+• Affidavit of
+Acceptance by
+the new
+Chairman","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change of
+Chairman form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",18,fixed,[],extracted
+45,Edit Director,Edit Director,,"• Means of
+Identification
+• Relevant document
+(eg Affidavit and
+newspaper
+publication in the
+case of change of
+name)","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000 for small
+companies
+15,000 for company
+other than small
+30,000 public
+companies","1. Log into the iCRP
+2. Fill out the Edit Director
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",18,tiered_or_formula,[],extracted
+46,Edit Shareholder,Edit Shareholder,,"• Means of
+Identification","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000 for small
+companies","1. Log into the iCRP
+2. Fill out the Edit
+Shareholder form",18,tiered_or_formula,[],extracted
+47,Edit Guarantor,Edit Guarantor,,"• Means of
+Identification
+• Relevant document
+(eg Affidavit and
+newspaper
+publication in the
+case of change of
+name)","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Edit Guarantor
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",19,fixed,[],extracted
+48,Edit Proprietor,Edit Proprietor,,"• Means of
+Identification
+• Relevant document
+(eg Affidavit and
+newspaper
+publication in the
+case of change of
+name)","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Edit proprietor
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",19,fixed,[],extracted
+49,Edit Partner (Limited Liability Partnership),Edit Partner (Limited Liability Partnership),,"• Means of
+Identification
+• Relevant document
+(eg Affidavit and
+newspaper
+publication in the
+case of change of
+name)","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Edit partner
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",19,fixed,[],extracted
+50,Edit Partner (Limited Partnership),Edit Partner (Limited Partnership),,"• Means of
+Identification
+• Relevant document
+(eg Affidavit and
+newspaper
+publication in the
+case of change of
+name)","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out Edit Partner form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",19,fixed,[],extracted
+51,Edit Trustee,Edit Trustee,,"• Means of
+Identification","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Edit Trustee
+form",19,fixed,[],extracted
+52,Change in Partner (Limited Partnership),Change in Partner (Limited Partnership),,Means of Identification,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Partner form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",20,fixed,[],extracted
+53,Change in Partner (Limited Liability Partnership),Change in Partner (Limited Liability Partnership),,Means of identification,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Partner form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",20,fixed,[],extracted
+54,Change in Contribution (Company Limited by Guarantee),Change in Contribution (Company Limited by Guarantee),,Resolution,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 (Private
+Companies)
+10,000 (Public
+Companies)","1. Log into the iCRP
+2. Fill out the Change in
+Contribution form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",20,tiered_or_formula,[],extracted
+55,Change in Contribution (Limited Partnership),Change in Contribution (Limited Partnership),,Resolution,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Contribution form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",20,fixed,[],extracted
+56,Change in Contribution (Limited Liability Partnership),Change in Contribution (Limited Liability Partnership),,Resolution,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Contribution form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",21,fixed,[],extracted
+57,Change in Partnership Agreement (Limited Liability Partnership),Change in Partnership Agreement (Limited Liability Partnership),,Resolution,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Partnership
+Agreement form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",21,fixed,[],extracted
+58,Change in Partnership Agreement (Limited Partnership),Change in Partnership Agreement (Limited Partnership),,Resolution,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Partnership
+Agreement form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",21,fixed,[],extracted
+59,Change in Nature of Business (Business Name),Change in Nature of Business (Business Name),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Nature of Business form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",21,fixed,[],extracted
+60,Change in Nature of Business (Limited Liability Partnership),Change in Nature of Business (Limited Liability Partnership),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Nature of Business form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment",21,fixed,[],extracted
+61,Change in Nature of Business (Limited Partnership),Change in Nature of Business (Limited Partnership),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Change in
+Nature of Business form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",22,fixed,[],extracted
+62,Bi-Annual Statement for Incorporated Trustees,Bi-Annual Statement for Incorporated Trustees,,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Bi-annual
+Statement form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",22,fixed,[],extracted
+63,Certified True Copy of Certificate (Company),Certified True Copy of Certificate (Company),,"• Application Letter
+• Affidavit","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Certified True
+Copy Request form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",22,fixed,[],extracted
+64,Certified True Copy of Certificate (Limited Liability Partnership),Certified True Copy of Certificate (Limited Liability Partnership),,"• Application Letter
+• Affidavit","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Certified True
+Copy Request form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",22,fixed,[],extracted
+65,Certified True Copy of Certificate (Limited Partnership),Certified True Copy of Certificate (Limited Partnership),,"• Application Letter
+• Affidavit","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Certified True
+Copy Request form
+3. Verify all details on the
+preview page and click
+Back to make necessary",22,fixed,[],extracted
+66,Certified True Copy of Certificate (Business Name)),Certified True Copy of Certificate (Business Name)),,"• Application Letter
+• Affidavit","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Certified True
+Copy Request form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",23,fixed,[],extracted
+67,Certified True Copy of Certificate (Incorporated),Certified True Copy of Certificate (Incorporated),,"• Application Letter
+• Affidavit
+• Public Notice
+• Newspaper
+publications
+• Minutes of meeting","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Certified True
+Copy Request form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",23,fixed,[],extracted
+68,Certified True Copy of other Documents/Extracts,Certified True Copy of other Documents/Extracts,,Nil,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000","1. Log into the iCRP
+2. Fill out the Certified True
+Copy Request form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment",23,fixed,[],extracted
+69,Letter of Good Standing (Company),Letter of Good Standing (Company),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"10,000 for small
+company, other than
+small company and
+Ltd/Gte
+20,000 public company","1. Log into the iCRP
+2. Fill out the Letter of Good
+Standing form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment.",23,tiered_or_formula,[],extracted
+70,Letter of Good Standing (Limited Liability Partnership),Letter of Good Standing (Limited Liability Partnership),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"10,000","1. Log into the iCRP
+2. Fill out the Letter of Good
+Standing form
+3. Verify all details on the
+preview page and click
+Back to make necessary",23,fixed,[],extracted
+71,Letter of Good Standing (Limited Partnership),Letter of Good Standing (Limited Partnership),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"10,000","1. Log into the iCRP
+2. Fill out the Letter of Good
+Standing form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment.",24,fixed,[],extracted
+72,Letter of Good Standing (Business Name),Letter of Good Standing (Business Name),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"10,000","1. Log into the iCRP
+2. Fill out the Letter of Good
+Standing form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment.",24,fixed,[],extracted
+73,Letter of Good Standing (Incorporated Trustees),Letter of Good Standing (Incorporated Trustees),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"10,000","1. Log into the iCRP
+2. Fill out the Letter of Good
+Standing form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment.",24,fixed,[],extracted
+74,Status Report (Company),Status Report (Company),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"5,000","1. Log into the iCRP
+2. Fill out the Status Report
+form
+3. Proceed to payment",24,fixed,[],extracted
+75,Status Report (Limited Liability Partnership),Status Report (Limited Liability Partnership),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"5,000","1. Log into the iCRP
+2. Fill out the Status Report
+form
+3. Proceed to payment",24,fixed,[],extracted
+76,Status Report (Limited Liability Partnership),Status Report (Limited Liability Partnership),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"5,000","1. Log into the iCRP
+2. Fill out the Status Report
+form
+3. Proceed to payment",24,fixed,[],extracted
+77,Status Report (Limited Partnership),Status Report (Limited Partnership),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"5,000","1. Log into the iCRP
+2. Fill out the Status Report
+form
+3. Proceed to payment",25,fixed,[],extracted
+78,Status Report (Business Names),Status Report (Business Names),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"5,000","1. Log into the iCRP
+2. Fill out the Status Report
+form
+3.
+4. Proceed to payment",25,fixed,[],extracted
+79,Status Report (Incorporated Trustees),Status Report (Incorporated Trustees),,Nil,"Online
+(https://icrp.cac.gov.n
+g)",1,"5,000","1. Log into the iCRP
+2. Fill out the Status Report
+form
+3. Proceed to payment",25,fixed,[],extracted
+80,Cessation of Business Name,Cessation of Business Name,,"• Notice of cessation
+• Consent letter from
+proprietor(s)
+• Letter of
+administration (where
+application)
+• Means of
+identification of the
+applicant/legal
+representative","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Cessation
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",25,fixed,[],extracted
+81,Members’ Voluntary Winding Up (Company) — Statutory Declaration of Solvency (SDS) and Special Resolution for Voluntary Winding Up,Members’ Voluntary Winding Up (Company),Statutory Declaration of Solvency (SDS) and Special Resolution for Voluntary Winding Up,"• Special Resolution for
+winding up
+• Statutory Declaration
+of Solvency
+• Two (2) Newspaper
+publications of special
+resolution for Winding
+Up","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Voluntary
+winding up form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",25,tiered_or_formula,[],extracted
+82,Members’ Voluntary Winding Up (Company) — Notice of Appointment of Liquidator,Members’ Voluntary Winding Up (Company),Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator
+• Two (2) Newspaper
+publications of special
+resolution for Winding
+Up
+• Means of
+identification","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",25,tiered_or_formula,[],extracted
+83,Members’ Voluntary Winding Up (Company) — Interim Account (where winding up continues for more than one year),Members’ Voluntary Winding Up (Company),Interim Account (where winding up continues for more than one year),Interim Account,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Interim
+Account form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",26,tiered_or_formula,[],extracted
+84,Members’ Voluntary Winding Up (Company) — Filing of Final Account,Members’ Voluntary Winding Up (Company),Filing of Final Account,"• Two (2) Newspaper
+publications of notice
+of final meeting
+• Publication of Notice
+of Final meeting in a
+Gazette
+• Return of holding of
+final meeting
+• Audited Final Account
+(except the liquidator
+or one of liquidators is
+an auditor and the
+requirement of audit
+has been waived by
+the company)","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Final Account
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",26,tiered_or_formula,[],extracted
+85,Creditors’ Voluntary Winding Up (Company) — Filing of Special Resolution for Voluntary Winding Up,Creditors’ Voluntary Winding Up (Company),Filing of Special Resolution for Voluntary Winding Up,"• Special Resolution for
+winding up
+• Two (2) Newspaper
+publications of special
+resolution for Winding
+Up","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Voluntary
+winding up form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",26,tiered_or_formula,[],extracted
+86,Creditors’ Voluntary Winding Up (Company) — Notice of Appointment of Liquidator,Creditors’ Voluntary Winding Up (Company),Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator
+• Two (2) Newspaper
+publications of special
+resolution for Winding
+Up
+• Means of
+identification","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",26,tiered_or_formula,[],extracted
+87,Creditors’ Voluntary Winding Up (Company) — Interim Account (where winding up continues for more than one year),Creditors’ Voluntary Winding Up (Company),Interim Account (where winding up continues for more than one year),Interim Account,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Interim
+Account form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",27,tiered_or_formula,[],extracted
+88,Creditors’ Voluntary Winding Up (Company) — Filing of Final Account,Creditors’ Voluntary Winding Up (Company),Filing of Final Account,"• Two (2) Newspaper
+publications of notice
+of final meeting
+• Publication of Notice
+of Final meeting in a
+Gazette
+• Return of holding of
+final meeting
+• Audited Final Account
+(except the liquidator
+or one of liquidators is
+an auditor and the
+requirement of audit
+has been waived by
+the company)","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Final Account
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",27,tiered_or_formula,[],extracted
+89,Winding Up by the Court — Filing of Court Order for Winding Up,Winding Up by the Court,Filing of Court Order for Winding Up,"• Court Order
+• Two (2) Newspaper
+publications of Court
+Order for Winding Up","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Winding up
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",27,tiered_or_formula,[],extracted
+90,Winding Up by the Court — Filing Notice of Appointment of Liquidator,Winding Up by the Court,Filing Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator
+• Two (2) Newspaper
+publications of Court
+Order for Winding Up
+• Means of
+identification","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",27,tiered_or_formula,[],extracted
+91,Winding Up by the Court — Filing of Court Order for Dissolution,Winding Up by the Court,Filing of Court Order for Dissolution,Court Order,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 for companies
+other than small
+20,000 for public
+company","1. Log into the iCRP
+2. Fill out the filing of Court
+Order for Dissolution
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",28,tiered_or_formula,[],extracted
+92,Partners’ Voluntary Winding Up (Limited Liability Partnership) — Statutory Declaration of Solvency (SDS) and Resolution for Voluntary Winding Up,Partners’ Voluntary Winding Up (Limited Liability Partnership),Statutory Declaration of Solvency (SDS) and Resolution for Voluntary Winding Up,"• Resolution for winding
+up
+• Statutory Declaration
+of Solvency
+• Two (2) Newspaper
+publications of
+Resolution for
+Winding Up","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Voluntary
+winding up form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",28,fixed,[],extracted
+93,Partners’ Voluntary Winding Up (Limited Liability Partnership) — Notice of Appointment of Liquidator,Partners’ Voluntary Winding Up (Limited Liability Partnership),Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator
+• Two (2) Newspaper
+publications of
+Resolution for
+Winding Up
+• Means of
+identification","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",28,fixed,[],extracted
+94,Partners’ Voluntary Winding Up (Limited Liability Partnership) — Interim Account (where winding up continues for more than one year),Partners’ Voluntary Winding Up (Limited Liability Partnership),Interim Account (where winding up continues for more than one year),Interim Account,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Interim
+Account form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",28,fixed,[],extracted
+95,Partners’ Voluntary Winding Up (Limited Liability Partnership) — Filing of Final Account,Partners’ Voluntary Winding Up (Limited Liability Partnership),Filing of Final Account,"• Two (2) Newspaper
+publications of notice
+of final meeting
+• Publication of Notice
+of Final meeting in a
+Gazette
+• Return of holding of
+final meeting","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Final Account
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment",28,fixed,[],extracted
+96,Creditors’ Voluntary Winding Up (Limited Liability Partnerships) — Filing of Resolution for Voluntary Winding Up,Creditors’ Voluntary Winding Up (Limited Liability Partnerships),Filing of Resolution for Voluntary Winding Up,"• Resolution for winding
+up
+• Two (2) Newspaper
+publications of
+resolution for Winding
+Up","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Winding form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",29,fixed,[],extracted
+97,Creditors’ Voluntary Winding Up (Limited Liability Partnerships) — Notice of Appointment of Liquidator,Creditors’ Voluntary Winding Up (Limited Liability Partnerships),Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator
+• Two (2) Newspaper
+publications of
+resolution for Winding
+Up
+• Means of
+identification","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",29,fixed,[],extracted
+98,Creditors’ Voluntary Winding Up (Limited Liability Partnerships) — Interim Account (where winding up continues for more than one year),Creditors’ Voluntary Winding Up (Limited Liability Partnerships),Interim Account (where winding up continues for more than one year),Interim Account,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Interim
+Account form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",29,fixed,[],extracted
+99,Creditors’ Voluntary Winding Up (Limited Liability Partnerships) — Filing of Final Account,Creditors’ Voluntary Winding Up (Limited Liability Partnerships),Filing of Final Account,"• Two (2) Newspaper
+publications of notice
+of final meeting
+• Publication of Notice
+of Final meeting in a
+Gazette
+• Return of holding of
+final meeting
+• Audited Final Account
+(except the liquidator","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Final Account
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",29,fixed,[],extracted
+100,Winding Up by the Court (Limited Liability Partnership) — Filing of Court Order for Winding Up,Winding Up by the Court (Limited Liability Partnership),Filing of Court Order for Winding Up,"• Court Order
+• Two (2) Newspaper
+publications of Court
+Order for Winding Up","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Winding up
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",30,fixed,[],extracted
+101,Winding Up by the Court (Limited Liability Partnership) — Filing Notice of Appointment of Liquidator,Winding Up by the Court (Limited Liability Partnership),Filing Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator
+• Two (2) Newspaper
+publications of Court
+Order for Winding Up
+• Means of
+identification","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",30,fixed,[],extracted
+102,Winding Up by the Court (Limited Liability Partnership) — Filing of Court Order for Dissolution,Winding Up by the Court (Limited Liability Partnership),Filing of Court Order for Dissolution,• Court Order,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Filing of Court
+Order for Dissolution form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",30,fixed,[],extracted
+103,Partners’ Voluntary Winding Up (Limited Partnerships) — Statutory Declaration of Solvency (SDS) and Resolution for Voluntary Winding Up,Partners’ Voluntary Winding Up (Limited Partnerships),Statutory Declaration of Solvency (SDS) and Resolution for Voluntary Winding Up,"• Resolution for winding
+up
+• Statutory Declaration
+of Solvency
+• Two (2) Newspaper
+publications of
+Resolution for
+Winding Up","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Winding up
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",30,fixed,[],extracted
+104,Partners’ Voluntary Winding Up (Limited Partnerships) — Notice of Appointment of Liquidator,Partners’ Voluntary Winding Up (Limited Partnerships),Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form",30,fixed,[],extracted
+105,Partners’ Voluntary Winding Up (Limited Partnerships) — Interim Account (where winding up continues for more than one year),Partners’ Voluntary Winding Up (Limited Partnerships),Interim Account (where winding up continues for more than one year),• Interim Account,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Interim
+Account form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",31,fixed,[],extracted
+106,Partners’ Voluntary Winding Up (Limited Partnerships) — Filing of Final Account,Partners’ Voluntary Winding Up (Limited Partnerships),Filing of Final Account,"• Two (2) Newspaper
+publications of notice
+of final meeting
+• Publication of Notice
+of Final meeting in a
+Gazette
+• Return of holding of
+final meeting
+• Audited Final Account
+(except the liquidator
+or one of liquidators is
+an auditor and the
+requirement of audit
+has been waived by
+the company)","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Final Account
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",31,fixed,[],extracted
+107,Creditors’ Voluntary Winding Up (Limited Partnerships) — Filing of Resolution for Voluntary Winding Up,Creditors’ Voluntary Winding Up (Limited Partnerships),Filing of Resolution for Voluntary Winding Up,"• Resolution for winding
+up
+• Two (2) Newspaper
+publications of
+resolution for Winding
+Up","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Winding up
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",31,fixed,[],extracted
+108,Creditors’ Voluntary Winding Up (Limited Partnerships) — Notice of Appointment of Liquidator,Creditors’ Voluntary Winding Up (Limited Partnerships),Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator
+• Two (2) Newspaper
+publications of","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form",31,fixed,[],extracted
+109,Creditors’ Voluntary Winding Up (Limited Partnerships) — Interim Account (where winding up continues for more than one year),Creditors’ Voluntary Winding Up (Limited Partnerships),Interim Account (where winding up continues for more than one year),• Interim Account,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Interim
+Account form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",32,fixed,[],extracted
+110,Creditors’ Voluntary Winding Up (Limited Partnerships) — Filing of Final Account,Creditors’ Voluntary Winding Up (Limited Partnerships),Filing of Final Account,"• Two (2) Newspaper
+publications of notice
+of final meeting
+• Publication of Notice
+of Final meeting in a
+Gazette
+• Return of holding of
+final meeting
+• Audited Final Account
+(except the liquidator
+or one of liquidators is
+an auditor and the
+requirement of audit
+has been waived by
+the company)","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Final Account
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",32,fixed,[],extracted
+111,Winding Up by the Court (Limited Partnerships) — Filing of Court Order for Winding Up,Winding Up by the Court (Limited Partnerships),Filing of Court Order for Winding Up,"• Court Order
+• Two (2) Newspaper
+publications of Court
+Order for Winding Up","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Winding up
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",32,fixed,[],extracted
+112,Winding Up by the Court (Limited Partnerships) — Filing Notice of Appointment of Liquidator,Winding Up by the Court (Limited Partnerships),Filing Notice of Appointment of Liquidator,"• Notice of appointment
+of Liquidator","Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the Notice of
+Appointment form
+3. Verify all details on the
+preview page and click",32,fixed,[],extracted
+113,Winding Up by the Court (Limited Partnerships) — Filing of Court Order for Dissolution,Winding Up by the Court (Limited Partnerships),Filing of Court Order for Dissolution,• Court Order,"Online
+(https://icrp.cac.gov.n
+g)",2,"10,000","1. Log into the iCRP
+2. Fill out the filing of court
+order for dissoltuion form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",33,fixed,[],extracted
+114,Appointment of Receiver/Manager (by Deed of Appointment),Appointment of Receiver/Manager (by Deed of Appointment),,"• Deed of Appointment
+of Receiver/Manager
+• Notice of Appointment
+• Means of
+Identification","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","1. Log into the iCRP
+2. Fill out the Appointment
+of
+Receiver/Manager form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",33,tiered_or_formula,[],extracted
+115,Filing of Abstract of Receipts and Payments,Filing of Abstract of Receipts and Payments,,"• Abstract
+• Evidence of
+Appointment",Manual,2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","File the required documents
+physically or by email
+(compliance@cac.gov.ng)
+together with the evidence of
+payment of filing fee.",33,tiered_or_formula,[],extracted
+116,Appointment of Receiver/Manager (by the Court),Appointment of Receiver/Manager (by the Court),,"• Court Order
+appointing
+Receiver/Manager
+• Notice of Appointment","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","1. Log into the iCRP
+2. Fill out the Appointment
+of Receiver/Manager
+form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",33,tiered_or_formula,[],extracted
+117,Discharge of Receiver/Manager,Discharge of Receiver/Manager,,"• Deed of Discharge of
+Receiver/Manger
+• Notice of Discharge","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte","1. Log into the iCRP
+2. Fill out the Discharge of
+Receiver/Manager form",33,tiered_or_formula,[],extracted
+118,Appointment of Administrator by Directors or Company,Appointment of Administrator by Directors or Company,,"• Instrument of
+Appointment
+• Statutory Declaration
+by the Administrator
+• Means of
+Identification","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","1. Log into the iCRP
+2. Fill out the Appoint of
+Administrator form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",34,tiered_or_formula,[],extracted
+119,Appointment of Administrator by the Court,Appointment of Administrator by the Court,,"• Court Order
+• Means of
+Identification","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","1. Log into the iCRP
+2. Fill out the Appointment
+of Administrator form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",34,tiered_or_formula,[],extracted
+120,Appointment of Administrator by holder of floating Charge,Appointment of Administrator by holder of floating Charge,,"• Evidence of the
+registration of the
+Charge
+• Instrument of
+Appointment
+• Means of
+Identification","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","1. Log into the iCRP
+2. Fill out the Appointment
+of Administrator form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",34,tiered_or_formula,[],extracted
+121,Notice of Company Voluntary Arrangement (CVA),Notice of Company Voluntary Arrangement (CVA),,"• Notice of appointment
+of Supervisor
+• Court order approving
+the Decision of the
+Company or Creditors","Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","1. Log into the iCRP
+2. Fill out the CVA form
+3. Verify all details on the
+preview page and click
+Back to make necessary
+change(s) or Proceed to
+payment
+4. Upload document",34,tiered_or_formula,[],extracted
+122,Report and Account of CVA by the Supervisor,Report and Account of CVA by the Supervisor,,• Report and Account,"Online
+(https://icrp.cac.gov.n
+g)",2,"5,000 for small
+company and Ltd/Gte","1. Log into the iCRP
+2. Fill out the Report and
+Account of CVA form",34,tiered_or_formula,[],extracted
+123,Merger,Merger,,"• Special Resolution of
+each company in the
+merger scheme
+• Court Order
+• Scheme of Merger
+• Publication in the
+Gazette and at least
+one newspaper",Manual,2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","File the required documents
+physically or by email
+(compliance@cac.gov.ng)
+together with the evidence of
+payment of filing fee.",35,tiered_or_formula,[],extracted
+124,Scheme of Arrangement,Scheme of Arrangement,,"• Special resolution of
+the company or each
+company in the
+Scheme
+• Scheme of
+Arrangement
+• Court order
+sanctioning the
+Scheme
+• Gazette and
+newspaper
+publication (where
+applicable)",Manual,2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","File the required documents
+physically or by email
+(compliance@cac.gov.ng)
+together with the evidence of
+payment of filing fee.",35,tiered_or_formula,[],extracted
+125,Netting,Netting,,"• Netting document
+(agreement)
+• Approval-in-Principle",Manual,2,"5,000 for small
+company and Ltd/Gte
+10,000 other than small
+company
+20,000 public company","File the required documents
+physically or by email
+(compliance@cac.gov.ng)
+together with the evidence of
+payment of filing fee.",35,tiered_or_formula,[],extracted
+126,Voluntary Striking-off of Company,Voluntary Striking-off of Company,,"• Special resolution
+• Three (3) Newspaper
+publications",Manual,2,"25,000 for small
+company and Ltd/Gte
+50,000 other than small
+company and Ltd/Gte
+100,000 public
+company","File the required documents
+physically or by email
+(compliance@cac.gov.ng)
+together with the evidence of
+payment of filing fee.",35,tiered_or_formula,[],extracted
+127,Relisting of company,Relisting of company,,,"Man
++
++
+-ual",2,"25,000 for small
+company and Ltd/Gte
+50,000 other than small
+company and Ltd/Gte
+100,000 public
+company","File the required documents
+physically or by email
+(compliance@cac.gov.ng)
+together with the evidence of
+payment of filing fee.",36,tiered_or_formula,[],extracted

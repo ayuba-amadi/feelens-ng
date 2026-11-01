@@ -1,0 +1,17 @@
+penalty_type,entity_type,daily_default_penalty,one_off_penalty,assessment_note,gazette_pdf_page,gazette_page_label
+Annual Returns,Small Company,,"1,000",Entity and each officer,8,B630
+Annual Returns,Company Private other than small,,"2,000",Entity and each officer,8,B630
+Annual Returns,Company limited by guarantee,,"2,000",Entity and each officer,8,B630
+Annual Returns,Public Company,,"5,000",Entity and each officer,8,B630
+Annual Returns,Limited Liability Partnership (LLP),,"2,000",Entity and each officer,8,B630
+Annual Returns,Limited Partnership (LP),,"1,000",Entity and each officer,8,B630
+Annual Returns,Business Names,,"5,000",Entity only,8,B630
+Annual Returns,Incorporated Trustees,,"10,000",Entity only,8,B630
+Others,Small Company,100,"5,000",,9,B631
+Others,Company Private other than small,200,"10,000",,9,B631
+Others,Company limited by guarantee,200,"10,000",,9,B631
+Others,Public Company,500,"25,000",,9,B631
+Others,Limited Liability Partnership (LLP),200,"10,000",,9,B631
+Others,Limited Partnership (LP),100,"10,000",,9,B631
+Others,Business Names,100,"5,000",,9,B631
+Others,Incorporated Trustees,200,"10,000",,9,B631

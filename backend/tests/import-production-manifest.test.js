@@ -6,9 +6,11 @@ const batch3Manifest = require('../../research/production-import/batch-03-mdas.j
 const {
   BATCH_02_SLUGS,
   BATCH_03_SLUGS,
+  CAC_CATALOGUE_PATH,
   DEFAULT_MANIFEST_PATH,
   FCTIRS_CATALOGUE_PATH,
   FRSC_CATALOGUE_PATH,
+  buildCacManifest,
   buildFctirsManifest,
   buildFrscManifest,
   dryRunReport,
@@ -18,6 +20,7 @@ const {
   validateManifest,
 } = require('../scripts/import-production-manifest');
 const fctirsCatalogue = require('../../research/production-import/fctirs-service-catalogue.json');
+const cacCatalogue = require('../../research/production-import/cac-service-catalogue.json');
 const frscCatalogue = require('../../research/production-import/frsc-service-catalogue.json');
 
 function clone(value) {
@@ -467,7 +470,10 @@ test('FRSC catalogue integration validates, preserves confidential SLA protectio
   }
 
   const withFctirs = buildFctirsManifest(manifest, fctirsCatalogue);
-  const withFrsc = validateManifest(buildFrscManifest(withFctirs, frscCatalogue));
+  const withCac = buildCacManifest(withFctirs, cacCatalogue);
+  const withFrsc = validateManifest(
+    buildFrscManifest(withCac, frscCatalogue),
+  );
   const frscMda = withFrsc.mdas.find((mda) => mda.slug === 'frsc-drivers-licence');
   assert.equal(frscMda.name, 'Federal Road Safety Corps');
   assert.equal(frscMda.services.length, 13);
@@ -948,4 +954,192 @@ test('multi-option service preserves distinct fee-option labels instead of colla
 
   void pool;
   void fixtureCatalogue;
+});
+
+test('CAC evidence catalogue loads 127 SLA services plus Gazette-only searches without collapsing legacy slugs', async () => {
+  assert.ok(CAC_CATALOGUE_PATH.endsWith('cac-service-catalogue.json'));
+
+  assert.equal(
+    cacCatalogue.services.filter(
+      (service) => service.serviceNumber !== null,
+    ).length,
+    127,
+  );
+
+  assert.equal(cacCatalogue.services.length, 129);
+
+  const rawSlugs = cacCatalogue.services.map(
+    (service) => service.slug,
+  );
+
+  assert.equal(new Set(rawSlugs).size, 129);
+
+  const withCac = validateManifest(
+    buildCacManifest(manifest, cacCatalogue),
+  );
+
+  const cac = withCac.mdas.find(
+    (mda) => mda.slug === 'cac',
+  );
+
+  assert.ok(cac);
+  assert.equal(cac.services.length, 129);
+
+  const slugs = new Set(
+    cac.services.map((service) => service.slug),
+  );
+
+  for (const slug of [
+    'name-reservation-standard',
+    'business-name-registration-ctc-registration-documents',
+    'company-with-share-capital-small-private-other-than-small',
+    'certified-true-copy-company-documents-extracts',
+    'business-name-annual-return-post-registration-miscellaneous-filing',
+    'business-name-status-report',
+    'full-electronic-search-per-entity-view-only',
+    'persons-with-significant-control-view-only-search',
+  ]) {
+    assert.equal(
+      slugs.has(slug),
+      true,
+      `Expected canonical CAC slug ${slug}`,
+    );
+  }
+
+  const businessNameRegistration = cac.services.find(
+    (service) =>
+      service.slug ===
+      'business-name-registration-ctc-registration-documents',
+  );
+
+  assert.equal(
+    businessNameRegistration.amount,
+    20000,
+  );
+
+  const fullSearch = cac.services.find(
+    (service) =>
+      service.slug ===
+      'full-electronic-search-per-entity-view-only',
+  );
+
+  assert.equal(fullSearch.pricingModel, 'fixed');
+  assert.equal(fullSearch.amount, 1000);
+
+  const pscSearch = cac.services.find(
+    (service) =>
+      service.slug ===
+      'persons-with-significant-control-view-only-search',
+  );
+
+  assert.equal(pscSearch.pricingModel, 'free');
+  assert.equal(pscSearch.amount, null);
+
+  const stampDutyInFeeIdentity = cac.services
+    .flatMap((service) => service.feeOptions)
+    .some((option) =>
+      /stamp\s+dut(?:y|ies)/i.test(
+        [
+          option.formula,
+          option.conditions,
+          option.label,
+        ].filter(Boolean).join(' '),
+      )
+    );
+
+  assert.equal(stampDutyInFeeIdentity, false);
+
+  const fullLoaded = validateManifest(
+    loadManifest(DEFAULT_MANIFEST_PATH),
+  );
+
+  const loadedCac = fullLoaded.mdas.find(
+    (mda) => mda.slug === 'cac',
+  );
+
+  assert.equal(loadedCac.services.length, 129);
+
+  const report = dryRunReport(
+    fullLoaded,
+    'batch-01',
+  );
+
+  assert.equal(report.mdaCount, 5);
+  assert.equal(report.duplicateRiskCount, 0);
+  assert.equal(report.writes, 0);
+
+  const pool = fakePool();
+
+  const first = await importBatch({
+    manifest: withCac,
+    batch: 'batch-01',
+    pool,
+    actorAdminUserId: null,
+  });
+
+  const second = await importBatch({
+    manifest: withCac,
+    batch: 'batch-01',
+    pool,
+    actorAdminUserId: null,
+  });
+
+  assert.equal(first.verificationEvents, 0);
+  assert.equal(second.created, 0);
+  assert.equal(second.updated, 0);
+  assert.equal(second.linked, 0);
+  assert.equal(second.verificationEvents, 0);
+
+  const importedCac = pool.state.mdas.find(
+    (mda) => mda.slug === 'cac',
+  );
+
+  const importedCacServices = pool.state.services.filter(
+    (service) => service.mda_id === importedCac.id,
+  );
+
+  assert.equal(importedCacServices.length, 129);
+});
+
+test('direct Batch 1 import canonicalizes CAC before database writes', async () => {
+  const pool = fakePool();
+
+  const legacy = validateManifest(clone(manifest));
+
+  const legacyCac = legacy.mdas.find(
+    (mda) => mda.slug === 'cac',
+  );
+
+  assert.ok(legacyCac.services.length < 129);
+
+  const first = await importBatch({
+    manifest: legacy,
+    batch: 'batch-01',
+    pool,
+    actorAdminUserId: null,
+  });
+
+  const importedCac = pool.state.mdas.find(
+    (mda) => mda.slug === 'cac',
+  );
+
+  const importedServices = pool.state.services.filter(
+    (service) => service.mda_id === importedCac.id,
+  );
+
+  assert.equal(importedServices.length, 129);
+
+  const second = await importBatch({
+    manifest: legacy,
+    batch: 'batch-01',
+    pool,
+    actorAdminUserId: null,
+  });
+
+  assert.equal(second.created, 0);
+  assert.equal(second.updated, 0);
+  assert.equal(second.linked, 0);
+  assert.equal(second.verificationEvents, 0);
+
+  assert.equal(first.verificationEvents, 0);
 });

@@ -10,6 +10,7 @@ const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
 const DEFAULT_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-01-mdas.json');
 const BATCH_02_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-02-mdas.json');
 const FCTIRS_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/fctirs-service-catalogue.json');
+const CAC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/cac-service-catalogue.json');
 const NIMC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/nimc-service-catalogue.json');
 const NIS_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/nis-service-catalogue.json');
 const FRSC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/frsc-service-catalogue.json');
@@ -235,6 +236,109 @@ function buildFctirsManifest(baseManifest, catalogue) {
   return {
     ...baseManifest,
     mdas: baseManifest.mdas.map((item) => item.slug === 'fct-irs' ? mda : item),
+  };
+}
+
+
+function buildCacManifest(baseManifest, catalogue) {
+  const sourceRecords = catalogue.sources || {};
+
+  const mda = {
+    ...catalogue.mda,
+    services: catalogue.services.map((row) => {
+      const evidenceFor = (sourceKeys, page, evidenceNote) =>
+        sourceKeys.map((key) => {
+          const source = sourceRecords[key];
+
+          if (!source) {
+            throw new Error(
+              `CAC catalogue row ${row.slug} references missing source ${key}.`,
+            );
+          }
+
+          return {
+            key,
+            ...source,
+            pageOrSection: page || source.documentReference || null,
+            notes: evidenceNote || source.notes,
+          };
+        });
+
+      const feeOptions = row.feeOptions.map((option) => ({
+        pricingModel: option.pricingModel,
+        amount: option.amount ?? null,
+        minimumAmount: option.minimumAmount ?? null,
+        maximumAmount: option.maximumAmount ?? null,
+        currency: option.currency,
+        percentage: option.percentage ?? null,
+        formula: option.formula ?? null,
+        conditions: option.conditions ?? null,
+        label: option.label || row.name,
+        notes: option.notes || row.notes || null,
+        verificationStatus: option.verificationStatus,
+        evidence: evidenceFor(
+          option.sourceKeys,
+          option.page,
+          option.evidenceNote,
+        ),
+        paymentGuide: row.paymentGuide,
+      }));
+
+      if (!feeOptions.length) {
+        throw new Error(`CAC catalogue row ${row.slug} has no fee options.`);
+      }
+
+      const statuses = new Set(
+        feeOptions.map((option) => option.verificationStatus),
+      );
+
+      const verificationStatus = statuses.has('conflicting')
+        ? 'conflicting'
+        : statuses.has('pending')
+          ? 'pending'
+          : statuses.has('unable_to_verify')
+            ? 'unable_to_verify'
+            : 'verified';
+
+      const first = feeOptions[0];
+
+      const description = row.processingStandard
+        ? `${row.description} Service standard: ${row.processingStandard}`
+        : row.description;
+
+      return {
+        name: row.name,
+        slug: row.slug,
+        description,
+        category: row.category || 'CAC services',
+        jurisdiction: row.jurisdiction || 'Federal',
+        requirements: row.requirements || [],
+        processSteps: row.processSteps || [],
+        pricingModel: first.pricingModel,
+        amount: first.amount,
+        minimumAmount: first.minimumAmount,
+        maximumAmount: first.maximumAmount,
+        currency: first.currency,
+        percentage: first.percentage,
+        formula: first.formula,
+        conditions: first.conditions,
+        verificationStatus,
+        lastChecked: '2026-11-01',
+        evidence: first.evidence,
+        officialActionUrl: row.officialActionUrl || null,
+        officialChannelType: row.officialChannelType || 'portal',
+        paymentGuide: row.paymentGuide,
+        notes: row.notes || null,
+        feeOptions,
+      };
+    }),
+  };
+
+  return {
+    ...baseManifest,
+    mdas: baseManifest.mdas.map(
+      (item) => item.slug === 'cac' ? mda : item,
+    ),
   };
 }
 
@@ -480,7 +584,8 @@ function loadManifest(manifestPath) {
   }
   if (resolvedPath !== DEFAULT_MANIFEST_PATH) return baseManifest;
   const withFctirs = buildFctirsManifest(baseManifest, JSON.parse(fs.readFileSync(FCTIRS_CATALOGUE_PATH, 'utf8')));
-  const withNimc = buildNimcManifest(withFctirs, JSON.parse(fs.readFileSync(NIMC_CATALOGUE_PATH, 'utf8')));
+  const withCac = buildCacManifest(withFctirs, JSON.parse(fs.readFileSync(CAC_CATALOGUE_PATH, 'utf8')));
+  const withNimc = buildNimcManifest(withCac, JSON.parse(fs.readFileSync(NIMC_CATALOGUE_PATH, 'utf8')));
   const withNis = buildNisManifest(withNimc, JSON.parse(fs.readFileSync(NIS_CATALOGUE_PATH, 'utf8')));
   return buildFrscManifest(withNis, JSON.parse(fs.readFileSync(FRSC_CATALOGUE_PATH, 'utf8')));
 }
@@ -817,14 +922,35 @@ function canonicalizeImportManifest(manifest, batch) {
 
   if (selectedBatch !== 'batch-01') return manifest;
 
-  const hasFctirs = manifest.mdas?.some((mda) => mda.slug === 'fct-irs');
-  if (!hasFctirs) return manifest;
+  let canonical = manifest;
 
-  const catalogue = JSON.parse(
-    fs.readFileSync(FCTIRS_CATALOGUE_PATH, 'utf8'),
+  const hasFctirs = canonical.mdas?.some(
+    (mda) => mda.slug === 'fct-irs',
   );
 
-  return buildFctirsManifest(manifest, catalogue);
+  if (hasFctirs) {
+    canonical = buildFctirsManifest(
+      canonical,
+      JSON.parse(
+        fs.readFileSync(FCTIRS_CATALOGUE_PATH, 'utf8'),
+      ),
+    );
+  }
+
+  const hasCac = canonical.mdas?.some(
+    (mda) => mda.slug === 'cac',
+  );
+
+  if (hasCac) {
+    canonical = buildCacManifest(
+      canonical,
+      JSON.parse(
+        fs.readFileSync(CAC_CATALOGUE_PATH, 'utf8'),
+      ),
+    );
+  }
+
+  return canonical;
 }
 
 async function importBatch({ manifest, batch = 'batch-01', pool, actorAdminUserId = null }) {
@@ -890,4 +1016,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildFctirsManifest, buildFrscManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, selectBatch, validateManifest };
