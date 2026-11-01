@@ -422,6 +422,10 @@ test('direct Batch 2 imports canonicalize JAMB, remain idempotent and create no 
   const first = await importBatch({ manifest: validateManifest(batch2Manifest), batch: 'batch-02', pool, actorAdminUserId: null });
   const second = await importBatch({ manifest: validateManifest(batch2Manifest), batch: 'batch-02', pool, actorAdminUserId: null });
   const canonical = validateManifest(loadManifest(require('node:path').resolve(__dirname, '../../research/production-import/batch-02-mdas.json')));
+  const agis = pool.state.mdas.find((mda) => mda.slug === 'agis');
+  assert.equal(canonical.mdas.find((mda) => mda.slug === 'agis').coverageStatus, 'inactive');
+  assert.equal(agis.coverage_status, 'inactive');
+  assert.equal(agis.is_active, false);
   const expected = canonical.mdas.find((mda) => mda.slug === 'jamb');
   const jambId = pool.state.mdas.find((mda) => mda.slug === 'jamb').id;
   assert.equal(pool.state.services.filter((service) => service.mda_id === jambId).length, expected.services.length);
