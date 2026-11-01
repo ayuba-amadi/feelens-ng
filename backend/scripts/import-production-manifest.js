@@ -9,6 +9,7 @@ const { pricingModels, sourceTypes, verificationStatuses } = require('../src/val
 const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
 const DEFAULT_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-01-mdas.json');
 const BATCH_02_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-02-mdas.json');
+const FCTIRS_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/fctirs-service-catalogue.json');
 const NIMC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/nimc-service-catalogue.json');
 const NIS_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/nis-service-catalogue.json');
 const FRSC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/frsc-service-catalogue.json');
@@ -19,6 +20,10 @@ const BATCH_ALIASES = new Map([
   ['batch-03', 'batch-03'], ['batch-03-mdas', 'batch-03'],
 ]);
 const BATCH_01_SLUGS = ['fct-irs', 'nimc', 'nigeria-immigration-service', 'frsc-drivers-licence', 'cac'];
+const FCTIRS_OBSOLETE_SERVICE_SLUGS = [
+  'tax-id-tin-generation-or-retrieval',
+  'tax-payment',
+];
 const BATCH_02_SLUGS = ['agis', 'fct-high-court', 'npc', 'jamb', 'nepc'];
 const BATCH_03_SLUGS = ['nafdac', 'son', 'ministry-interior-marriage-registry', 'nigerian-copyright-commission', 'ncc'];
 const BATCH_SLUGS = { 'batch-01': BATCH_01_SLUGS, 'batch-02': BATCH_02_SLUGS, 'batch-03': BATCH_03_SLUGS };
@@ -35,8 +40,8 @@ const evidenceSchema = z.object({
   publicationDate: nullableDate,
   effectiveDate: nullableDate,
   lastChecked: dateValue,
-  pageOrSection: z.string().trim().max(5000).optional().default(null),
-  documentReference: z.string().trim().max(5000).optional().default(null),
+  pageOrSection: z.string().trim().max(5000).nullable().optional().default(null),
+  documentReference: z.string().trim().max(5000).nullable().optional().default(null),
   evidenceTier: z.number().int().min(1).max(3),
   publisher: z.string().trim().min(1).max(300),
   notes: z.string().trim().min(1).max(5000),
@@ -142,6 +147,96 @@ function validateManifest(value) {
 }
 
 function canonicalBatch(batch) { return BATCH_ALIASES.get(String(batch || '').trim().toLowerCase()); }
+
+
+function buildFctirsManifest(baseManifest, catalogue) {
+  const sourceRecords = catalogue.sources || {};
+  const mda = {
+    ...catalogue.mda,
+    services: catalogue.services.map((row) => {
+      const evidenceFor = (sourceKeys, page, evidenceNote) => sourceKeys.map((key) => {
+        const source = sourceRecords[key];
+        if (!source) throw new Error(`FCT-IRS catalogue row ${row.slug} references missing source ${key}.`);
+        return {
+          key,
+          ...source,
+          pageOrSection: page || source.documentReference,
+          notes: evidenceNote || source.notes,
+        };
+      });
+
+      const feeOptions = row.feeOptions.map((option) => ({
+        pricingModel: option.pricingModel,
+        amount: option.amount ?? null,
+        minimumAmount: option.minimumAmount ?? null,
+        maximumAmount: option.maximumAmount ?? null,
+        currency: option.currency,
+        percentage: option.percentage ?? null,
+        formula: option.formula ?? null,
+        conditions: option.conditions ?? null,
+        label: option.label || row.name,
+        notes: option.notes || row.notes || null,
+        verificationStatus: option.verificationStatus,
+        evidence: evidenceFor(option.sourceKeys, option.page, option.evidenceNote),
+        paymentGuide: row.paymentGuide,
+      }));
+
+      if (!feeOptions.length) {
+        throw new Error(`FCT-IRS catalogue row ${row.slug} has no fee options.`);
+      }
+
+      const statuses = new Set(feeOptions.map((option) => option.verificationStatus));
+      const verificationStatus = statuses.has('conflicting')
+        ? 'conflicting'
+        : statuses.has('pending')
+          ? 'pending'
+          : statuses.has('unable_to_verify')
+            ? 'unable_to_verify'
+            : 'verified';
+
+      const first = feeOptions[0];
+
+      const description = row.processingStandard
+        ? `${row.description} Service standard: ${row.processingStandard}`
+        : row.description;
+
+      const notes = row.processingStandard
+        ? `${row.notes || ''}${row.notes ? ' ' : ''}Service standard: ${row.processingStandard}`
+        : row.notes || null;
+
+      return {
+        name: row.name,
+        slug: row.slug,
+        description,
+        category: row.category,
+        jurisdiction: row.jurisdiction || 'Federal Capital Territory',
+        requirements: row.requirements || [],
+        processSteps: row.processSteps || [],
+        pricingModel: first.pricingModel,
+        amount: first.amount,
+        minimumAmount: first.minimumAmount,
+        maximumAmount: first.maximumAmount,
+        currency: first.currency,
+        percentage: first.percentage,
+        formula: first.formula,
+        conditions: first.conditions,
+        verificationStatus,
+        lastChecked: '2026-11-01',
+        evidence: first.evidence,
+        officialActionUrl: row.officialActionUrl || null,
+        officialChannelType: row.officialChannelType || 'website',
+        paymentGuide: row.paymentGuide,
+        notes,
+        feeOptions,
+      };
+    }),
+  };
+
+  return {
+    ...baseManifest,
+    mdas: baseManifest.mdas.map((item) => item.slug === 'fct-irs' ? mda : item),
+  };
+}
 
 function buildNimcManifest(baseManifest, catalogue) {
   const sourceRecords = catalogue.sources || {};
@@ -384,7 +479,8 @@ function loadManifest(manifestPath) {
     return buildNpcManifest(baseManifest, JSON.parse(fs.readFileSync(NPC_CATALOGUE_PATH, 'utf8')));
   }
   if (resolvedPath !== DEFAULT_MANIFEST_PATH) return baseManifest;
-  const withNimc = buildNimcManifest(baseManifest, JSON.parse(fs.readFileSync(NIMC_CATALOGUE_PATH, 'utf8')));
+  const withFctirs = buildFctirsManifest(baseManifest, JSON.parse(fs.readFileSync(FCTIRS_CATALOGUE_PATH, 'utf8')));
+  const withNimc = buildNimcManifest(withFctirs, JSON.parse(fs.readFileSync(NIMC_CATALOGUE_PATH, 'utf8')));
   const withNis = buildNisManifest(withNimc, JSON.parse(fs.readFileSync(NIS_CATALOGUE_PATH, 'utf8')));
   return buildFrscManifest(withNis, JSON.parse(fs.readFileSync(FRSC_CATALOGUE_PATH, 'utf8')));
 }
@@ -408,7 +504,9 @@ function feeValues(service) {
     pricingModel: service.pricingModel, currency: service.currency, amount: service.amount,
     minimumAmount: service.minimumAmount ?? null, maximumAmount: service.maximumAmount ?? null, percentage: service.percentage, formula: service.formula,
     conditions: service.conditions ?? (service.pricingModel === 'variable' ? service.paymentGuide : null),
-    label: service.name, notes: service.notes, isCurrent: service.verificationStatus !== 'superseded',
+    label: service.label ?? service.name,
+    notes: service.notes,
+    isCurrent: service.verificationStatus !== 'superseded',
     verificationStatus: service.verificationStatus,
     verifiedAt: service.verificationStatus === 'verified' ? dateToTimestamp(service.lastChecked) : null,
     nextReviewAt: null,
@@ -565,6 +663,112 @@ async function findOrCreateChannel(client, owner, channel, actorAdminUserId) {
   return { row: created.rows[0], created: true, updated: false };
 }
 
+
+async function reconcileFctirsObsoleteRecords(client, mdaId, actorAdminUserId) {
+  const counters = { updated: 0 };
+
+  const obsoleteServices = await client.query(
+    `SELECT *
+       FROM services
+      WHERE mda_id = $1
+        AND slug = ANY($2::text[])
+      FOR UPDATE`,
+    [mdaId, FCTIRS_OBSOLETE_SERVICE_SLUGS],
+  );
+
+  for (const service of obsoleteServices.rows) {
+    if (service.is_active === true) {
+      const updatedService = await client.query(
+        `UPDATE services
+            SET is_active = FALSE,
+                updated_at = NOW()
+          WHERE id = $1
+          RETURNING *`,
+        [service.id],
+      );
+
+      await audit(
+        client,
+        actorAdminUserId,
+        'import.service.retired',
+        'service',
+        service.id,
+        service,
+        updatedService.rows[0],
+      );
+
+      counters.updated += 1;
+    }
+
+    const currentFees = await client.query(
+      `SELECT *
+         FROM fee_options
+        WHERE service_id = $1
+          AND is_current = TRUE
+        FOR UPDATE`,
+      [service.id],
+    );
+
+    for (const fee of currentFees.rows) {
+      const updatedFee = await client.query(
+        `UPDATE fee_options
+            SET is_current = FALSE,
+                verification_status = 'superseded',
+                updated_at = NOW()
+          WHERE id = $1
+          RETURNING *`,
+        [fee.id],
+      );
+
+      await audit(
+        client,
+        actorAdminUserId,
+        'import.fee.superseded',
+        'fee_option',
+        fee.id,
+        fee,
+        updatedFee.rows[0],
+      );
+
+      counters.updated += 1;
+    }
+
+    const activeChannels = await client.query(
+      `SELECT *
+         FROM official_channels
+        WHERE service_id = $1
+          AND is_active = TRUE
+        FOR UPDATE`,
+      [service.id],
+    );
+
+    for (const channel of activeChannels.rows) {
+      const updatedChannel = await client.query(
+        `UPDATE official_channels
+            SET is_active = FALSE,
+                updated_at = NOW()
+          WHERE id = $1
+          RETURNING *`,
+        [channel.id],
+      );
+
+      await audit(
+        client,
+        actorAdminUserId,
+        'import.channel.retired',
+        'official_channel',
+        channel.id,
+        channel,
+        updatedChannel.rows[0],
+      );
+
+      counters.updated += 1;
+    }
+  }
+
+  return counters;
+}
+
 async function importMda(client, mda, actorAdminUserId) {
   const counters = { created: 0, updated: 0, linked: 0, verificationEvents: 0 };
   const mdaResult = await findOrCreateMda(client, mda, actorAdminUserId);
@@ -575,6 +779,15 @@ async function importMda(client, mda, actorAdminUserId) {
     counters.created += result.created ? 1 : 0;
     counters.updated += result.updated ? 1 : 0;
   }
+  if (mda.slug === 'fct-irs') {
+    const reconciliation = await reconcileFctirsObsoleteRecords(
+      client,
+      mdaResult.row.id,
+      actorAdminUserId,
+    );
+    counters.updated += reconciliation.updated;
+  }
+
   for (const service of mda.services) {
     const serviceResult = await findOrCreateService(client, mdaResult.row.id, service, actorAdminUserId);
     counters.created += serviceResult.created ? 1 : 0;
@@ -598,8 +811,27 @@ async function importMda(client, mda, actorAdminUserId) {
   return counters;
 }
 
+
+function canonicalizeImportManifest(manifest, batch) {
+  const selectedBatch = canonicalBatch(batch);
+
+  if (selectedBatch !== 'batch-01') return manifest;
+
+  const hasFctirs = manifest.mdas?.some((mda) => mda.slug === 'fct-irs');
+  if (!hasFctirs) return manifest;
+
+  const catalogue = JSON.parse(
+    fs.readFileSync(FCTIRS_CATALOGUE_PATH, 'utf8'),
+  );
+
+  return buildFctirsManifest(manifest, catalogue);
+}
+
 async function importBatch({ manifest, batch = 'batch-01', pool, actorAdminUserId = null }) {
-  const selected = selectBatch(manifest, batch);
+  const canonicalManifest = validateManifest(
+    canonicalizeImportManifest(manifest, batch),
+  );
+  const selected = selectBatch(canonicalManifest, batch);
   const counters = { created: 0, updated: 0, linked: 0, verificationEvents: 0 };
   for (const mda of selected.mdas) {
     const result = await withTransaction(pool, (client) => importMda(client, mda, actorAdminUserId));
@@ -658,4 +890,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, DEFAULT_MANIFEST_PATH, FRSC_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildFrscManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, countManifest, dryRunReport, importBatch, loadManifest, manifestSchema, parseArguments, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_SLUGS, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildFctirsManifest, buildFrscManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, importBatch, loadManifest, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, selectBatch, validateManifest };

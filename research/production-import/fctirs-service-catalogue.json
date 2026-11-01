@@ -1,0 +1,363 @@
+{
+  "version": "2026-11-01",
+  "mda": {
+    "name": "FCT Internal Revenue Service",
+    "acronym": "FCT-IRS",
+    "slug": "fct-irs",
+    "officialWebsite": "https://fctirs.gov.ng/",
+    "jurisdiction": "Federal Capital Territory",
+    "coverageStatus": "pilot",
+    "description": "Federal Capital Territory Internal Revenue Service tax-administration services supported by the official FCT-IRS Service Level Agreement, FAQ, service pages and public notices. Tax liabilities are distinct from administrative service charges.",
+    "officialChannels": [
+      {
+        "channelType": "website",
+        "name": "FCT-IRS official website",
+        "url": "https://fctirs.gov.ng/",
+        "contactValue": null,
+        "instructions": "Use the official FCT-IRS website for tax-service information and official channels."
+      },
+      {
+        "channelType": "phone",
+        "name": "FCT-IRS taxpayer service phone",
+        "url": null,
+        "contactValue": "0700 220 0002",
+        "instructions": "Official taxpayer-service contact listed in the FCT-IRS SLA."
+      },
+      {
+        "channelType": "email",
+        "name": "FCT-IRS contact centre email",
+        "url": null,
+        "contactValue": "contactus@fctirs.gov.ng",
+        "instructions": "Official taxpayer-service email listed by FCT-IRS."
+      }
+    ]
+  },
+  "sources": {
+    "fctirs-sla-v1": {
+      "title": "FCT-IRS Service Level Agreement (SLA) Version 1.0",
+      "sourceType": "service_level_agreement",
+      "url": "https://fctirs.gov.ng/wp-content/uploads/FCTIRS-SLA-Version1.0.pdf",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "evidenceTier": 2,
+      "publisher": "FCT Internal Revenue Service",
+      "documentReference": "FCT-IRS Service Level Agreement — service table, PDF pages 1–6",
+      "notes": "Official FCT-IRS SLA listing five services, timelines, costs and requirements. The document does not state a provider publication/effective date, so FeeLens must not substitute its access or review date as the provider date."
+    },
+    "fctirs-faq": {
+      "title": "FCT-IRS Official FAQ",
+      "sourceType": "official_faq",
+      "url": "https://fctirs.gov.ng/faq/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "evidenceTier": 2,
+      "publisher": "FCT Internal Revenue Service",
+      "documentReference": "FAQ sections on TIN registration, TIN fee, TIN retrieval, tax returns and TCC",
+      "notes": "Official FAQ states that TIN generation is free, provides individual and non-individual registration routes, explains TIN retrieval, tax-return filing and TCC application/verification."
+    },
+    "fctirs-free-service-notice": {
+      "title": "FCT-IRS free-service and anti-gratification notice",
+      "sourceType": "official_notice",
+      "url": "https://fctirs.gov.ng/offering-and-accepting-processing-fee-or-service-charge-gratification-is-not-allowed/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "evidenceTier": 2,
+      "publisher": "FCT Internal Revenue Service",
+      "documentReference": "Official notice on processing fees and service charges",
+      "notes": "FCT-IRS states that its services are rendered free of charge and that offering or accepting processing/service charges is not allowed. This supports FCT-IRS administrative service-charge claims; it does not mean underlying tax liabilities or third-party telecom/payment-provider charges are zero."
+    },
+    "fctirs-tax-id-2026-notice": {
+      "title": "Nigerian Tax ID Portal Goes Live Effective January 1, 2026",
+      "sourceType": "official_notice",
+      "url": "https://fctirs.gov.ng/nigerian-tax-id-portal-goes-live/",
+      "publicationDate": "2025-12-29",
+      "effectiveDate": "2026-01-01",
+      "lastChecked": "2026-11-01",
+      "evidenceTier": 2,
+      "publisher": "FCT Internal Revenue Service",
+      "documentReference": "FCT-IRS public notice on Nigerian Tax ID transition",
+      "notes": "Official FCT-IRS notice states that use of the Nigerian Tax ID became effective 1 January 2026 and replaces previously issued TINs. Historical SLA and FAQ wording is retained where necessary for evidence traceability."
+    },
+    "fctirs-tax-return-process": {
+      "title": "Filing Tax Return — FCT-IRS",
+      "sourceType": "official_process_page",
+      "url": "https://fctirs.gov.ng/howto/steps-on-filling-return/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "evidenceTier": 2,
+      "publisher": "FCT Internal Revenue Service",
+      "documentReference": "Official tax-return filing procedure",
+      "notes": "Official FCT-IRS page describing the self-service tax-return filing process."
+    },
+    "fctirs-tcc-checklist": {
+      "title": "FCT-IRS Tax Clearance Certificate Checklist",
+      "sourceType": "official_process_page",
+      "url": "https://fctirs.gov.ng/tax-clearance-certificate-tcc-checklist/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-11-01",
+      "evidenceTier": 2,
+      "publisher": "FCT Internal Revenue Service",
+      "documentReference": "Official TCC requirements checklist",
+      "notes": "Official FCT-IRS checklist describing PAYE TCC prerequisites and applicant documents."
+    }
+  },
+  "services": [
+    {
+      "name": "TIN generation / enrolment",
+      "slug": "tin-generation-enrolment",
+      "category": "Taxpayer Registration",
+      "jurisdiction": "Federal Capital Territory",
+      "description": "Registration/enrolment for a taxpayer identification record. FCT-IRS historical sources use the term TIN; FCT-IRS subsequently announced the Nigerian Tax ID transition effective 1 January 2026.",
+      "requirements": [
+        "Duly completed taxpayer registration information.",
+        "Bank Verification Number (BVN) where applicable.",
+        "National Identification Number (NIN) where applicable.",
+        "Corporate/non-individual applicants provide the required business registration information."
+      ],
+      "processSteps": [
+        "Use the official FCT-IRS/JTB registration route.",
+        "Provide the required taxpayer identification information.",
+        "Complete and submit the registration request.",
+        "Retain the issued Tax ID/TIN record through the official channel."
+      ],
+      "processingStandard": "24 hours in the FCT-IRS SLA.",
+      "notes": "The SLA expressly lists Taxpayer Identification Number Enrolment as Free. The FCT-IRS FAQ independently states that TIN generation is free of charge. The 2026 Tax ID terminology transition should be shown as a current-context note, not used to rewrite historical source wording.",
+      "officialActionUrl": "https://tin.jtb.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "FCT-IRS administrative service charge: Free. Do not pay an unofficial processing fee.",
+      "feeOptions": [
+        {
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "label": "TIN generation / enrolment",
+          "conditions": "FCT-IRS administrative service charge.",
+          "notes": "Free according to the FCT-IRS SLA and official FAQ.",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "fctirs-sla-v1",
+            "fctirs-faq",
+            "fctirs-tax-id-2026-notice"
+          ],
+          "page": "SLA service 1; FAQ — How much do I pay for TIN?",
+          "evidenceNote": "SLA lists enrolment as Free; FAQ states TIN generation is free."
+        }
+      ]
+    },
+    {
+      "name": "TIN retrieval",
+      "slug": "tin-retrieval",
+      "category": "Taxpayer Registration",
+      "jurisdiction": "Federal Capital Territory",
+      "description": "Retrieval or lookup of an existing taxpayer identification record using the official FCT-IRS/JTB process.",
+      "requirements": [
+        "Use the registered phone number where applicable.",
+        "Follow the identity information requested by the official retrieval route."
+      ],
+      "processSteps": [
+        "Follow the FCT-IRS FAQ retrieval instructions or official Tax ID/TIN lookup route.",
+        "Provide the requested identity information.",
+        "Retrieve or confirm the taxpayer identifier through the official channel."
+      ],
+      "processingStandard": null,
+      "notes": "The FAQ establishes the retrieval process but does not separately state a retrieval price. The FCT-IRS free-service notice supports a zero FCT-IRS processing/service charge. Possible telecom, SMS, USSD or network-provider charges are not established by the reviewed evidence.",
+      "officialActionUrl": "https://fctirs.gov.ng/faq/",
+      "officialChannelType": "website",
+      "paymentGuide": "FCT-IRS processing/service charge: Free based on the general free-service notice. This does not establish third-party telecom or network charges.",
+      "feeOptions": [
+        {
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "label": "TIN retrieval — FCT-IRS service charge",
+          "conditions": "Applies only to the FCT-IRS administrative processing/service charge.",
+          "notes": "Telecom, SMS, USSD or network-provider charges are outside this verified claim.",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "fctirs-free-service-notice",
+            "fctirs-faq"
+          ],
+          "page": "Official free-service notice; FAQ — lost TIN retrieval",
+          "evidenceNote": "FAQ supports the retrieval process; the separate FCT-IRS notice supports the administrative service-charge claim."
+        }
+      ]
+    },
+    {
+      "name": "Processing of filed annual tax returns",
+      "slug": "processing-filed-annual-tax-returns",
+      "category": "Tax Returns",
+      "jurisdiction": "Federal Capital Territory",
+      "description": "FCT-IRS processing of an individual's filed annual tax return after submission of the required return and supporting evidence.",
+      "requirements": [
+        "Duly completed Form A.",
+        "Evidence of tax deductions for individuals in employment.",
+        "Evidence of payment of assessed tax for individuals in business where applicable.",
+        "Statement of income for the preceding year.",
+        "Evidence of benefits in kind where applicable.",
+        "Evidence of allowable deductions such as relevant pension, NHIS, gratuity or life-insurance items where applicable."
+      ],
+      "processSteps": [
+        "Access the official FCT-IRS self-service tax-return workflow.",
+        "Complete and submit the required annual return.",
+        "Provide supporting tax and income information.",
+        "FCT-IRS processes the filed annual return."
+      ],
+      "processingStandard": "72 hours in the FCT-IRS SLA.",
+      "notes": "The administrative processing service is listed as Free. Any tax liability arising from an assessment is separate from the administrative service fee.",
+      "officialActionUrl": "https://fctirs.gov.ng/howto/steps-on-filling-return/",
+      "officialChannelType": "website",
+      "paymentGuide": "Administrative processing service: Free. Tax assessed or payable is not a service fee and must not be represented as zero.",
+      "feeOptions": [
+        {
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "label": "Annual tax return processing",
+          "conditions": "Administrative processing charge only.",
+          "notes": "Does not represent or waive any underlying tax liability.",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "fctirs-sla-v1",
+            "fctirs-tax-return-process"
+          ],
+          "page": "SLA service 2",
+          "evidenceNote": "SLA lists processing of filed annual tax returns as Free with a 72-hour service standard."
+        }
+      ]
+    },
+    {
+      "name": "Tax Clearance Certificate issuance — PAYE employee",
+      "slug": "tax-clearance-certificate-issuance-paye",
+      "category": "Tax Clearance Certificate",
+      "jurisdiction": "Federal Capital Territory",
+      "description": "Application and issuance of a Tax Clearance Certificate for an individual taxed under the Pay As You Earn scheme.",
+      "requirements": [
+        "Employer annual declaration/certificate and remittance evidence as applicable.",
+        "Evidence of allowable deductions claimed.",
+        "FCT-IRS taxpayer identification record.",
+        "Completed Personal Income Tax Annual Returns Form A.",
+        "Completed TCC application form.",
+        "Valid means of identification.",
+        "Relevant payslips or bank statement where applicable.",
+        "Previous TCC for renewal where applicable."
+      ],
+      "processSteps": [
+        "Ensure the applicable employer and taxpayer filings are up to date.",
+        "Complete the FCT-IRS TCC application requirements.",
+        "Submit through the applicable official FCT-IRS channel.",
+        "FCT-IRS performs the required tax-compliance checks and issues or declines the certificate."
+      ],
+      "processingStandard": "Maximum 14 days in the FCT-IRS SLA and FAQ.",
+      "notes": "The TCC issuance service is free. The applicant may still have outstanding tax liabilities that must be satisfied before a TCC can be issued.",
+      "officialActionUrl": "https://fctirs.gov.ng/tax-clearance-certificate-tcc-checklist/",
+      "officialChannelType": "website",
+      "paymentGuide": "TCC issuance service charge: Free. This does not mean outstanding taxes are waived.",
+      "feeOptions": [
+        {
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "label": "PAYE Tax Clearance Certificate issuance",
+          "conditions": "Administrative TCC issuance charge.",
+          "notes": "Underlying tax compliance and liabilities remain separate.",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "fctirs-sla-v1",
+            "fctirs-tcc-checklist",
+            "fctirs-faq"
+          ],
+          "page": "SLA service 3",
+          "evidenceNote": "SLA lists PAYE TCC issuance as Free with a 14-day service standard."
+        }
+      ]
+    },
+    {
+      "name": "Tax Clearance Certificate issuance — individual in business / partnership",
+      "slug": "tax-clearance-certificate-issuance-business-partnership",
+      "category": "Tax Clearance Certificate",
+      "jurisdiction": "Federal Capital Territory",
+      "description": "Application and issuance of a Tax Clearance Certificate for an individual in business or a partnership.",
+      "requirements": [
+        "FCT-IRS taxpayer identification record.",
+        "Completed Personal Income Tax Annual Returns Form A.",
+        "Completed enterprise/business TCC application form where applicable.",
+        "Valid means of identification.",
+        "Previous TCC or evidence of income tax for the relevant previous years.",
+        "Signed/stamped statement of accounts where applicable.",
+        "Bank statements for relevant years where required.",
+        "Other relevant supporting documents requested by FCT-IRS."
+      ],
+      "processSteps": [
+        "Complete the applicable annual tax filings and TCC application documentation.",
+        "Provide business/partnership financial and tax evidence.",
+        "Submit through the applicable official FCT-IRS channel.",
+        "FCT-IRS performs the required tax-compliance checks and issues or declines the certificate."
+      ],
+      "processingStandard": "14 days in the FCT-IRS SLA.",
+      "notes": "The administrative TCC issuance service is free. The record does not state that tax due, assessed tax or other lawful liabilities are free.",
+      "officialActionUrl": "https://fctirs.gov.ng/downloads/",
+      "officialChannelType": "website",
+      "paymentGuide": "TCC issuance service charge: Free. Tax liabilities remain separate.",
+      "feeOptions": [
+        {
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "label": "Business / partnership Tax Clearance Certificate issuance",
+          "conditions": "Administrative TCC issuance charge.",
+          "notes": "Underlying tax liabilities and assessments remain separate.",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "fctirs-sla-v1",
+            "fctirs-faq"
+          ],
+          "page": "SLA service 4",
+          "evidenceNote": "SLA lists TCC issuance for individuals in business and partnerships as Free with a 14-day service standard."
+        }
+      ]
+    },
+    {
+      "name": "Tax Clearance Certificate verification",
+      "slug": "tax-clearance-certificate-verification",
+      "category": "Tax Clearance Certificate",
+      "jurisdiction": "Federal Capital Territory",
+      "description": "Verification of the authenticity of an FCT-IRS Tax Clearance Certificate.",
+      "requirements": [
+        "Written verification request where required.",
+        "Provide sufficient details of the certificate to be verified."
+      ],
+      "processSteps": [
+        "Use the official FCT-IRS verification procedure or submit the required written request.",
+        "Provide the TCC details requested by FCT-IRS.",
+        "Receive confirmation of authenticity through the official process."
+      ],
+      "processingStandard": "48 hours in the FCT-IRS SLA.",
+      "notes": "The SLA expressly lists TCC verification as Free.",
+      "officialActionUrl": "https://fctirs.gov.ng/faq/",
+      "officialChannelType": "website",
+      "paymentGuide": "FCT-IRS TCC verification service charge: Free.",
+      "feeOptions": [
+        {
+          "pricingModel": "free",
+          "amount": null,
+          "currency": "NGN",
+          "label": "Tax Clearance Certificate verification",
+          "conditions": "FCT-IRS verification service.",
+          "notes": "Official SLA service charge is Free.",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "fctirs-sla-v1",
+            "fctirs-faq"
+          ],
+          "page": "SLA service 5",
+          "evidenceNote": "SLA lists TCC verification as Free with a 48-hour service standard."
+        }
+      ]
+    }
+  ]
+}
