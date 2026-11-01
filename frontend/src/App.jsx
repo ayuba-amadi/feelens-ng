@@ -6,6 +6,8 @@ import { SiteLayout } from './components/layout/SiteLayout';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 const AboutPage = lazy(() => import('./pages/AboutPage').then((module) => ({ default: module.AboutPage })));
 const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage').then((module) => ({ default: module.DataSourcesPage })));
+const NimcCharterPage = lazy(() => import('./pages/NimcCharterPage').then((module) => ({ default: module.NimcCharterPage })));
+const NisSlaPage = lazy(() => import('./pages/NisSlaPage').then((module) => ({ default: module.NisSlaPage })));
 const HomePage = lazy(() => import('./pages/HomePage').then((module) => ({ default: module.HomePage })));
 const MdaDetailPage = lazy(() => import('./pages/MdaDetailPage').then((module) => ({ default: module.MdaDetailPage })));
 const MdasPage = lazy(() => import('./pages/MdasPage').then((module) => ({ default: module.MdasPage })));
@@ -57,6 +59,8 @@ export default function App() {
           <Route path="/services/:slug" element={<ServiceDetailPage />} />
           <Route path="/methodology" element={<MethodologyPage />} />
           <Route path="/data-sources" element={<DataSourcesPage />} />
+          <Route path="/sources/nimc-service-charter" element={<NimcCharterPage />} />
+          <Route path="/sources/nis-service-level-agreement" element={<NisSlaPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/policy" element={<PolicyPage />} />

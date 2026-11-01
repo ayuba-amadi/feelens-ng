@@ -7,6 +7,11 @@ const {
   publicSourceListSchema,
   slugParamsSchema,
 } = require('../validation/public.schemas');
+const {
+  publicFeeStatusSql,
+  publicReviewEventPredicate,
+  publicVerifiedReviewExistsSql,
+} = require('../services/public-verification');
 
 const PUBLIC_FEE_WHERE = "f.is_current = TRUE AND f.verification_status <> 'superseded'";
 const PUBLIC_SERVICE_WHERE = 's.is_active = TRUE AND m.is_active = TRUE';
@@ -20,7 +25,7 @@ function publicResponse(value) {
     .filter(([key]) => !/^(id|.*_id|.*Id|notes|checkedBy|reviewerName|verificationMethod|evidenceSummary|previousValues|newValues|password_hash)$/.test(key))
     .map(([key, item]) => [key, publicResponse(item)]));
   if (typeof result.sourceType === 'string') {
-    const labels = { official_faq: 'Official FAQ', official_website: 'Official website', official_portal: 'Official portal', gazette: 'Government Gazette', fee_schedule: 'Official Fee Schedule', approved_fee_schedule: 'Official Fee Schedule', statutory_instrument: 'Statutory Instrument' };
+    const labels = { official_faq: 'Official FAQ', official_website: 'Official website', official_portal: 'Official portal', official_guideline: 'Official guideline', official_process_page: 'Official process page', official_fee_page: 'Official fee page', gazette: 'Government Gazette', fee_schedule: 'Official Fee Schedule', approved_fee_schedule: 'Official Fee Schedule', statutory_instrument: 'Statutory Instrument', service_level_agreement: 'Service Level Agreement', official_notice: 'Official Notice', official_document: 'Official Document' };
     result.sourceTypeLabel = labels[result.sourceType.toLowerCase()] || result.sourceType.replaceAll('_', ' ').replace(/^./, (c) => c.toUpperCase());
   }
   return result;
@@ -37,8 +42,8 @@ const PUBLIC_FEE_FIELDS = `
   f.formula,
   f.conditions,
   f.label,
-  f.verification_status AS "verificationStatus",
-  f.verified_at AS "verifiedAt",
+  ${publicFeeStatusSql('f')} AS "verificationStatus",
+  CASE WHEN ${publicVerifiedReviewExistsSql('f')} THEN f.verified_at ELSE NULL END AS "verifiedAt",
   f.next_review_at AS "nextReviewAt"`;
 
 const PUBLIC_SOURCE_FIELDS = `
@@ -129,8 +134,8 @@ function publicFeeJson(alias = 'f') {
     'formula', ${alias}.formula,
     'conditions', ${alias}.conditions,
     'label', ${alias}.label,
-    'verificationStatus', ${alias}.verification_status,
-    'verifiedAt', ${alias}.verified_at,
+    'verificationStatus', ${publicFeeStatusSql(alias)},
+    'verifiedAt', CASE WHEN ${publicVerifiedReviewExistsSql(alias)} THEN ${alias}.verified_at ELSE NULL END,
     'nextReviewAt', ${alias}.next_review_at
   )`;
 }
@@ -144,11 +149,13 @@ function currentFeesJson(serviceAlias = 's') {
 }
 
 function verificationStatusSql(serviceAlias = 's') {
+  const status = publicFeeStatusSql('f');
   return `CASE
-    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'conflicting') THEN 'conflicting'
-    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'unable_to_verify') THEN 'unable_to_verify'
-    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'pending') THEN 'pending'
-    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'verified') THEN 'verified'
+    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND (${status}) = 'conflicting') THEN 'conflicting'
+    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND (${status}) = 'unable_to_verify') THEN 'unable_to_verify'
+    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND (${status}) = 'pending') THEN 'pending'
+    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND (${status}) = 'source_supported') THEN 'source_supported'
+    WHEN EXISTS (SELECT 1 FROM fee_options f WHERE f.service_id = ${serviceAlias}.id AND ${PUBLIC_FEE_WHERE} AND (${status}) = 'verified') THEN 'verified'
     ELSE NULL
   END`;
 }
@@ -163,10 +170,12 @@ function servicePublicSelect() {
     s.jurisdiction,
     ${currentFeesJson('s')} AS "feeOptions",
     ${verificationStatusSql('s')} AS "verificationStatus",
-    COALESCE(
-      (SELECT MAX(ve.checked_at) FROM verification_events ve WHERE ve.service_id = s.id),
-      (SELECT MAX(f.verified_at) FROM fee_options f WHERE f.service_id = s.id AND ${PUBLIC_FEE_WHERE})
-    ) AS "lastChecked",
+    (SELECT MAX(ve.checked_at)
+       FROM verification_events ve
+       JOIN fee_options f ON f.id = ve.fee_option_id
+      WHERE f.service_id = s.id AND f.is_current = TRUE
+        AND f.verification_status = 'verified'
+        AND ${publicReviewEventPredicate('f', 've')}) AS "lastChecked",
     (SELECT MIN(f.next_review_at) FROM fee_options f WHERE f.service_id = s.id AND ${PUBLIC_FEE_WHERE} AND f.next_review_at IS NOT NULL) AS "nextReviewAt",
     EXISTS (
       SELECT 1 FROM fee_sources fs
@@ -229,7 +238,12 @@ function createPublicRouter(pool) {
              FROM fee_options f
              JOIN services s ON s.id = f.service_id
              JOIN mdas m ON m.id = s.mda_id
-            WHERE ${PUBLIC_SERVICE_WHERE} AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'verified') AS "verifiedFeeItems",
+            WHERE ${PUBLIC_SERVICE_WHERE} AND ${PUBLIC_FEE_WHERE} AND (${publicFeeStatusSql('f')}) = 'verified') AS "verifiedFeeItems",
+          (SELECT COUNT(*)::int
+             FROM fee_options f
+             JOIN services s ON s.id = f.service_id
+             JOIN mdas m ON m.id = s.mda_id
+            WHERE ${PUBLIC_SERVICE_WHERE} AND ${PUBLIC_FEE_WHERE} AND (${publicFeeStatusSql('f')}) = 'source_supported') AS "sourceSupportedFeeItems",
           (SELECT COUNT(DISTINCT src.id)::int
              FROM sources src
              JOIN fee_sources fs ON fs.source_id = src.id
@@ -238,7 +252,7 @@ function createPublicRouter(pool) {
              JOIN mdas m ON m.id = s.mda_id
             WHERE ${PUBLIC_SERVICE_WHERE} AND ${PUBLIC_FEE_WHERE}) AS "sources"
       `);
-      res.json(result.rows[0] || { mdasCovered: 0, servicesMapped: 0, verifiedFeeItems: 0, sources: 0 });
+      res.json(result.rows[0] || { mdasCovered: 0, servicesMapped: 0, verifiedFeeItems: 0, sourceSupportedFeeItems: 0, sources: 0 });
     } catch (error) {
       next(error);
     }
@@ -321,13 +335,15 @@ function createPublicRouter(pool) {
         SELECT ${publicMdaSelect()},
           (SELECT COUNT(*)::int FROM services ms WHERE ms.mda_id = m.id AND ms.is_active = TRUE) AS "mappedActiveServices",
           (SELECT COUNT(*)::int FROM fee_options f JOIN services ms ON ms.id = f.service_id
-             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'verified') AS "currentVerifiedFeeItems",
+             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND (${publicFeeStatusSql('f')}) = 'verified') AS "currentVerifiedFeeItems",
           (SELECT COUNT(*)::int FROM fee_options f JOIN services ms ON ms.id = f.service_id
-             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'pending') AS "pendingItems",
+             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND (${publicFeeStatusSql('f')}) = 'source_supported') AS "sourceSupportedItems",
           (SELECT COUNT(*)::int FROM fee_options f JOIN services ms ON ms.id = f.service_id
-             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'conflicting') AS "conflictingItems",
+             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND (${publicFeeStatusSql('f')}) = 'pending') AS "pendingItems",
           (SELECT COUNT(*)::int FROM fee_options f JOIN services ms ON ms.id = f.service_id
-             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND f.verification_status = 'unable_to_verify') AS "unableToVerifyItems"
+             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND (${publicFeeStatusSql('f')}) = 'conflicting') AS "conflictingItems",
+          (SELECT COUNT(*)::int FROM fee_options f JOIN services ms ON ms.id = f.service_id
+             WHERE ms.mda_id = m.id AND ms.is_active = TRUE AND ${PUBLIC_FEE_WHERE} AND (${publicFeeStatusSql('f')}) = 'unable_to_verify') AS "unableToVerifyItems"
           FROM mdas m
          WHERE m.slug = $1 AND m.is_active = TRUE
       `, [slug]);
@@ -429,10 +445,11 @@ function createPublicRouter(pool) {
         `, [service.id]),
         pool.query(`
           SELECT
-            COUNT(*) FILTER (WHERE f.verification_status = 'verified')::int AS verified,
-            COUNT(*) FILTER (WHERE f.verification_status = 'pending')::int AS pending,
-            COUNT(*) FILTER (WHERE f.verification_status = 'conflicting')::int AS conflicting,
-            COUNT(*) FILTER (WHERE f.verification_status = 'unable_to_verify')::int AS "unableToVerify"
+            COUNT(*) FILTER (WHERE (${publicFeeStatusSql('f')}) = 'verified')::int AS verified,
+            COUNT(*) FILTER (WHERE (${publicFeeStatusSql('f')}) = 'source_supported')::int AS "sourceSupported",
+            COUNT(*) FILTER (WHERE (${publicFeeStatusSql('f')}) = 'pending')::int AS pending,
+            COUNT(*) FILTER (WHERE (${publicFeeStatusSql('f')}) = 'conflicting')::int AS conflicting,
+            COUNT(*) FILTER (WHERE (${publicFeeStatusSql('f')}) = 'unable_to_verify')::int AS "unableToVerify"
             FROM fee_options f
            WHERE f.service_id = $1 AND ${PUBLIC_FEE_WHERE}
         `, [service.id]),
@@ -456,7 +473,7 @@ function createPublicRouter(pool) {
           }
         }
       }
-      const summary = summaryResult.rows[0] || { verified: 0, pending: 0, conflicting: 0, unableToVerify: 0 };
+      const summary = summaryResult.rows[0] || { verified: 0, sourceSupported: 0, pending: 0, conflicting: 0, unableToVerify: 0 };
       const publicService = {
         id: service.id,
         slug: service.slug,
@@ -516,7 +533,7 @@ function createPublicRouter(pool) {
                 FROM (
                   SELECT DISTINCT am.slug AS mda_slug, am.name AS mda_name,
                     ase.slug AS service_slug, ase.name AS service_name,
-                    af.verification_status
+                    ${publicFeeStatusSql('af')} AS verification_status
                   FROM fee_sources afs
                   JOIN fee_options af ON af.id = afs.fee_option_id
                   JOIN services ase ON ase.id = af.service_id

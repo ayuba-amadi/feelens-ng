@@ -8,9 +8,11 @@ test('register filters stored associations using public slugs and preserves shar
     { mdaSlug: 'first', mdaName: 'First', serviceSlug: 'a', serviceName: 'Service A', verificationStatus: 'verified' },
     { mdaSlug: 'first', mdaName: 'First', serviceSlug: 'a', serviceName: 'Service A', verificationStatus: 'pending' },
     { mdaSlug: 'second', mdaName: 'Second', serviceSlug: 'b', serviceName: 'Service B', verificationStatus: 'pending' },
+    { mdaSlug: 'third', mdaName: 'Third', serviceSlug: 'c', serviceName: 'Service C', verificationStatus: 'source_supported' },
   ] }, { title: 'Unlinked', associations: [] }]);
-  assert.equal(rows[0].services.length, 2);
+  assert.equal(rows[0].services.length, 3);
   assert.deepEqual(filterSources(rows, { mda: 'second', status: 'pending' }).map((x) => x.title), ['FAQ']);
+  assert.deepEqual(filterSources(rows, { mda: 'third', status: 'source_supported' }).map((x) => x.title), ['FAQ']);
   assert.deepEqual(filterSources(rows, { query: 'service a', sourceType: 'official_faq', tier: '2' }).map((x) => x.title), ['FAQ']);
   assert.equal(filterSources(rows, { mda: 'absent' }).length, 0);
   assert.equal(rows[1].services.length, 0);

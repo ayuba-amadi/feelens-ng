@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "checkpointCreatedAt": "2026-11-01",
+  "checkpointKind": "fresh_recovery_checkpoint",
+  "priorCheckpointRecoverable": false,
+  "priorProgress": {
+    "reportedProcessed": 75,
+    "reportedRemaining": 930,
+    "independentlyRecoverable": false
+  },
+  "basis": {
+    "manifests": [
+      "research/production-import/batch-01-mdas.json",
+      "research/production-import/batch-02-mdas.json",
+      "research/production-import/batch-03-mdas.json"
+    ],
+    "availableMdaCount": 15,
+    "availableServiceCount": 77,
+    "availableOptionCount": 1066,
+    "optionCountSource": "Batch 1-3 importer dry-run feeOptionCount totals: 994 + 42 + 30"
+  },
+  "progress": {
+    "processedOptions": 0,
+    "remainingOptions": 1066,
+    "currentOutcome": null
+  },
+  "nextRecord": {
+    "batch": "batch-01",
+    "mdaSlug": "fct-irs",
+    "serviceSlug": "tax-id-tin-generation-or-retrieval",
+    "optionIndex": 0,
+    "auditState": "not_started"
+  },
+  "allowedOutcomes": [
+    "source_supported",
+    "pending",
+    "conflicting",
+    "unable_to_verify",
+    "historical_or_superseded"
+  ],
+  "humanReviewProvenance": {
+    "status": "not_recovered",
+    "sourceSupportDoesNotImplyHumanReview": true
+  },
+  "publicationStatus": "pending_authorised_review"
+}

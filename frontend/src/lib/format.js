@@ -48,7 +48,7 @@ export function asArray(value) { return Array.isArray(value) ? value : []; }
 
 
 export function formatSourceType(value) {
-  const labels = { OFFICIAL_FAQ: 'Official FAQ', OFFICIAL_WEBSITE: 'Official website', OFFICIAL_PORTAL: 'Official portal', GAZETTE: 'Government Gazette', CIRCULAR: 'Official Circular', REGULATION: 'Regulation', FEE_SCHEDULE: 'Official Fee Schedule', APPROVED_FEE_SCHEDULE: 'Official Fee Schedule', STATUTORY_INSTRUMENT: 'Statutory Instrument', OFFICIAL_NOTICE: 'Official Notice', OFFICIAL_DOCUMENT: 'Official Document' };
+  const labels = { OFFICIAL_FAQ: 'Official FAQ', OFFICIAL_WEBSITE: 'Official website', OFFICIAL_PORTAL: 'Official portal', OFFICIAL_GUIDELINE: 'Official guideline', OFFICIAL_PROCESS_PAGE: 'Official process page', OFFICIAL_FEE_PAGE: 'Official fee page', GAZETTE: 'Government Gazette', CIRCULAR: 'Official Circular', REGULATION: 'Regulation', FEE_SCHEDULE: 'Official Fee Schedule', APPROVED_FEE_SCHEDULE: 'Official Fee Schedule', STATUTORY_INSTRUMENT: 'Statutory Instrument', OFFICIAL_NOTICE: 'Official Notice', OFFICIAL_DOCUMENT: 'Official Document', SERVICE_LEVEL_AGREEMENT: 'Service Level Agreement' };
   if (!value) return null;
   return labels[String(value).toUpperCase()] || String(value).toLowerCase().replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
 }

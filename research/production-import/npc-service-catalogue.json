@@ -1,0 +1,1073 @@
+{
+  "version": "2026-10-31",
+  "mda": {
+    "name": "National Population Commission",
+    "acronym": "NPC",
+    "slug": "npc",
+    "officialWebsite": "https://nationalpopulation.gov.ng/",
+    "jurisdiction": "Federal",
+    "coverageStatus": "pilot",
+    "description": "National Population Commission (NPC) civil registration services under the Births, Deaths, Etc. (Compulsory Registration) Act 1992, including free under-5 centre-based birth registration, online VitalReg self-service birth registration (ages 0–17), adult Birth Attestation (ages 18+), Death Registration, Foreign Birth Notification, pre-November 2023 Certificate Re-issuance, Certificate Reprint, Record Modification, Deed Poll Name Change/Correction, and Stillbirth Registration.",
+    "officialChannels": [
+      {
+        "channelType": "portal",
+        "name": "NPC VitalReg Self-Service Portal",
+        "url": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+        "contactValue": null,
+        "instructions": "Official unified self-service portal for online Birth Registration (ages 0–17), Adult Birth Attestation (ages 18+), Death Notification, Foreign Birth Notification, Re-issuance (pre-Nov 2023 certificates), Certificate Reprint, Record Modification and Deed Poll name changes."
+      },
+      {
+        "channelType": "website",
+        "name": "NPC Official Website & Civil Registration Guide",
+        "url": "https://nationalpopulation.gov.ng/civil-registration",
+        "contactValue": null,
+        "instructions": "Official statutory guidance on Birth Registration, Stillbirth Registration and Death Registration under Act No. 69 of 1992."
+      },
+      {
+        "channelType": "website",
+        "name": "NPC VitalReg & Civil Registration FAQs",
+        "url": "https://nationalpopulation.gov.ng/FAQs",
+        "contactValue": null,
+        "instructions": "Official answers on eligibility by age (0–17 for Birth Registration; 18+ for Birth Attestation), NIN requirements, Re-issuance, Certificate Reprint and Record Modification."
+      },
+      {
+        "channelType": "office",
+        "name": "NPC Headquarters, FCT Office & 36 State Registration Offices",
+        "url": "https://nationalpopulation.gov.ng/our-offices",
+        "contactValue": "Plot 2031 / No. 1 Masaka Close, Off Olusegun Obasanjo Way, Wuse Zone 7, Abuja; FCT Office: Beside Magistrate Court, Mechanic Village, Off Gado Nasko Way, Kubwa, Abuja",
+        "instructions": "Locate any of the 37 State/FCT NPC Offices and over 4,000 LGA/Primary Health Centre registration centres nationwide for free under-5 birth registration and in-person registrar services."
+      },
+      {
+        "channelType": "email",
+        "name": "NPC & VitalReg Official Support Emails",
+        "url": "https://nationalpopulation.gov.ng/FAQs",
+        "contactValue": "info@nationalpopulation.gov.ng; support@vitalreg.org",
+        "instructions": "Contact info@nationalpopulation.gov.ng for general NPC enquiries and complaints or support@vitalreg.org for VitalReg Self-Service Portal technical and payment support."
+      }
+    ]
+  },
+  "sources": {
+    "npc-official-website": {
+      "title": "National Population Commission (NPC) Official Website",
+      "sourceType": "official_website",
+      "url": "https://nationalpopulation.gov.ng/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official NPC website homepage, navigation, contact details (Plot 2031, Olusegun Obasanjo Way, Wuse Zone 7, Abuja; info@nationalpopulation.gov.ng) and links to Civil Registration and VitalReg Self-Service Portal",
+      "notes": "Official NPC homepage (HTTP 200 on 31 October 2026). Links directly to Civil Registration (/civil-registration), FAQs (/FAQs), VitalReg FAQs (/faq-vitalreg), State Offices (/our-offices) and the unified VitalReg Self-Service Portal (https://vitalreg-selfservice.nationalpopulation.gov.ng/). Note: the main nationalpopulation.gov.ng server serves an incomplete TLS intermediate certificate chain in strict CLI clients without system/browser AIA fetching, while its CloudFront portals serve complete chains."
+    },
+    "npc-civil-registration-page": {
+      "title": "Civil Registration — National Population Commission",
+      "sourceType": "official_process_page",
+      "url": "https://nationalpopulation.gov.ng/civil-registration",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official Civil Registration overview: Legal & Institutional Framework (Act No. 69 of 1992), Birth Registration, Stillbirth Registration, Death Registration, and Frequently Asked Questions on Civil Registration",
+      "notes": "Publicly accessible official NPC webpage (HTTP 200 on 31 October 2026). Establishes that the Births, Deaths, Etc. (Compulsory Registration) Act, Act No. 69 of 1992 (Cap. B9, LFN 2004), originally promulgated on 12 December 1992, gives NPC the statutory authority to register vital events (live births, stillbirths, deaths) nationwide across the 36 states, FCT and 774 LGAs. Details the hierarchy of birth informants (mother/father -> occupier -> person present -> person in charge of child), hospital/health-institution medical certificates, death registration informants and causes of death, and stillbirth registration."
+    },
+    "npc-faqs-page": {
+      "title": "Frequently Asked Questions (FAQs) — National Population Commission",
+      "sourceType": "official_faq",
+      "url": "https://nationalpopulation.gov.ng/FAQs",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official NPC FAQ sections: Getting Started, Birth Registration (Ages 0–17), Birth Attestation (Ages 18+), Re-issuance (Pre-November 2023 Certificates), Certificate Reprint, Modify Record, and Support (support@vitalreg.org)",
+      "notes": "Publicly accessible official NPC FAQ page (HTTP 200 on 31 October 2026). Explicitly establishes: (1) Account creation on the VitalReg Self-Service Portal requires being 18+ with a valid NIN and facial verification; (2) Birth Registration on the self-service portal covers individuals aged 0 to 17 years where at least one parent is Nigerian and holds a valid Birth Certificate or Attestation Number; (3) Center-based birth registration can proceed without a child NIN if the parent/guardian provides a valid NIN; (4) Birth Attestation covers individuals aged 18 years and above with NIN and a Court Sworn Affidavit; (5) Re-issuance upgrades non-digital birth or attestation certificates issued before November 2023; (6) Approved digital certificates can be downloaded once free of additional charge, while additional copies require a paid Certificate Reprint request; (7) Approved digital records can be modified via Modify Record. Does not publish numeric NGN fee figures directly in the public FAQ text."
+    },
+    "npc-vitalreg-faqs-page": {
+      "title": "VitalReg Self-Service Portal FAQs — National Population Commission",
+      "sourceType": "official_faq",
+      "url": "https://nationalpopulation.gov.ng/faq-vitalreg",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official VitalReg FAQ page: Birth Attestation, Birth Registration, Certificate Reprint, Re-issuance, and NIMC Temporary Attestation Number rules",
+      "notes": "Publicly accessible official NPC VitalReg FAQ page (HTTP 200 on 31 October 2026). Reconfirms the 0–17 age boundary for Birth Registration, 18+ age boundary and Court Sworn Affidavit requirement for Birth Attestation, pre-November 2023 eligibility for Re-issuance, single free certificate download before paid Certificate Reprint, and adds the explicit rule on NIMC validation: \"The NPC Temporary Attestation Number cannot be validated on the NIMC web modification portal. It is only meant for applicants without a NIN, to be used during NIN enrolment.\""
+    },
+    "npc-first-baby-2025-statement": {
+      "title": "First Lady Welcomes and Presents Birth Certificate to First Baby of the Year 2025 — NPC Official Statement",
+      "sourceType": "official_statement",
+      "url": "https://nationalpopulation.gov.ng/news/first-lady-welcomes-and-presents-birth-certificate-to-first-baby-of-the-year-2025",
+      "publicationDate": "2025-01-01",
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official NPC news release dated January 1, 2025 — e-Birth Certificate presentation at Asokoro District Hospital, Abuja",
+      "notes": "Official NPC statement explicitly dated \"January 1, 2025\" on the webpage header. Quotes NPC Chairman Hon. Nasir Isa Kwarra stating that NPC operates over 4,000 registration centres across Nigeria in collaboration with Primary Health Centres (NPHCDA) to register children within their communities, and that the digital e-birth certificate \"not only includes a National Identification Number (NIN) for the child, making it verifiable anywhere in the world, but it is entirely free.\""
+    },
+    "npc-first-baby-2026-statement": {
+      "title": "First Lady Senator Oluremi Tinubu Welcomes Nigeria’s First Baby of 2026, Presents NPC Birth Certificate — NPC Official Statement",
+      "sourceType": "official_statement",
+      "url": "https://nationalpopulation.gov.ng/news/first-lady-senator-oluremi-tinubu-welcomes-nigeria-s-first-baby-of-2026-presents-birth",
+      "publicationDate": "2026-01-01",
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official NPC news release dated January 1, 2026 — Presentation of NPC Birth Certificate to the First Baby of the Year 2026 at Federal Medical Centre, Jabi, Abuja",
+      "notes": "Official NPC statement explicitly dated \"January 1, 2026\" on the webpage header. Confirms the continuation of NPC newborn e-birth registration and immediate birth certificate issuance under NPC Chairman Dr. Aminu Yusuf in 2026."
+    },
+    "npc-civil-registration-laws-2025-statement": {
+      "title": "NPC Calls for Consolidation of Civil Registration Laws to Boost Digital Reforms — NPC Official Statement",
+      "sourceType": "official_statement",
+      "url": "https://nationalpopulation.gov.ng/news/npc-calls-for-consolidation-of-civil-registration-laws-to-boost-digital-reforms",
+      "publicationDate": "2025-12-15",
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official NPC news release dated December 15, 2025 — Workshop on the Review of the Births, Deaths, Etc. (Compulsory Registration) Act in Kano",
+      "notes": "Official NPC statement explicitly dated \"December 15, 2025\". Confirms that the Births, Deaths, Etc. (Compulsory Registration) Act, Cap. B9, LFN 2004 (Act No. 69 of 1992) remains the primary governing statute while NPC and UNICEF review a proposed Compulsory Civil Registration Bill, 2025 to harmonise digital eCRVS and NIN integration."
+    },
+    "npc-our-offices-page": {
+      "title": "Our Offices — National Population Commission Headquarters and 37 State/FCT Offices",
+      "sourceType": "official_website",
+      "url": "https://nationalpopulation.gov.ng/our-offices",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official directory of NPC Headquarters (No. 1, Masaka Close, Off Olusegun Obasanjo Way, Wuse Zone 7, Abuja), FCT Office (Beside Magistrate Court, Mechanic Village, Off Gado Nasko Way, Kubwa, Abuja) and all 36 State Offices",
+      "notes": "Publicly accessible official NPC office directory (HTTP 200 on 31 October 2026). Provides verified physical addresses across all 36 states and the FCT where applicants can locate NPC State Directors and registration centres."
+    },
+    "npc-vitalreg-selfservice-portal": {
+      "title": "NPC VitalReg Electronic Civil Registration Self-Service Portal",
+      "sourceType": "official_portal",
+      "url": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official unified NPC VitalReg Self-Service Portal (frontend bundle index-XX1KC8SJ.js, Requirements configs fF/tO/SF/RF/iO/oO/aO, Deed Poll module deed-poll.q-DTuFytgi.js, and Options helper options.helper-dw2QYx9j.js; Last-Modified 29 October 2026)",
+      "notes": "Official unified NPC self-service web application (HTTP 200 on 31 October 2026; replaces the decommissioned birthreg-selfservice.nationalpopulation.gov.ng and attestation.nationalpopulation.gov.ng subdomains). Publicly downloadable frontend bundles contain the exact service requirement definitions, including: (1) Under-5 centre registration note (\"Birth registrations for children under the age of 5 years are free at every NPC registration center\"); (2) Death Notification requirement (\"Death Registration is free\", isFreeService: true); (3) Re-issuance cutoff date (2023-11-08T00:00:00.999Z, VitalReg launch date); (4) Temporary Attestation without NIN workflow; (5) Foreign Birth Notification workflow; and (6) Change/Correction of Name by Deed Poll workflow."
+    },
+    "npc-vitalreg-price-api": {
+      "title": "NPC VitalReg Live Payment & Deed Poll Pathway API (ecrvs-api.verxid.site)",
+      "sourceType": "official_portal",
+      "url": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission (VitalReg / eCRVS Platform)",
+      "documentReference": "Live VitalReg backend endpoints queried by https://vitalreg-selfservice.nationalpopulation.gov.ng/: GET https://ecrvs-api.verxid.site/payments/price/{transactionType} and GET https://ecrvs-api.verxid.site/deed-poll/pathways (accessed 31 October 2026)",
+      "notes": "Live unauthenticated pricing and pathway endpoints called by the official NPC VitalReg Self-Service Portal to render requirement fee banners (\"You will be charged NGN X for this service\"). Returns NGN prices for all 29 transaction types, including: birth_registration_payment (₦5,000), birth_no_nin_payment (₦4,000), attestation_payment (₦15,000), birthnoti_payment (₦5,000), cert_reissuance_payment (₦3,000), certificate_reprint_payment (₦3,000), birth_modification_payment (₦3,000), attest_modification_payment (₦3,000), dob_modification_payment (₦35,000), birthnoti_mod_payment (₦2,000), death_modification_payment (₦10,000), deed_poll_name_change_marriage (₦30,000), deed_poll_name_change_other (₦50,000 base, escalates: true), deed_poll_name_correction (₦50,000 base, escalates: true), surrogacy_registration_payment (₦10,000), adoption_registration_payment (₦20,000), single_parent_reg_payment (₦5,000), cert_verification_request (₦11,500), cvr_educational_institute (₦4,000), deed_poll_verification_payment (₦4,000), and law_firm_licence_payment (₦4,000). Because these numeric figures are served dynamically inside the portal rather than published in a dated statutory fee schedule or public webpage table on nationalpopulation.gov.ng, FeeLens records them as pending or conflicting rather than verified."
+    },
+    "npc-ecrvs-registrar-portal": {
+      "title": "NPC Electronic Civil Registration & Vital Statistics (eCRVS) Registrar Portal",
+      "sourceType": "official_portal",
+      "url": "https://ecrvs.nationalpopulation.gov.ng/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Official NPC eCRVS Registrar & VitalReg Administrative Portal (https://ecrvs.nationalpopulation.gov.ng/, bundle index-d529beed.js; Last-Modified 26 October 2026)",
+      "notes": "Official NPC registrar portal (HTTP 200 on 31 October 2026) used by authorised NPC registrars, DCRs, State Directors and accredited legal practitioners. Confirms registrar-assisted modules for Birth Registration, Surrogate Birth Registration (/dashboard/birth-register/surrogate), Adopted Child Birth Registration (/dashboard/birth-register/adopt), Single-Parent Birth Registration, Stillbirth Registration (/dashboard/still-births), Death Notification, Birth Attestation, Re-issuance, Certificate Verification Requests (/certificate-verification-request) and Law Firm Licensing."
+    },
+    "npc-birthreg-selfservice-legacy": {
+      "title": "Legacy NPC Birth Registration Self-Service Portal (Decommissioned Subdomain)",
+      "sourceType": "official_portal",
+      "url": "https://www.birthreg-selfservice.nationalpopulation.gov.ng/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Legacy Batch-2 source record for online self-service birth registration (previously recorded at USD 30; subdomain NXDOMAIN on 31 October 2026)",
+      "notes": "Historical NPC self-service birth registration subdomain cited in earlier Batch-2 research for a USD 30 fee claim. On 31 October 2026, DNS resolution for www.birthreg-selfservice.nationalpopulation.gov.ng fails (NXDOMAIN), and NPC has consolidated self-service birth registration into https://vitalreg-selfservice.nationalpopulation.gov.ng/, where the live portal price API returns NGN 5,000 (even when queried with ?currency=USD). Retained as a conflict-comparison evidence record so the legacy USD 30 claim is transparently downgraded from verified to conflicting."
+    },
+    "npc-attestation-portal-legacy": {
+      "title": "Legacy NPC Birth Attestation Portal (Decommissioned Subdomain)",
+      "sourceType": "official_portal",
+      "url": "https://attestation.nationalpopulation.gov.ng/",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "lastChecked": "2026-10-31",
+      "evidenceTier": 2,
+      "publisher": "National Population Commission",
+      "documentReference": "Legacy Batch-2 source record for adult Certificate of Birth (Attestation) self-service (previously recorded at USD 80; subdomain NXDOMAIN on 31 October 2026)",
+      "notes": "Historical NPC attestation subdomain cited in earlier Batch-2 research for a USD 80 fee claim. On 31 October 2026, DNS resolution for attestation.nationalpopulation.gov.ng fails (NXDOMAIN), and NPC has consolidated adult birth attestation into https://vitalreg-selfservice.nationalpopulation.gov.ng/, where the live portal price API returns NGN 15,000 (even when queried with ?currency=USD). Retained as a conflict-comparison evidence record so the legacy USD 80 claim is transparently downgraded from verified to conflicting."
+    }
+  },
+  "existingRecordAudit": [
+    {
+      "slug": "birth-registration-child-under-5-npc-registration-centre",
+      "previousName": "Birth registration for child under 5 at NPC registration centre",
+      "previousClaim": "free (NGN), verified, lastChecked 2026-10-18, publicationDate: null",
+      "previousUrl": "https://nationalpopulation.gov.ng/news/first-lady-welcomes-and-presents-birth-certificate-to-first-baby-of-the-year-2025",
+      "finding": "Substantiated by three official NPC sources: (1) the 1 January 2025 NPC statement (which explicitly displays the publication date \"January 1, 2025\" on the page header and states that the e-birth certificate with NIN is \"entirely free\" across 4,000+ registration centres); (2) the 1 January 2026 NPC statement; and (3) the live VitalReg Self-Service Portal requirement configuration (fF.additionalRequirements[0]: \"Birth registrations for children under the age of 5 years are free at every NPC registration center\").",
+      "disposition": "Retained as verified (free) with restored provider publicationDate (2025-01-01), expanded eligibility/document requirements (parent NIN required even if child has no NIN yet), and updated official channel references."
+    },
+    {
+      "slug": "online-self-service-birth-registration",
+      "previousName": "Online self-service birth registration",
+      "previousClaim": "fixed USD 30, verified, lastChecked 2026-10-18, citing https://www.birthreg-selfservice.nationalpopulation.gov.ng/",
+      "previousUrl": "https://www.birthreg-selfservice.nationalpopulation.gov.ng/",
+      "finding": "Unsupported as verified: (1) https://www.birthreg-selfservice.nationalpopulation.gov.ng/ is offline (DNS NXDOMAIN on 31 October 2026); (2) NPC consolidated self-service registration into https://vitalreg-selfservice.nationalpopulation.gov.ng/; (3) on the live VitalReg portal (/birth-registration/requirements, transactionType: birth_registration_payment), the portal queries https://ecrvs-api.verxid.site/payments/price/birth_registration_payment and displays \"You will be charged NGN 5,000 for this service\" (and ₦4,000 for birth_no_nin_payment without child NIN), returning NGN even when ?currency=USD is passed; (4) no public webpage table or statutory gazette on nationalpopulation.gov.ng publishes the numeric self-service tariff outside the authenticated portal flow.",
+      "disposition": "Reversibly downgraded from verified (USD 30) to conflicting / pending, updated officialActionUrl to https://vitalreg-selfservice.nationalpopulation.gov.ng/, and split into transparent fee options recording both the live VitalReg NGN 5,000 charge vs. legacy USD 30 claim (conflicting) and the NGN 4,000 temporary registration without child NIN option (pending)."
+    },
+    {
+      "slug": "adult-certificate-of-birth-attestation-self-service",
+      "previousName": "Adult Certificate of Birth (Attestation) self-service",
+      "previousClaim": "fixed USD 80, verified, lastChecked 2026-10-18, citing https://attestation.nationalpopulation.gov.ng/",
+      "previousUrl": "https://attestation.nationalpopulation.gov.ng/",
+      "finding": "Unsupported as verified: (1) https://attestation.nationalpopulation.gov.ng/ is offline (DNS NXDOMAIN on 31 October 2026); (2) NPC consolidated adult birth attestation into https://vitalreg-selfservice.nationalpopulation.gov.ng/; (3) on the live VitalReg portal (/dashboard/birth-attestation/requirements, transactionType: attestation_payment), the portal queries https://ecrvs-api.verxid.site/payments/price/attestation_payment and displays \"You will be charged NGN 15,000 for this service\", returning NGN even when ?currency=USD is passed; (4) applicants also require a Court Sworn Affidavit whose court fee is paid separately to the judiciary (e.g., FCT High Court VARMS).",
+      "disposition": "Reversibly downgraded from verified (USD 80) to conflicting, updated officialActionUrl to https://vitalreg-selfservice.nationalpopulation.gov.ng/, and recorded the live VitalReg NGN 15,000 portal charge alongside the historical USD 80 claim and separate court-affidavit condition."
+    }
+  ],
+  "services": [
+    {
+      "name": "Birth registration and e-birth certificate for child under 5 at NPC registration centre",
+      "slug": "birth-registration-child-under-5-npc-registration-centre",
+      "category": "Civil Registration — Births",
+      "jurisdiction": "Federal (Nationwide across 36 States, FCT and 774 LGAs)",
+      "description": "In-person registration of a live birth and issuance of a digital e-Birth Certificate (integrated with NIMC National Identification Number where enrolled) for a child under the age of 5 years at any of the over 4,000 National Population Commission (NPC) registration centres and partnered Primary Health Centres nationwide.",
+      "eligibilityAndScope": "Children aged 0 to under 5 years born in Nigeria, presented by an eligible informant under Section 10 of the Births, Deaths, Etc. (Compulsory Registration) Act 1992 (mother or father; or in their default, the occupier of the house/person in charge of the health institution, a person present at the birth, or the person having charge of the child).",
+      "ageAndTimingConditions": "Applies to children under 5 years of age at physical NPC registration centres. Under the Compulsory Registration Act, births occurring in a health institution or house should be registered promptly (statutorily within 60 days of birth), and NPC explicitly provides free registration at every NPC registration centre for children under 5 years.",
+      "responsibleBody": "National Population Commission (NPC) — Civil Registration and Vital Statistics (CRVS) Department, operating in collaboration with the National Primary Health Care Development Agency (NPHCDA) and NIMC.",
+      "deliveryChannelSummary": "In-person visit to an accredited NPC Registration Centre (located in Primary Health Centres, general hospitals, LGA headquarters and NPC State/FCT offices). No online payment is required for centre-based under-5 registration.",
+      "processingStandard": "Not stated as a fixed national SLA turnaround across all centres; in equipped digital eCRVS/hospital centres (such as the newborn registration drives documented by NPC), the digital e-birth certificate is issued immediately upon capture and verification.",
+      "requirements": [
+        "Valid National Identification Number (NIN) of the parent, guardian or informant (NPC FAQs confirm registration can proceed without a child NIN at an NPC registration centre provided the parent or guardian supplies a valid NIN).",
+        "Child’s National Identification Number (NIN) if already enrolled, or newborn/child demographic particulars for integrated NIN + e-birth registration.",
+        "Evidence of birth from the hospital, maternity home or health facility (such as hospital birth notification / immunization card) where the birth occurred in a health institution.",
+        "Full particulars of the child (full name, sex, date of birth, place/town/LGA/state of birth, birth order and birth type).",
+        "Full particulars of the mother and father (full names, dates of birth/ages, states of origin, nationalities, marital status, educational levels and occupations).",
+        "Contact details and relationship of the informant if someone other than the parents is registering the birth."
+      ],
+      "processSteps": [
+        "Locate the nearest NPC Registration Centre at a Primary Health Centre, public hospital, Local Government Area (LGA) secretariat or NPC State/FCT office (https://nationalpopulation.gov.ng/our-offices).",
+        "Present the child, parent/guardian NIN, and hospital birth record or delivery particulars to the authorised NPC Birth Registrar (in-person stage).",
+        "The NPC Registrar captures the child’s and parents’ particulars on the NPC Electronic Civil Registration and Vital Statistics (eCRVS) system and links or initiates the child’s NIN record.",
+        "Receive the official NPC e-Birth Certificate at no cost (do not pay informal fees to third-party touts for under-5 registration at an NPC registration centre)."
+      ],
+      "notes": "Substantiated as free by two independent official NPC sources: (1) Official NPC Statement dated 1 January 2025 (https://nationalpopulation.gov.ng/news/first-lady-welcomes-and-presents-birth-certificate-to-first-baby-of-the-year-2025) stating that the digital e-birth certificate with NIN \"is entirely free\" across over 4,000 registration centres; and (2) the VitalReg Self-Service Portal requirement notice (https://vitalreg-selfservice.nationalpopulation.gov.ng/, config fF) stating: \"Birth registrations for children under the age of 5 years are free at every NPC registration center.\"",
+      "officialActionUrl": "https://nationalpopulation.gov.ng/our-offices",
+      "officialChannelType": "office",
+      "paymentGuide": "Centre-based birth registration for a child under 5 years is officially published by NPC as free (₦0) at every NPC registration centre. Attend an accredited NPC registration centre or partnered Primary Health Centre in person; do not pay intermediaries.",
+      "feeOptions": [
+        {
+          "label": "Birth registration and e-Birth Certificate for child under 5 years at an NPC registration centre",
+          "pricingModel": "free",
+          "amount": null,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to in-person birth registration of children aged under 5 years at an accredited NPC registration centre or partnered Primary Health Centre. Online self-service registration on VitalReg carries a separate portal fee.",
+          "notes": "Official NPC Statement dated 1 January 2025 states that the digital e-birth certificate \"is entirely free\" across 4,000+ NPC registration centres, and the VitalReg Self-Service Portal explicitly states: \"Birth registrations for children under the age of 5 years are free at every NPC registration center.\"",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "npc-first-baby-2025-statement",
+            "npc-first-baby-2026-statement",
+            "npc-vitalreg-selfservice-portal",
+            "npc-faqs-page",
+            "npc-civil-registration-page"
+          ],
+          "page": "NPC Statement (1 Jan 2025); VitalReg Self-Service Portal (/birth-registration/requirements, fF.additionalRequirements[0]); NPC FAQs (/FAQs)",
+          "evidenceNote": "Official NPC Statement dated 1 January 2025 states that the digital e-birth certificate \"is entirely free\" across 4,000+ NPC registration centres, and the VitalReg Self-Service Portal explicitly states: \"Birth registrations for children under the age of 5 years are free at every NPC registration center.\""
+        }
+      ]
+    },
+    {
+      "name": "Centre-based late birth registration (ages 5 to 17 years) and special registrar-assisted birth categories",
+      "slug": "npc-centre-based-late-and-special-birth-registration",
+      "category": "Civil Registration — Births",
+      "jurisdiction": "Federal (Nationwide across 36 States, FCT and 774 LGAs)",
+      "description": "In-person birth registration at an NPC Registration Centre or State/LGA office for children and minors aged 5 to 17 years (beyond the free under-5 centre window) and registrar-assisted special birth registration pathways (adopted child, surrogate birth, and single-parent birth registration) on the NPC eCRVS Registrar Portal.",
+      "eligibilityAndScope": "Children and young persons aged 5 to 17 years born in Nigeria whose births were not registered before age 5, as well as parents/legal guardians registering an adopted child, a child born through surrogacy, or a single-parent birth through an authorised NPC Registrar.",
+      "ageAndTimingConditions": "NPC FAQs (/FAQs and /faq-vitalreg) define Birth Registration as covering ages 0 to 17 years (with ages 18 and above requiring Birth Attestation). While under-5 registration at NPC centres is explicitly published as free, NPC does not state that ages 5–17 at physical centres are free.",
+      "responsibleBody": "National Population Commission (NPC) — Authorised Birth Registrars, Deputy Chief Registrars (DCRs) and State Directors operating via https://ecrvs.nationalpopulation.gov.ng/.",
+      "deliveryChannelSummary": "In-person visit to an NPC Registration Centre, LGA Vital Registration Office or NPC State/FCT Office for registrar capture and DCR approval on the eCRVS Registrar Portal.",
+      "processingStandard": "Not stated on public NPC pages; requires registrar capture and DCR/State Office approval on the eCRVS platform.",
+      "requirements": [
+        "Valid National Identification Number (NIN) of the parent(s) or legal guardian and (where required) the child.",
+        "Hospital birth record, immunization card, school record or other supporting proof of birth details for late registration (ages 5–17).",
+        "For Adopted Child Birth Registration: Official Adoption Order / Court Order and foster/adoptive parents’ NINs and supporting identification.",
+        "For Surrogate Birth Registration: Surrogacy Agreement / Medical Certificate of Birth and commissioning parents’ NINs and supporting identification.",
+        "For Single-Parent Birth Registration: Single parent’s NIN, valid Birth Certificate or Attestation Number, and supporting proof of birth."
+      ],
+      "processSteps": [
+        "Visit an NPC State/FCT Office or LGA Registration Centre in person (https://nationalpopulation.gov.ng/our-offices).",
+        "Present the child’s and parents’ NINs and supporting birth, adoption or surrogacy documents to an authorised NPC Registrar.",
+        "Where a payment is generated on the eCRVS system, pay only against the official payment invoice/reference generated on the NPC eCRVS platform.",
+        "Await Deputy Chief Registrar (DCR) / State Director verification and approval, then collect or download the digital NPC Birth Certificate."
+      ],
+      "notes": "Distinguishes free under-5 centre registration from late (ages 5–17) and special registrar-assisted categories. Public NPC pages do not publish a fee schedule for centre-based registration of children aged 5–17 years (recorded as unknown/pending, never assumed free). For special registrar categories on eCRVS (https://ecrvs.nationalpopulation.gov.ng/), the live eCRVS API (ecrvs-api.verxid.site) returns ₦20,000 for Adopted Child Registration, ₦10,000 for Surrogate Birth Registration, and ₦5,000 for Single-Parent Birth Registration; because these amounts are not published on a public NPC tariff page, they remain pending.",
+      "officialActionUrl": "https://nationalpopulation.gov.ng/our-offices",
+      "officialChannelType": "office",
+      "paymentGuide": "Confirm the applicable official eCRVS invoice at an NPC State or LGA Registration Office before paying. Do not assume late registration (ages 5–17) is free, and pay only through official NPC eCRVS payment channels.",
+      "feeOptions": [
+        {
+          "label": "Centre-based late birth registration for child aged 5 to 17 years at an NPC registration centre",
+          "pricingModel": "unknown",
+          "amount": null,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to in-person registration of children aged 5 to 17 years at an NPC registration centre. (Online self-service registration for ages 0–17 is covered separately under online-self-service-birth-registration).",
+          "notes": "Missing public fee for ages 5–17 at physical centres is recorded as pending/unknown, never assumed free.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-faqs-page",
+            "npc-vitalreg-faqs-page",
+            "npc-vitalreg-selfservice-portal",
+            "npc-civil-registration-page"
+          ],
+          "page": "NPC FAQs (/FAQs, /faq-vitalreg — Birth Registration age 0–17); VitalReg Portal (/birth-registration/requirements — under-5 free rule)",
+          "evidenceNote": "NPC FAQs state that Birth Registration covers ages 0 to 17 years, while the VitalReg requirement notice specifies that centre-based registration is free specifically for \"children under the age of 5 years\". No public NPC source states the centre-based fee for ages 5 to 17 years."
+        },
+        {
+          "label": "Adopted child birth registration (eCRVS Registrar Portal — adoption_registration_payment)",
+          "pricingModel": "fixed",
+          "amount": 20000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Registrar-assisted registration of an adopted child; excludes separate court or state welfare adoption legal fees.",
+          "notes": "The NPC eCRVS Registrar Portal includes a dedicated Adopted Child Birth Registration workflow (/dashboard/birth-register/adopt) and the live eCRVS price API returns NGN 20,000 for adoption_registration_payment. Marked pending because no public fee table on nationalpopulation.gov.ng publishes this rate.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-ecrvs-registrar-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "eCRVS Registrar Portal (/dashboard/birth-register/adopt); eCRVS Price API (/payments/price/adoption_registration_payment)",
+          "evidenceNote": "The NPC eCRVS Registrar Portal includes a dedicated Adopted Child Birth Registration workflow (/dashboard/birth-register/adopt) and the live eCRVS price API returns NGN 20,000 for adoption_registration_payment. Marked pending because no public fee table on nationalpopulation.gov.ng publishes this rate."
+        },
+        {
+          "label": "Surrogate birth registration (eCRVS Registrar Portal — surrogacy_registration_payment)",
+          "pricingModel": "fixed",
+          "amount": 10000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Registrar-assisted registration of a child born via surrogacy; excludes separate medical or legal surrogacy costs.",
+          "notes": "The NPC eCRVS Registrar Portal includes a dedicated Surrogate Birth Registration workflow (/dashboard/birth-register/surrogate) and the live eCRVS price API returns NGN 10,000 for surrogacy_registration_payment. Marked pending because no public fee table on nationalpopulation.gov.ng publishes this rate.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-ecrvs-registrar-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "eCRVS Registrar Portal (/dashboard/birth-register/surrogate); eCRVS Price API (/payments/price/surrogacy_registration_payment)",
+          "evidenceNote": "The NPC eCRVS Registrar Portal includes a dedicated Surrogate Birth Registration workflow (/dashboard/birth-register/surrogate) and the live eCRVS price API returns NGN 10,000 for surrogacy_registration_payment. Marked pending because no public fee table on nationalpopulation.gov.ng publishes this rate."
+        },
+        {
+          "label": "Single-parent birth registration (eCRVS Registrar Portal — single_parent_reg_payment)",
+          "pricingModel": "fixed",
+          "amount": 5000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to the single_parent_reg_payment workflow on the NPC eCRVS platform.",
+          "notes": "The live eCRVS price API returns NGN 5,000 for single_parent_reg_payment. Marked pending because no public fee table on nationalpopulation.gov.ng publishes this rate.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-ecrvs-registrar-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "eCRVS Registrar Portal; eCRVS Price API (/payments/price/single_parent_reg_payment)",
+          "evidenceNote": "The live eCRVS price API returns NGN 5,000 for single_parent_reg_payment. Marked pending because no public fee table on nationalpopulation.gov.ng publishes this rate."
+        }
+      ]
+    },
+    {
+      "name": "Online self-service birth registration (ages 0 to 17 years — VitalReg Portal)",
+      "slug": "online-self-service-birth-registration",
+      "category": "Civil Registration — Births (Digital Self-Service)",
+      "jurisdiction": "Federal",
+      "description": "Online self-service birth registration and digital e-Birth Certificate application for children and minors aged 0 to 17 years via the unified NPC VitalReg Self-Service Portal, including standard registration with a child NIN and temporary birth notification for children awaiting NIN enrolment.",
+      "eligibilityAndScope": "Individuals aged 0 to 17 years born in Nigeria where at least one parent is Nigerian and holds a valid NPC Birth Certificate or Parent Attestation Number. The parent/informant creating the VitalReg self-service account must be 18 years or older with a valid NIN and facial verification.",
+      "ageAndTimingConditions": "Available for registrants aged 0 to 17 years on the VitalReg Self-Service Portal. Note: while children under 5 can be registered free in person at an NPC registration centre, choosing the online self-service portal attracts the VitalReg portal service charge.",
+      "responsibleBody": "National Population Commission (NPC) — VitalReg Electronic Civil Registration Self-Service Platform.",
+      "deliveryChannelSummary": "100% online application, NIN validation, facial verification and payment via https://vitalreg-selfservice.nationalpopulation.gov.ng/, followed by Deputy Chief Registrar (DCR) digital approval and single free certificate download on the portal (or in-person NIMC visit if using the Temporary Birth Notification without NIN pathway).",
+      "processingStandard": "Not stated as a fixed hour/day guarantee on public NPC pages; certificate download becomes available on the VitalReg dashboard once the DCR approves the application and displays \"Approved\".",
+      "requirements": [
+        "Account holder (parent, guardian or informant) must be at least 18 years old and possess a valid National Identification Number (NIN) for facial verification on VitalReg.",
+        "At least one parent must be a Nigerian citizen.",
+        "Valid NPC Birth Certificate Number or Birth Attestation Number of the parent(s), and parents’ valid NINs.",
+        "For Standard Self-Service Birth Registration: Valid National Identification Number (NIN) of the child (ages 0–17).",
+        "For Temporary Birth Registration without Child NIN (birth_no_nin): Child’s birth details and parent’s valid NIN; produces a temporary birth record that must later be updated with the child’s NIN (via the free \"Update Record with NIN\" action on the dashboard) before the final e-Birth Certificate is issued.",
+        "Recent digital passport photograph of the child and supporting birth particulars (place of birth, health facility/home address, state and LGA)."
+      ],
+      "processSteps": [
+        "Open the official NPC VitalReg Self-Service Portal (https://vitalreg-selfservice.nationalpopulation.gov.ng/), click Sign Up / Get Started, enter your 11-digit NIN, complete facial verification and verify your phone number and email via OTP.",
+        "Select \"Birth Registration\" from the dashboard (for individuals aged 0 to 17 years) and review the requirements and fee prompt (Note: if registering a child under 5 for free, visit a physical NPC registration centre instead).",
+        "Validate the child’s NIN (or select the temporary registration without child NIN option where applicable) and validate the parents’ Birth Certificate/Attestation numbers and NINs.",
+        "Complete the child, mother, father and informant sections of the form, upload required supporting images, and pay the portal fee online.",
+        "Track approval status on the VitalReg dashboard; once approved by the DCR, download the digital NPC Birth Certificate (first download is included; subsequent downloads require a Certificate Reprint request)."
+      ],
+      "notes": "Reconciles Existing Batch-2 Record #2 (online-self-service-birth-registration). Earlier Batch-2 research recorded USD 30 as verified citing https://www.birthreg-selfservice.nationalpopulation.gov.ng/. On 31 October 2026, that subdomain fails DNS resolution (NXDOMAIN) and NPC directs applicants to https://vitalreg-selfservice.nationalpopulation.gov.ng/, where the live price API (https://ecrvs-api.verxid.site/payments/price/birth_registration_payment) charges NGN 5,000 (and NGN 4,000 for birth_no_nin_payment), even when queried with ?currency=USD. Because the live NGN 5,000 portal charge conflicts with the legacy USD 30 record and is not published in a dated tariff table on nationalpopulation.gov.ng, this service is downgraded from verified to conflicting/pending.",
+      "officialActionUrl": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "Sign in to https://vitalreg-selfservice.nationalpopulation.gov.ng/ and confirm the live portal charge before payment (currently NGN 5,000 for standard self-service birth registration with NIN, or NGN 4,000 for temporary birth registration without child NIN; previously recorded as USD 30 on the decommissioned birthreg-selfservice subdomain). Remember that children under 5 can be registered free in person at any NPC registration centre.",
+      "feeOptions": [
+        {
+          "label": "Online self-service birth registration with child NIN (ages 0–17 — VitalReg birth_registration_payment vs legacy portal claim)",
+          "pricingModel": "fixed",
+          "amount": 5000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to online self-service birth registration on VitalReg for ages 0–17 with a child NIN. In-person registration at an NPC registration centre remains free for children under 5 years.",
+          "notes": "On 31 October 2026, the live NPC VitalReg Self-Service Portal displays \"You will be charged NGN 5,000 for this service\" from https://ecrvs-api.verxid.site/payments/price/birth_registration_payment (returning NGN 5,000 even with ?currency=USD). Earlier FeeLens Batch-2 research recorded USD 30 from the now-decommissioned subdomain https://www.birthreg-selfservice.nationalpopulation.gov.ng/ (NXDOMAIN). Marked conflicting until NPC publishes an authoritative dated public fee schedule on nationalpopulation.gov.ng.",
+          "verificationStatus": "conflicting",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api",
+            "npc-faqs-page",
+            "npc-vitalreg-faqs-page",
+            "npc-birthreg-selfservice-legacy"
+          ],
+          "page": "VitalReg Portal (/birth-registration/requirements, transactionType: birth_registration_payment); Live Price API (/payments/price/birth_registration_payment); NPC FAQs (/FAQs)",
+          "evidenceNote": "On 31 October 2026, the live NPC VitalReg Self-Service Portal displays \"You will be charged NGN 5,000 for this service\" from https://ecrvs-api.verxid.site/payments/price/birth_registration_payment (returning NGN 5,000 even with ?currency=USD). Earlier FeeLens Batch-2 research recorded USD 30 from the now-decommissioned subdomain https://www.birthreg-selfservice.nationalpopulation.gov.ng/ (NXDOMAIN). Marked conflicting until NPC publishes an authoritative dated public fee schedule on nationalpopulation.gov.ng."
+        },
+        {
+          "label": "Online self-service temporary birth registration without child NIN (VitalReg birth_no_nin_payment)",
+          "pricingModel": "fixed",
+          "amount": 4000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Generates a temporary birth record for NIN enrolment; the final NPC Birth Certificate is unlocked after the child obtains a NIN and the applicant uses \"Update Record with NIN\" on VitalReg.",
+          "notes": "The live VitalReg price API returns NGN 4,000 for birth_no_nin_payment (temporary birth registration when the child does not yet have a NIN, followed by a free \"Update Record with NIN\" step once the child obtains a NIN from NIMC). Marked pending because this numeric fee is only exposed via the portal API and not on a public NPC webpage.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api",
+            "npc-faqs-page"
+          ],
+          "page": "VitalReg Portal (/dashboard/birth-registration/Update-nin & birth_no_nin workflow); Live Price API (/payments/price/birth_no_nin_payment)",
+          "evidenceNote": "The live VitalReg price API returns NGN 4,000 for birth_no_nin_payment (temporary birth registration when the child does not yet have a NIN, followed by a free \"Update Record with NIN\" step once the child obtains a NIN from NIMC). Marked pending because this numeric fee is only exposed via the portal API and not on a public NPC webpage."
+        }
+      ]
+    },
+    {
+      "name": "Adult Certificate of Birth (Birth Attestation — ages 18 years and above)",
+      "slug": "adult-certificate-of-birth-attestation-self-service",
+      "category": "Civil Registration — Birth Attestation (Adults 18+)",
+      "jurisdiction": "Federal",
+      "description": "Official NPC Birth Attestation Certificate (Certificate of Birth Attestation) for adults aged 18 years and above born in Nigeria whose births were not registered under the Compulsory Registration Act or who were born before the enactment of the 1992 Act, or who lost a previous letter of attestation.",
+      "eligibilityAndScope": "Nigerian citizens aged 18 years and above (\"Attestation is for individuals aged 18 years and above\" — NPC FAQs). Distinct from a Birth Certificate (which is issued for Birth Registration of individuals aged 0 to 17 years). Includes a Temporary Attestation pathway for adults without a NIN to enable NIMC enrolment.",
+      "ageAndTimingConditions": "Strictly for applicants aged 18 years and above. Supported statutory reasons in VitalReg are: (1) \"Born Before the Enactment of Birth Registration Act of 1992\", (2) \"Birth Not Registered\", and (3) \"Loss of Letter of Attestation\".",
+      "responsibleBody": "National Population Commission (NPC) — VitalReg Self-Service Portal and State/LGA Deputy Chief Registrars (DCRs).",
+      "deliveryChannelSummary": "Online self-service application and payment via https://vitalreg-selfservice.nationalpopulation.gov.ng/ (or registrar-assisted capture at an NPC office). Applicants must also obtain a Court Sworn Affidavit from a court of law (e.g., High Court / VARMS), and applicants without a NIN receive a Temporary Attestation ID that must be presented in person at a NIMC enrolment office.",
+      "processingStandard": "Not stated as a fixed day count on public NPC pages; requires online submission, payment and DCR review/approval before single free digital download.",
+      "requirements": [
+        "Applicant must be 18 years of age or older.",
+        "Valid National Identification Number (NIN) and live facial verification on VitalReg (or, for applicants without a NIN, selection of the Temporary Attestation pathway to obtain a Temporary Birth ID for in-person NIMC enrolment).",
+        "Scanned copy of a Court Sworn Affidavit (Declaration of Age / Affidavit of Birth Facts sworn before a High Court or Magistrate Court; court affidavit fee is separate from NPC’s fee).",
+        "Recent passport-sized photograph with a clear background.",
+        "Reason for request (\"Born Before the Enactment of Birth Registration Act of 1992\", \"Birth Not Registered\", or \"Loss of Letter of Attestation\") and full birth/parentage particulars (applicant’s place/LGA/state of birth, father’s and mother’s full names, states of origin, nationalities and occupations).",
+        "Supporting valid means of identification where applicable."
+      ],
+      "processSteps": [
+        "Obtain a Court Sworn Affidavit of birth facts / declaration of age from a competent court (separate judiciary process and fee).",
+        "Sign in to the official NPC VitalReg Self-Service Portal (https://vitalreg-selfservice.nationalpopulation.gov.ng/) using your NIN and facial verification, and select \"Birth Attestation\".",
+        "Select whether you are applying for yourself or a third party, validate the applicant’s NIN (or choose Temporary Attestation if the applicant has no NIN yet), and enter birth and parents’ particulars.",
+        "Upload the Court Sworn Affidavit and passport photograph, then pay the official portal fee online.",
+        "Wait for DCR verification and approval on the VitalReg dashboard, then download your digital Birth Attestation Certificate once at no extra cost (Note: if issued a Temporary Attestation Number without NIN, take it to a NIMC office for NIN enrolment—NPC FAQs state it cannot be used on the NIMC web modification portal)."
+      ],
+      "notes": "Reconciles Existing Batch-2 Record #3 (adult-certificate-of-birth-attestation-self-service). Earlier Batch-2 research recorded USD 80 as verified citing https://attestation.nationalpopulation.gov.ng/. On 31 October 2026, https://attestation.nationalpopulation.gov.ng/ fails DNS resolution (NXDOMAIN), and NPC has consolidated adult attestation into https://vitalreg-selfservice.nationalpopulation.gov.ng/, where the live price API (https://ecrvs-api.verxid.site/payments/price/attestation_payment) returns NGN 15,000 (even when queried with ?currency=USD). Downgraded from verified to conflicting until NPC publishes a dated public fee schedule on nationalpopulation.gov.ng.",
+      "officialActionUrl": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "Apply through https://vitalreg-selfservice.nationalpopulation.gov.ng/ and confirm the live portal fee before paying (currently NGN 15,000 on VitalReg; previously recorded as USD 80 on the decommissioned attestation.nationalpopulation.gov.ng subdomain). Note that the required Court Sworn Affidavit is paid separately to the court.",
+      "feeOptions": [
+        {
+          "label": "Adult Birth Attestation Certificate (ages 18+ — VitalReg attestation_payment vs legacy portal claim)",
+          "pricingModel": "fixed",
+          "amount": 15000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to adults aged 18 years and above. Excludes the separate Judiciary fee for obtaining the mandatory Court Sworn Affidavit (e.g., ₦500–₦750 at FCT High Court VARMS).",
+          "notes": "On 31 October 2026, the live NPC VitalReg Self-Service Portal displays \"You will be charged NGN 15,000 for this service\" from https://ecrvs-api.verxid.site/payments/price/attestation_payment (returning NGN 15,000 even with ?currency=USD). Earlier FeeLens Batch-2 research recorded USD 80 from the now-decommissioned subdomain https://attestation.nationalpopulation.gov.ng/ (NXDOMAIN). Marked conflicting because the live NGN 15,000 charge contradicts the legacy USD 80 record and is not published on a static public tariff page on nationalpopulation.gov.ng.",
+          "verificationStatus": "conflicting",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api",
+            "npc-faqs-page",
+            "npc-vitalreg-faqs-page",
+            "npc-attestation-portal-legacy"
+          ],
+          "page": "VitalReg Portal (/dashboard/birth-attestation/requirements, transactionType: attestation_payment); Live Price API (/payments/price/attestation_payment); NPC FAQs (/FAQs & /faq-vitalreg)",
+          "evidenceNote": "On 31 October 2026, the live NPC VitalReg Self-Service Portal displays \"You will be charged NGN 15,000 for this service\" from https://ecrvs-api.verxid.site/payments/price/attestation_payment (returning NGN 15,000 even with ?currency=USD). Earlier FeeLens Batch-2 research recorded USD 80 from the now-decommissioned subdomain https://attestation.nationalpopulation.gov.ng/ (NXDOMAIN). Marked conflicting because the live NGN 15,000 charge contradicts the legacy USD 80 record and is not published on a static public tariff page on nationalpopulation.gov.ng."
+        }
+      ]
+    },
+    {
+      "name": "Death registration (Death Notification) and Death Certificate",
+      "slug": "npc-death-registration-and-certificate",
+      "category": "Civil Registration — Deaths",
+      "jurisdiction": "Federal (Nationwide across 36 States, FCT and 774 LGAs)",
+      "description": "Official registration of a death occurring in Nigeria and issuance of an NPC Death Certificate (via an NPC Registration Centre or the VitalReg Self-Service Portal Death Notification module).",
+      "eligibilityAndScope": "Registration of any death occurring in Nigeria (in a hospital/medical facility, maternity home, house, road side, aeroplane, ship, or other location) by an eligible informant under the Births, Deaths, Etc. (Compulsory Registration) Act 1992 (relatives present at death or in attendance during last illness, occupier of premises, or person arranging burial/cremation).",
+      "ageAndTimingConditions": "Applies to deaths of persons of any age occurring in Nigeria. Under the Compulsory Registration Act, deaths are required to be registered promptly with the local registrar.",
+      "responsibleBody": "National Population Commission (NPC) — Civil Registration Department, VitalReg Portal and LGA/Hospital Registrars.",
+      "deliveryChannelSummary": "Available online via the VitalReg Self-Service Portal (/death-notification/requirements) or in person at an NPC Registration Centre. Supporting medical, court or police evidence depends on the place and circumstances of death.",
+      "processingStandard": "Not stated on public NPC pages; requires DCR verification of the uploaded cause-of-death or corroborating evidence before certificate download/issuance.",
+      "requirements": [
+        "Valid National Identification Number (NIN) of the informant and (where available) the deceased.",
+        "Particulars of the deceased (full name, sex, date of birth/age at death, marital status, occupation, state/LGA of origin and residential address) and particulars of death (date of death, place of death, town/state/LGA of death, and certified cause of death).",
+        "Mandatory supporting document based on place of death (configured in VitalReg options.helper):",
+        "• Hospital / Medical Facility or Maternity Home death: Medical Certificate of Cause of Death issued by a registered medical practitioner.",
+        "• Home death: Medical Certificate of Death OR High Court Affidavit of Death OR Community Leader Endorsement Letter (plus Deceased ID Card where available).",
+        "• Road-side / Crash death: Police Report AND Medical Certificate of Death.",
+        "• Aeroplane / Ship death: Official Incident Report AND Medical Certificate of Death."
+      ],
+      "processSteps": [
+        "Obtain the required primary evidence of death from the relevant institution (e.g., Medical Certificate of Cause of Death from the hospital, Police Report for a road crash, or High Court Affidavit for an unattended home death).",
+        "Visit an NPC Registration Centre in person OR sign in to https://vitalreg-selfservice.nationalpopulation.gov.ng/ and select \"Death Notification\".",
+        "Validate the informant’s NIN, enter the deceased’s demographic particulars and the date, place and cause of death, and upload the required supporting document(s).",
+        "Submit the application at no NPC fee (\"Death Registration is free\") and collect or download the NPC Death Certificate once verified and approved by the DCR."
+      ],
+      "notes": "In the live VitalReg Self-Service Portal frontend bundle (index-XX1KC8SJ.js, requirement object SF for /death-notification/requirements), NPC explicitly sets isFreeService: true and reqFeeText: \"Death Registration is free\". However, third-party documents required to prove the death (hospital medical certificate, police extract, or court affidavit) may carry separate hospital, police or court charges outside NPC.",
+      "officialActionUrl": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "NPC Death Registration / Death Notification is configured on the official VitalReg Self-Service Portal as free (₦0). Do not pay an NPC registration fee for initial death notification; note that hospitals or courts may charge separately for medical certificates or affidavits.",
+      "feeOptions": [
+        {
+          "label": "Death Registration / Death Notification and initial Death Certificate",
+          "pricingModel": "free",
+          "amount": null,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to initial Death Notification / Death Registration with NPC. Excludes separate hospital charges for a Medical Certificate of Cause of Death, court fees for a High Court Affidavit of Death, or police extract fees where applicable, and excludes subsequent Death Record Modification (₦10,000) or additional Certificate Reprint requests (₦3,000).",
+          "notes": "The official NPC VitalReg Self-Service Portal requirement configuration for Death Notification (SF) explicitly sets isFreeService: true and displays \"Death Registration is free\".",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-civil-registration-page"
+          ],
+          "page": "VitalReg Self-Service Portal (/death-notification/requirements, config SF: isFreeService: true, reqFeeText: \"Death Registration is free\"); NPC Civil Registration page (/civil-registration)",
+          "evidenceNote": "The official NPC VitalReg Self-Service Portal requirement configuration for Death Notification (SF) explicitly sets isFreeService: true and displays \"Death Registration is free\"."
+        }
+      ]
+    },
+    {
+      "name": "Foreign Birth Notification (children born abroad to Nigerian parents)",
+      "slug": "npc-foreign-birth-notification",
+      "category": "Civil Registration — Foreign Birth Notification",
+      "jurisdiction": "Federal / Diaspora (Children born outside Nigeria to Nigerian parent(s))",
+      "description": "Recording of a foreign birth and issuance of an official NPC Foreign Birth Notification for a child born outside Nigeria to at least one Nigerian parent via the VitalReg Self-Service Portal.",
+      "eligibilityAndScope": "Children born outside Nigeria (abroad) to Nigerian parent(s) who require an NPC Foreign Birth Notification record in Nigeria’s civil registration system.",
+      "ageAndTimingConditions": "Applies to births that occurred outside Nigeria; requires NIN validation for the applicant/informant on the VitalReg Self-Service Portal.",
+      "responsibleBody": "National Population Commission (NPC) — VitalReg Self-Service Portal.",
+      "deliveryChannelSummary": "Online submission and payment via https://vitalreg-selfservice.nationalpopulation.gov.ng/ (/foreign-birth-notification/requirements).",
+      "processingStandard": "Not stated on public NPC pages; requires online submission, payment and DCR approval.",
+      "requirements": [
+        "Valid National Identification Number (NIN) — VitalReg config RF states: \"Nin Validation is required for all applicants.\"",
+        "Foreign birth certificate or official birth record issued by the country of birth.",
+        "Evidence of Nigerian citizenship of at least one parent (such as Nigerian international passport, NIN, and NPC Birth Certificate or Attestation Number).",
+        "Recent digital passport photograph of the child/applicant."
+      ],
+      "processSteps": [
+        "Sign in to https://vitalreg-selfservice.nationalpopulation.gov.ng/ using your NIN and facial verification.",
+        "Select \"Foreign Birth Notification\" (/foreign-birth-notification/requirements) and review the requirements.",
+        "Complete NIN validation, enter the foreign birth details (country of birth, foreign certificate details, child and parents’ particulars) and upload the foreign birth certificate and passport photograph.",
+        "Pay the portal charge online and download the Foreign Birth Notification once approved."
+      ],
+      "notes": "Documented in the live VitalReg Self-Service Portal bundle (index-XX1KC8SJ.js, config RF, transactionType: \"birthnoti_payment\" and chunk foreign-birth.q-dWCGPo9D.js). The live price API (https://ecrvs-api.verxid.site/payments/price/birthnoti_payment) returns NGN 5,000. Marked pending because the numeric fee is served by the portal API rather than published on a static public tariff page on nationalpopulation.gov.ng.",
+      "officialActionUrl": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "Apply via https://vitalreg-selfservice.nationalpopulation.gov.ng/ under Foreign Birth Notification and confirm the live portal charge (currently NGN 5,000 via birthnoti_payment) before payment.",
+      "feeOptions": [
+        {
+          "label": "Foreign Birth Notification application (VitalReg birthnoti_payment)",
+          "pricingModel": "fixed",
+          "amount": 5000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to recording a birth that occurred outside Nigeria to Nigerian parent(s) on the VitalReg Self-Service Portal.",
+          "notes": "The official VitalReg Self-Service Portal configures Foreign Birth Notification with transactionType: birthnoti_payment, for which https://ecrvs-api.verxid.site/payments/price/birthnoti_payment returns NGN 5,000. Marked pending until published on a public NPC fee schedule page.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "VitalReg Portal (/foreign-birth-notification/requirements, transactionType: birthnoti_payment); Live Price API (/payments/price/birthnoti_payment)",
+          "evidenceNote": "The official VitalReg Self-Service Portal configures Foreign Birth Notification with transactionType: birthnoti_payment, for which https://ecrvs-api.verxid.site/payments/price/birthnoti_payment returns NGN 5,000. Marked pending until published on a public NPC fee schedule page."
+        }
+      ]
+    },
+    {
+      "name": "Digital Certificate Re-issuance (upgrading pre-November 2023 NPC Birth or Attestation Certificate)",
+      "slug": "npc-certificate-reissuance-legacy-upgrade",
+      "category": "Civil Registration — Post-Registration & Upgrades",
+      "jurisdiction": "Federal",
+      "description": "Digital upgrade and re-issuance of an old (non-digital/paper) NPC Birth Certificate or Birth Attestation Certificate originally issued before the launch of the VitalReg electronic platform in November 2023.",
+      "eligibilityAndScope": "Holders of legacy (non-digital) NPC Birth Certificates or Birth Attestation Certificates issued before 8 November 2023 (the VitalReg launch cutoff date configured as V8 = \"2023-11-08T00:00:00.999Z\" in the VitalReg bundle, and described as \"before November 2023\" in NPC FAQs). Can be requested for \"Self\" (18+) or \"Others / Child\".",
+      "ageAndTimingConditions": "Strictly for certificates originally issued before the VitalReg launch (pre-November 2023). Certificates already issued digitally on VitalReg do not use Re-issuance; they use Certificate Reprint or Modify Record.",
+      "responsibleBody": "National Population Commission (NPC) — VitalReg Self-Service Portal and Deputy Chief Registrars (DCRs).",
+      "deliveryChannelSummary": "Online application and payment via https://vitalreg-selfservice.nationalpopulation.gov.ng/ (/dashboard/re-issuance/requirements).",
+      "processingStandard": "Not stated on public NPC pages; requires DCR verification of the uploaded legacy NPC certificate before digital certificate download.",
+      "requirements": [
+        "Original legacy (non-digital) NPC Birth Certificate or NPC Birth Attestation Certificate issued before November 2023 (including its Entry Number, Register Volume, Registration Centre, and Date of Registration).",
+        "Valid National Identification Number (NIN) of the certificate holder (and informant/parent if applying for a child).",
+        "Recent digital passport photograph.",
+        "For Re-issuance of a legacy Birth Attestation Certificate: Scanned copy of a Court Sworn Affidavit (explicitly required in reissuance.q-B1wMse61.js step 2 when re-issuing an attestation certificate)."
+      ],
+      "processSteps": [
+        "Sign in to https://vitalreg-selfservice.nationalpopulation.gov.ng/ using your NIN and facial verification, and select \"Re-issuance\" from the dashboard.",
+        "Select the certificate type being upgraded (Birth Certificate or Attestation) and whether the application is for \"Self\" or \"Others\" (child).",
+        "Validate the certificate holder’s NIN, enter the legacy certificate metadata (certificate/entry number, date of registration, state/LGA/centre of registration) and demographic details, and upload a clear scan of the old certificate, passport photo, and (for attestation) court affidavit.",
+        "Pay the re-issuance fee on the portal and await DCR verification and approval.",
+        "Once approved, download the upgraded digital NPC Certificate from your VitalReg dashboard."
+      ],
+      "notes": "Substantiated by NPC FAQs (/FAQs and /faq-vitalreg under \"Re-issuance\") and the live VitalReg bundle (aO config for /dashboard/re-issuance/requirements and chunk reissuance.q-B1wMse61.js). The live price API (https://ecrvs-api.verxid.site/payments/price/cert_reissuance_payment) returns NGN 3,000. Marked pending because the public FAQ text does not state the numeric NGN 3,000 amount outside the portal.",
+      "officialActionUrl": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "Apply via https://vitalreg-selfservice.nationalpopulation.gov.ng/ under Re-issuance and confirm the live portal charge (currently NGN 3,000 via cert_reissuance_payment) before paying.",
+      "feeOptions": [
+        {
+          "label": "Digital re-issuance of pre-November 2023 NPC Birth or Attestation Certificate (VitalReg cert_reissuance_payment)",
+          "pricingModel": "fixed",
+          "amount": 3000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies only to upgrading legacy non-digital NPC Birth or Attestation Certificates issued before 8 November 2023. Attestation re-issuance also requires uploading a Court Sworn Affidavit.",
+          "notes": "NPC FAQs confirm the Re-issuance service for upgrading non-digital certificates issued before November 2023, and the live VitalReg price API returns NGN 3,000 for cert_reissuance_payment. Marked pending because the numeric amount is served by the portal API rather than printed on the public FAQ page.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-faqs-page",
+            "npc-vitalreg-faqs-page",
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "NPC FAQs (/FAQs & /faq-vitalreg — Re-issuance); VitalReg Portal (/dashboard/re-issuance/requirements, transactionType: cert_reissuance_payment); Live Price API (/payments/price/cert_reissuance_payment)",
+          "evidenceNote": "NPC FAQs confirm the Re-issuance service for upgrading non-digital certificates issued before November 2023, and the live VitalReg price API returns NGN 3,000 for cert_reissuance_payment. Marked pending because the numeric amount is served by the portal API rather than printed on the public FAQ page."
+        }
+      ]
+    },
+    {
+      "name": "Certificate Reprint (additional digital copy / download of approved NPC certificate)",
+      "slug": "npc-certificate-reprint",
+      "category": "Civil Registration — Post-Registration & Upgrades",
+      "jurisdiction": "Federal",
+      "description": "Downloading or reprinting an additional copy of an already approved digital NPC Birth Certificate, Birth Attestation Certificate, Death Certificate or Foreign Birth Notification on the VitalReg Self-Service Portal.",
+      "eligibilityAndScope": "Holders of an approved digital NPC certificate on VitalReg. The first download of an approved certificate is included at no extra charge; any subsequent download or reprint requires a Certificate Reprint request.",
+      "ageAndTimingConditions": "Available at any time after an application on VitalReg has been approved by the DCR (\"Ensure your certificate status displays Approved\").",
+      "responsibleBody": "National Population Commission (NPC) — VitalReg Self-Service Portal.",
+      "deliveryChannelSummary": "100% online via https://vitalreg-selfservice.nationalpopulation.gov.ng/ (/dashboard/reprint/requirements).",
+      "processingStandard": "Immediate digital download on the VitalReg dashboard once payment is confirmed for an already approved certificate.",
+      "requirements": [
+        "Existing approved digital certificate on the VitalReg Self-Service Portal (\"Ensure your certificate status displays Approved\").",
+        "Certificate Number or NIN of the certificate holder.",
+        "Reason for reprint (VitalReg config oO states: \"You must have a valid reason for reprinting the certificate\")."
+      ],
+      "processSteps": [
+        "Log in to https://vitalreg-selfservice.nationalpopulation.gov.ng/ and check your dashboard to confirm the certificate status is \"Approved\".",
+        "For your very first download after approval, click the download button directly at no additional charge.",
+        "If you have already used your single free download and need another copy, navigate to the \"Certificate Reprint\" module on the dashboard.",
+        "Enter the Certificate Number, select the reason for reprinting, pay the required portal reprint fee, and download the reprinted PDF certificate."
+      ],
+      "notes": "NPC FAQs (/FAQs and /faq-vitalreg under \"Certificate Reprint\") explicitly state: \"Please note that you can only download your certificate once. If you need additional copies, you will need to request a certificate reprint, which incurs a fee\" and \"Make the required payment and proceed with your reprint request.\" The live VitalReg price API (https://ecrvs-api.verxid.site/payments/price/certificate_reprint_payment) returns NGN 3,000.",
+      "officialActionUrl": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "Your first download of an approved digital certificate on VitalReg is free (₦0). For additional downloads, use the Certificate Reprint module on https://vitalreg-selfservice.nationalpopulation.gov.ng/ and confirm the live portal charge (currently NGN 3,000) before paying.",
+      "feeOptions": [
+        {
+          "label": "Initial digital download of an approved NPC certificate on VitalReg (first download)",
+          "pricingModel": "free",
+          "amount": null,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to the single initial download of an approved digital certificate on the VitalReg dashboard after registration/attestation approval.",
+          "notes": "Official NPC FAQs (/FAQs and /faq-vitalreg) explicitly state: \"Please note that you can only download your certificate once. If you need additional copies, you will need to request a certificate reprint, which incurs a fee.\" The first download of an approved certificate incurs no additional fee.",
+          "verificationStatus": "verified",
+          "sourceKeys": [
+            "npc-faqs-page",
+            "npc-vitalreg-faqs-page",
+            "npc-vitalreg-selfservice-portal"
+          ],
+          "page": "NPC FAQs (/FAQs & /faq-vitalreg — Birth Registration, Birth Attestation & Certificate Reprint sections)",
+          "evidenceNote": "Official NPC FAQs (/FAQs and /faq-vitalreg) explicitly state: \"Please note that you can only download your certificate once. If you need additional copies, you will need to request a certificate reprint, which incurs a fee.\" The first download of an approved certificate incurs no additional fee."
+        },
+        {
+          "label": "Subsequent Certificate Reprint / additional digital download (VitalReg certificate_reprint_payment)",
+          "pricingModel": "fixed",
+          "amount": 3000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to each additional reprint/download request after the initial download has been used.",
+          "notes": "NPC FAQs confirm that requesting a Certificate Reprint for additional copies incurs a fee, and the live VitalReg price API returns NGN 3,000 for certificate_reprint_payment. Marked pending because the numeric NGN 3,000 figure is served by the portal API rather than printed on the public FAQ webpage.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-faqs-page",
+            "npc-vitalreg-faqs-page",
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "NPC FAQs (/FAQs & /faq-vitalreg — Certificate Reprint); VitalReg Portal (/dashboard/reprint/requirements, transactionType: certificate_reprint_payment); Live Price API (/payments/price/certificate_reprint_payment)",
+          "evidenceNote": "NPC FAQs confirm that requesting a Certificate Reprint for additional copies incurs a fee, and the live VitalReg price API returns NGN 3,000 for certificate_reprint_payment. Marked pending because the numeric NGN 3,000 figure is served by the portal API rather than printed on the public FAQ webpage."
+        }
+      ]
+    },
+    {
+      "name": "Modification / correction of digital Civil Registration records (Birth, Attestation, Date of Birth, Foreign Birth and Death)",
+      "slug": "npc-civil-registration-record-modification",
+      "category": "Civil Registration — Record Modification & Corrections",
+      "jurisdiction": "Federal",
+      "description": "Official correction or modification of details on an approved digitalized NPC Birth Registration, Birth Attestation, Temporary Birth/Attestation Notification, Foreign Birth Notification, or Death Notification record on the VitalReg Self-Service Portal.",
+      "eligibilityAndScope": "Holders (or parents/informants) of an approved digitalized record on VitalReg (\"Ensure your certificate is digitalized and approved\" — NPC FAQs). Note: holders of pre-November 2023 paper certificates must first complete Digital Certificate Re-issuance before modifying fields, and changing an adult’s name by Deed Poll uses the separate Deed Poll module.",
+      "ageAndTimingConditions": "In the VitalReg modification rules (options.helper-dw2QYx9j.js), modifying a Date of Birth on a Birth Attestation is restricted to a maximum adjustment of ±5 years from the previously recorded date of birth and triggers a higher statutory modification fee (dob_modification_payment: ₦35,000). Updating a temporary birth record solely to attach a newly issued child NIN (\"Update Record with NIN\") is free.",
+      "responsibleBody": "National Population Commission (NPC) — VitalReg Self-Service Portal and Deputy Chief Registrars (DCRs).",
+      "deliveryChannelSummary": "Online submission, supporting document upload and payment via https://vitalreg-selfservice.nationalpopulation.gov.ng/ (\"Modify Record\" module), followed by DCR review and approval.",
+      "processingStandard": "Not stated on public NPC pages; requires DCR review and approval of the modification request before the updated certificate can be downloaded.",
+      "requirements": [
+        "Existing approved digitalized NPC certificate or temporary notification record on VitalReg.",
+        "Valid National Identification Number (NIN) matching the modified details where applicable.",
+        "Selection of the specific field(s) to modify (e.g., Applicant Name, Sex, Face/Photo, Place of Birth, State/LGA of Birth, Father/Mother Details, or Date of Birth) and a valid reason for modification.",
+        "Supporting documentary evidence for the requested correction (such as Court Sworn Affidavit, Marriage Certificate, Newspaper Publication, Medical Certificate of Birth/Death, or NIMC slip)."
+      ],
+      "processSteps": [
+        "Log in to https://vitalreg-selfservice.nationalpopulation.gov.ng/ and ensure the target certificate is digitalized and shows \"Approved\" on your dashboard.",
+        "Navigate to the \"Modify Record\" module, select the certificate type (Birth Registration, Birth Attestation, Foreign Birth Notification, or Death Notification) and enter the Certificate ID.",
+        "Select the specific field(s) to be corrected, enter the corrected information, and upload the required supporting documents.",
+        "Pay the applicable modification fee generated by the portal (₦3,000 for standard birth or attestation field modifications, ₦35,000 if Date of Birth is selected, ₦2,000 for foreign birth notification modification, or ₦10,000 for death notification modification).",
+        "Await DCR review and approval on the VitalReg dashboard, then download the updated digital certificate."
+      ],
+      "notes": "Documented in NPC FAQs (/FAQs under \"Modify Record\") and in the VitalReg frontend bundles (index-XX1KC8SJ.js and options.helper-dw2QYx9j.js). Note that when \"applicantDob\" (Date of Birth) is selected among the fields to modify, the portal switches the payment transaction type to dob_modification_payment (₦35,000). All numeric modification amounts are marked pending because they are served dynamically by https://ecrvs-api.verxid.site/payments/price/* rather than published on a static public webpage on nationalpopulation.gov.ng.",
+      "officialActionUrl": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "Use the \"Modify Record\" module on https://vitalreg-selfservice.nationalpopulation.gov.ng/ and verify the exact fee displayed for the field(s) you select (currently NGN 3,000 for non-DOB birth/attestation edits, NGN 35,000 when Date of Birth is modified, NGN 2,000 for foreign birth notification edits, and NGN 10,000 for death record edits). Updating a temporary birth record solely to link a child’s new NIN via \"Update Record with NIN\" is free.",
+      "feeOptions": [
+        {
+          "label": "Update temporary birth record with child NIN (VitalReg Update Record with NIN workflow)",
+          "pricingModel": "free",
+          "amount": null,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies only to linking a child’s newly issued NIN to an existing paid Temporary Birth Registration (birth_no_nin) record.",
+          "notes": "In the VitalReg Self-Service Portal bundle (index-XX1KC8SJ.js), the \"Update Record with NIN\" workflow (/dashboard/birth-registration/Update-nin) submits a PATCH request to /birth-registrations/update-nin/{id} directly after NIN validation without a payment step.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal"
+          ],
+          "page": "VitalReg Portal (/dashboard/birth-registration/Update-nin, bundle index-XX1KC8SJ.js)",
+          "evidenceNote": "In the VitalReg Self-Service Portal bundle (index-XX1KC8SJ.js), the \"Update Record with NIN\" workflow (/dashboard/birth-registration/Update-nin) submits a PATCH request to /birth-registrations/update-nin/{id} directly after NIN validation without a payment step."
+        },
+        {
+          "label": "Standard Birth Registration or Temporary Birth Record Modification — non-DOB fields (VitalReg birth_modification_payment / temp_birth_mod_payment)",
+          "pricingModel": "fixed",
+          "amount": 3000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to modifying non-DOB fields on an approved digital Birth Registration or Temporary Birth Notification record.",
+          "notes": "NPC FAQs confirm the paid Modify Record workflow, and the live VitalReg price API returns NGN 3,000 for both birth_modification_payment and temp_birth_mod_payment (covering edits to name, sex, photo, place/state/LGA of birth, or parents’ details). Marked pending because the numeric fee is only exposed via the portal API.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-faqs-page",
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "NPC FAQs (/FAQs — Modify Record); VitalReg Portal (/dashboard/birth-registration/modify-selection); Live Price API (/payments/price/birth_modification_payment & /payments/price/temp_birth_mod_payment)",
+          "evidenceNote": "NPC FAQs confirm the paid Modify Record workflow, and the live VitalReg price API returns NGN 3,000 for both birth_modification_payment and temp_birth_mod_payment (covering edits to name, sex, photo, place/state/LGA of birth, or parents’ details). Marked pending because the numeric fee is only exposed via the portal API."
+        },
+        {
+          "label": "Standard Birth Attestation or Temporary Attestation Modification — non-DOB fields (VitalReg attest_modification_payment / temp_attest_mod_payment)",
+          "pricingModel": "fixed",
+          "amount": 3000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to modifying non-DOB fields on an approved digital Birth Attestation or Temporary Attestation record.",
+          "notes": "The live VitalReg price API returns NGN 3,000 for both attest_modification_payment and temp_attest_mod_payment when modifying non-DOB fields (such as name, sex, state/LGA of origin, place of birth, or parents’ details). Marked pending because the numeric fee is only exposed via the portal API.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-faqs-page",
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "NPC FAQs (/FAQs — Modify Record); VitalReg Portal (/dashboard/birth-attestation/modify-selection); Live Price API (/payments/price/attest_modification_payment & /payments/price/temp_attest_mod_payment)",
+          "evidenceNote": "The live VitalReg price API returns NGN 3,000 for both attest_modification_payment and temp_attest_mod_payment when modifying non-DOB fields (such as name, sex, state/LGA of origin, place of birth, or parents’ details). Marked pending because the numeric fee is only exposed via the portal API."
+        },
+        {
+          "label": "Date of Birth (DOB) Modification on digital NPC record (VitalReg dob_modification_payment)",
+          "pricingModel": "fixed",
+          "amount": 35000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Triggered whenever Date of Birth (applicantDob) is selected for modification on VitalReg (for Birth Attestation, DOB adjustment is limited to within ±5 years of the previously recorded date).",
+          "notes": "In the VitalReg frontend bundle, selecting Date of Birth (applicantDob) switches the transaction type to dob_modification_payment (with attestation DOB edits constrained to ±5 years in options.helper-dw2QYx9j.js), and the live price API returns NGN 35,000. Marked pending because the numeric amount is not published on a static public NPC webpage.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-faqs-page",
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "VitalReg Portal (options.helper-dw2QYx9j.js & modify-selection logic: field === applicantDob -> dob_modification_payment); Live Price API (/payments/price/dob_modification_payment)",
+          "evidenceNote": "In the VitalReg frontend bundle, selecting Date of Birth (applicantDob) switches the transaction type to dob_modification_payment (with attestation DOB edits constrained to ±5 years in options.helper-dw2QYx9j.js), and the live price API returns NGN 35,000. Marked pending because the numeric amount is not published on a static public NPC webpage."
+        },
+        {
+          "label": "Foreign Birth Notification Modification (VitalReg birthnoti_mod_payment)",
+          "pricingModel": "fixed",
+          "amount": 2000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to modifying an approved Foreign Birth Notification record on VitalReg.",
+          "notes": "The live VitalReg price API returns NGN 2,000 for birthnoti_mod_payment. Marked pending because the numeric amount is not published on a static public NPC webpage.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "VitalReg Portal (/dashboard/foreign-birth/modify-selection); Live Price API (/payments/price/birthnoti_mod_payment)",
+          "evidenceNote": "The live VitalReg price API returns NGN 2,000 for birthnoti_mod_payment. Marked pending because the numeric amount is not published on a static public NPC webpage."
+        },
+        {
+          "label": "Death Notification / Death Record Modification (VitalReg death_modification_payment)",
+          "pricingModel": "fixed",
+          "amount": 10000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to modifying an approved digital Death Notification / Death Certificate record on VitalReg.",
+          "notes": "The live VitalReg price API returns NGN 10,000 for death_modification_payment (modifying deceased name, sex, age at death, date of death, or place/town of death). Marked pending because the numeric amount is not published on a static public NPC webpage.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "VitalReg Portal (/dashboard/death-notification/modify-selection); Live Price API (/payments/price/death_modification_payment)",
+          "evidenceNote": "The live VitalReg price API returns NGN 10,000 for death_modification_payment (modifying deceased name, sex, age at death, date of death, or place/town of death). Marked pending because the numeric amount is not published on a static public NPC webpage."
+        }
+      ]
+    },
+    {
+      "name": "Change of Name or Correction of Name by Deed Poll (VitalReg Deed Poll Module)",
+      "slug": "npc-change-of-name-deed-poll",
+      "category": "Civil Registration — Deed Poll & Name Change",
+      "jurisdiction": "Federal",
+      "description": "Official recording and endorsement of a legal Change of Name (by Marriage or Other Reasons) or Correction of Name by Deed Poll against an existing digital NPC Birth Certificate or Birth Attestation Certificate on the VitalReg Self-Service Portal.",
+      "eligibilityAndScope": "Adults who hold an approved digital NPC Birth Certificate or Birth Attestation Certificate on their VitalReg profile and wish to legally change or correct their registered name via an executed Deed Poll agreement.",
+      "ageAndTimingConditions": "Requires an existing approved digital Birth Certificate or Birth Attestation on the applicant’s VitalReg profile. For \"Name Change — Others\" and \"Name Correction\", the live VitalReg pathway endpoint (/deed-poll/pathways) marks the base ₦50,000 fee as escalates: true (subject to certificate-based calculation via /payments/price/{pathway}?certificateIdentifier=...).",
+      "responsibleBody": "National Population Commission (NPC) — VitalReg Deed Poll Module, working alongside Legal Practitioners and Courts.",
+      "deliveryChannelSummary": "Online submission and payment via https://vitalreg-selfservice.nationalpopulation.gov.ng/ (/deed-poll), using either the \"Self-Service\" route (applicant engages their own lawyer to prepare and execute the Deed Poll) or the \"Accredited Legal Practitioner\" route (selecting an NPC-licensed law firm on the portal).",
+      "processingStandard": "Not stated on public NPC pages; requires online submission, payment and NPC legal/DCR review.",
+      "requirements": [
+        "Existing approved digital NPC Birth Certificate or Birth Attestation Certificate on the applicant’s VitalReg profile.",
+        "Valid National Identification Number (NIN) matching the new/corrected name (or updated NIN slip).",
+        "Executed Deed Poll Agreement prepared by a qualified legal practitioner.",
+        "Sworn Court Affidavit of Change/Correction of Name.",
+        "Newspaper Publication of the change of name (or Marriage Certificate / supporting legal evidence for Name Change by Marriage).",
+        "Recent digital passport photograph and valid government-issued ID."
+      ],
+      "processSteps": [
+        "Ensure your NPC Birth Certificate or Birth Attestation Certificate is digitalized and shows \"Approved\" on https://vitalreg-selfservice.nationalpopulation.gov.ng/.",
+        "Select \"Deed Poll\" on the VitalReg portal and choose either \"Self-Service\" (using your own legal practitioner) or \"Accredited Legal Practitioner\" (selecting an NPC-accredited law firm).",
+        "Select your existing Birth Certificate or Birth Attestation record and choose the applicable Deed Poll pathway: \"Name Change by Marriage\", \"Name Change — Others\", or \"Name Correction\".",
+        "Upload the executed Deed Poll agreement, court affidavit, newspaper publication / marriage certificate, and supporting identification.",
+        "Pay the official VitalReg Deed Poll fee online and await NPC approval to download your Deed Poll endorsement / updated certificate."
+      ],
+      "notes": "Discovered in the live VitalReg bundle (chunk deed-poll.q-DTuFytgi.js) and verified against the live unauthenticated pathway endpoint (https://ecrvs-api.verxid.site/deed-poll/pathways and /payments/price/*). Note that private legal practitioner fees for drafting the Deed Poll, court affidavit fees, and newspaper publication fees are separate third-party charges outside NPC’s portal fee.",
+      "officialActionUrl": "https://vitalreg-selfservice.nationalpopulation.gov.ng/",
+      "officialChannelType": "portal",
+      "paymentGuide": "Initiate the Deed Poll workflow on https://vitalreg-selfservice.nationalpopulation.gov.ng/ (/deed-poll) and confirm the calculated portal fee for your certificate before payment (currently NGN 30,000 fixed for Name Change by Marriage, and NGN 50,000 base amount for Name Change — Others or Name Correction). External lawyer, court and newspaper fees are separate.",
+      "feeOptions": [
+        {
+          "label": "Deed Poll — Name Change by Marriage (VitalReg deed_poll_name_change_marriage)",
+          "pricingModel": "fixed",
+          "amount": 30000,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "Applies to Name Change by Marriage on VitalReg (escalates: false). Excludes external legal practitioner, court affidavit and marriage registry fees.",
+          "notes": "The live VitalReg endpoint https://ecrvs-api.verxid.site/deed-poll/pathways and /payments/price/deed_poll_name_change_marriage return a non-escalating fixed fee of NGN 30,000 for Name Change by Marriage. Marked pending because the numeric fee is not published on a static public webpage on nationalpopulation.gov.ng.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "VitalReg Portal (/deed-poll, chunk deed-poll.q-DTuFytgi.js); Live Pathways API (https://ecrvs-api.verxid.site/deed-poll/pathways — escalates: false)",
+          "evidenceNote": "The live VitalReg endpoint https://ecrvs-api.verxid.site/deed-poll/pathways and /payments/price/deed_poll_name_change_marriage return a non-escalating fixed fee of NGN 30,000 for Name Change by Marriage. Marked pending because the numeric fee is not published on a static public webpage on nationalpopulation.gov.ng."
+        },
+        {
+          "label": "Deed Poll — Name Change (Others) (VitalReg deed_poll_name_change_other — base ₦50,000, escalates by certificate)",
+          "pricingModel": "variable",
+          "amount": null,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": "Base portal fee of ₦50,000 (NGN), subject to certificate-specific escalation (escalates: true on VitalReg /deed-poll/pathways).",
+          "conditions": "Applies to non-marriage legal change of name by Deed Poll on VitalReg; excludes external lawyer, court and newspaper publication charges.",
+          "notes": "The live VitalReg endpoint https://ecrvs-api.verxid.site/deed-poll/pathways returns baseAmount: 50000 (NGN 50,000) with escalates: true for deed_poll_name_change_other (calculated dynamically per certificateIdentifier). Recorded as variable/pending because the final fee can escalate by certificate parameters and is not published in a static public tariff schedule.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "VitalReg Portal (/deed-poll, chunk deed-poll.q-DTuFytgi.js); Live Pathways API (https://ecrvs-api.verxid.site/deed-poll/pathways — baseAmount: 50000, escalates: true)",
+          "evidenceNote": "The live VitalReg endpoint https://ecrvs-api.verxid.site/deed-poll/pathways returns baseAmount: 50000 (NGN 50,000) with escalates: true for deed_poll_name_change_other (calculated dynamically per certificateIdentifier). Recorded as variable/pending because the final fee can escalate by certificate parameters and is not published in a static public tariff schedule."
+        },
+        {
+          "label": "Deed Poll — Name Correction (VitalReg deed_poll_name_correction — base ₦50,000, escalates by certificate)",
+          "pricingModel": "variable",
+          "amount": null,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": "Base portal fee of ₦50,000 (NGN), subject to certificate-specific escalation (escalates: true on VitalReg /deed-poll/pathways).",
+          "conditions": "Applies to correction of name by Deed Poll on VitalReg; excludes external lawyer, court and newspaper publication charges.",
+          "notes": "The live VitalReg endpoint https://ecrvs-api.verxid.site/deed-poll/pathways returns baseAmount: 50000 (NGN 50,000) with escalates: true for deed_poll_name_correction (calculated dynamically per certificateIdentifier). Recorded as variable/pending because the final fee can escalate by certificate parameters and is not published in a static public tariff schedule.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-vitalreg-selfservice-portal",
+            "npc-vitalreg-price-api"
+          ],
+          "page": "VitalReg Portal (/deed-poll, chunk deed-poll.q-DTuFytgi.js); Live Pathways API (https://ecrvs-api.verxid.site/deed-poll/pathways — baseAmount: 50000, escalates: true)",
+          "evidenceNote": "The live VitalReg endpoint https://ecrvs-api.verxid.site/deed-poll/pathways returns baseAmount: 50000 (NGN 50,000) with escalates: true for deed_poll_name_correction (calculated dynamically per certificateIdentifier). Recorded as variable/pending because the final fee can escalate by certificate parameters and is not published in a static public tariff schedule."
+        }
+      ]
+    },
+    {
+      "name": "Stillbirth Registration (Compulsory Civil Registration)",
+      "slug": "npc-stillbirth-registration",
+      "category": "Civil Registration — Stillbirths",
+      "jurisdiction": "Federal (Nationwide across 36 States, FCT and 774 LGAs)",
+      "description": "Statutory civil registration of a stillbirth (a child born after the 28th week of pregnancy that did not breathe or show any other sign of life after complete separation from the mother) at an NPC Registration Centre under the Births, Deaths, Etc. (Compulsory Registration) Act 1992.",
+      "eligibilityAndScope": "Parents, relatives or health-institution officers reporting a stillbirth occurring in Nigeria under the Births, Deaths, Etc. (Compulsory Registration) Act, Act No. 69 of 1992.",
+      "ageAndTimingConditions": "Applies to foetal deaths occurring after 28 weeks of gestation as defined on NPC’s Civil Registration page.",
+      "responsibleBody": "National Population Commission (NPC) — Authorised Registrars at health facilities and LGA registration centres (via https://ecrvs.nationalpopulation.gov.ng/ /dashboard/still-births).",
+      "deliveryChannelSummary": "In-person registration by an authorised NPC Registrar at the hospital/health institution or LGA NPC Registration Centre.",
+      "processingStandard": "Not stated on public NPC pages.",
+      "requirements": [
+        "Medical Certificate of Stillbirth signed by the attending registered medical practitioner or midwife (stating that the child was not born alive and the probable cause of foetal death), or informant declaration where no medical practitioner/midwife was present.",
+        "Valid National Identification Number (NIN) and particulars of the parent(s) / informant.",
+        "Particulars of the stillbirth (date and place of delivery, sex, gestational age/weight, and mother’s pregnancy/delivery details)."
+      ],
+      "processSteps": [
+        "Obtain the Medical Certificate of Stillbirth from the attending doctor or midwife at the health facility.",
+        "Present the certificate and parents’ details to the NPC Registrar assigned to the health facility or nearest NPC Registration Centre (https://nationalpopulation.gov.ng/our-offices).",
+        "The NPC Registrar records the event in the Stillbirth Register on the eCRVS platform (/dashboard/still-births) and issues the statutory acknowledgement/extract as applicable."
+      ],
+      "notes": "Explicitly documented on NPC’s public Civil Registration page (https://nationalpopulation.gov.ng/civil-registration under \"Stillbirth\") and supported as a dedicated module (/dashboard/still-births) on the eCRVS Registrar Portal (https://ecrvs.nationalpopulation.gov.ng/). Neither the public NPC website nor the eCRVS price API publishes a fee for stillbirth registration; in accordance with FeeLens rules, a missing fee is recorded as unknown/pending and never assumed free.",
+      "officialActionUrl": "https://nationalpopulation.gov.ng/civil-registration",
+      "officialChannelType": "office",
+      "paymentGuide": "Register stillbirths in person through an authorised NPC Registrar at the health facility or nearest NPC office. Confirm whether any statutory extract charge applies; no fee is stated on public NPC pages.",
+      "feeOptions": [
+        {
+          "label": "Stillbirth registration at an NPC registration centre",
+          "pricingModel": "unknown",
+          "amount": null,
+          "minimumAmount": null,
+          "maximumAmount": null,
+          "currency": "NGN",
+          "percentage": null,
+          "formula": null,
+          "conditions": "In-person registration via an authorised NPC Registrar; recorded as unknown/pending because no official source explicitly states a fee or free status.",
+          "notes": "NPC’s public Civil Registration page details the statutory requirement and procedure for Stillbirth Registration, and the eCRVS Registrar Portal includes a /dashboard/still-births module, but no official public source explicitly states whether a fee applies or states that it is free.",
+          "verificationStatus": "pending",
+          "sourceKeys": [
+            "npc-civil-registration-page",
+            "npc-ecrvs-registrar-portal",
+            "npc-our-offices-page"
+          ],
+          "page": "NPC Civil Registration page (https://nationalpopulation.gov.ng/civil-registration — Stillbirth section); eCRVS Registrar Portal (/dashboard/still-births)",
+          "evidenceNote": "NPC’s public Civil Registration page details the statutory requirement and procedure for Stillbirth Registration, and the eCRVS Registrar Portal includes a /dashboard/still-births module, but no official public source explicitly states whether a fee applies or states that it is free."
+        }
+      ]
+    }
+  ],
+  "excludedRows": [
+    {
+      "itemCode": "eCRVS API: cert_verification_request & cvr_educational_institute",
+      "name": "Third-Party / Institutional Certificate Verification Request (Standard ₦11,500; Educational Institution ₦4,000)",
+      "sourceRef": "https://ecrvs.nationalpopulation.gov.ng/certificate-verification-request & https://ecrvs-api.verxid.site/payments/price/cert_verification_request",
+      "disposition": "Excluded from individual/family service cards (documented in evidence matrix as institutional/relying-party verification)",
+      "reason": "Used by embassies, corporate organisations and educational institutions on the eCRVS portal to verify the authenticity of submitted NPC certificates (₦11,500 standard; ₦4,000 educational institutions). The brief prioritises services used by individuals and families; individual certificate holders verify/view their own certificates on their VitalReg dashboard at no verification fee."
+    },
+    {
+      "itemCode": "eCRVS API: deed_poll_verification_payment & law_firm_licence_payment",
+      "name": "Law Firm Deed Poll Accreditation Licence (₦4,000) & Deed Poll Verification (₦4,000)",
+      "sourceRef": "https://ecrvs.nationalpopulation.gov.ng/ & https://ecrvs-api.verxid.site/payments/price/law_firm_licence_payment",
+      "disposition": "Excluded from individual/family service cards (professional licensing for legal practitioners)",
+      "reason": "Applies to law firms applying for accreditation as NPC Accredited Legal Practitioners on eCRVS (law_firm_licence_payment: ₦4,000) or third-party Deed Poll verification (deed_poll_verification_payment: ₦4,000). Not an individual/family civil registration service."
+    },
+    {
+      "itemCode": "eCRVS API: marriage_notification_payment, divorce_notification_payment, migration_notification_payment",
+      "name": "Unlaunched / Non-NPC Vital Event Placeholders in Backend Enum (Marriage, Divorce, Migration Notifications — ₦4,000 each)",
+      "sourceRef": "https://ecrvs-api.verxid.site/payments/price/* & https://nationalpopulation.gov.ng/news/npc-calls-for-consolidation-of-civil-registration-laws-to-boost-digital-reforms",
+      "disposition": "Excluded from public NPC catalogue (not active public NPC services; Marriage Registry belongs to Ministry of Interior)",
+      "reason": "Although the backend eCRVS enum contains placeholder keys for marriage, divorce and migration notifications (and their *_mod_payment variants), these modules are not exposed on the public VitalReg Self-Service Portal, and statutory civil marriage registration in Nigeria is administered by the Federal Ministry of Interior (covered separately in Batch 3 under ministry-interior-marriage-registry)."
+    },
+    {
+      "itemCode": "External Authority Charge: Court Sworn Affidavit",
+      "name": "Court Sworn Affidavit (Declaration of Age / Birth Facts / Death / Name Change)",
+      "sourceRef": "https://nationalpopulation.gov.ng/FAQs & https://varms.fcthighcourt.gov.ng/",
+      "disposition": "Distinguished as an external Judiciary requirement (covered under FCT High Court in Batch 2)",
+      "reason": "Required as a supporting document for NPC Birth Attestation (18+), Attestation Re-issuance, unattended home Death Registration, and Deed Poll name changes, but sworn before and paid to a Court of Law (e.g., ₦500–₦750 on FCT High Court VARMS), not collected by NPC."
+    },
+    {
+      "itemCode": "External Authority Charge: Hospital Medical Certificate of Birth / Cause of Death",
+      "name": "Hospital Birth Notification / Medical Certificate of Cause of Death",
+      "sourceRef": "https://nationalpopulation.gov.ng/civil-registration & VitalReg options.helper-dw2QYx9j.js",
+      "disposition": "Distinguished as an external health-institution document",
+      "reason": "Issued by the attending hospital, clinic or maternity home as primary evidence of a birth, stillbirth or death. Any administrative charge by a private or public hospital for issuing its medical certificate is separate from NPC’s civil registration fee."
+    }
+  ]
+}

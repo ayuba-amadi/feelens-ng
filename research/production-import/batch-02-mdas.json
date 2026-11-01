@@ -7,7 +7,7 @@
       "slug": "agis",
       "jurisdiction": "Federal Capital Territory",
       "officialWebsite": "https://agis.fcta.gov.ng/",
-      "coverageStatus": "pilot",
+      "coverageStatus": "inactive",
       "description": "AGIS is the FCT land-information and land-administration channel used for allocation, title search, consent, registration and related property transactions.",
       "officialChannels": [
         {

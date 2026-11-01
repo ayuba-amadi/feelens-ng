@@ -68,12 +68,13 @@ test('stats returns database-derived public counts', async () => {
   const pool = poolFor((sql) => {
     assert.match(sql, /mdasCovered/);
     assert.match(sql, /is_active = TRUE/);
-    return { rows: [{ mdasCovered: 2, servicesMapped: 5, verifiedFeeItems: 3, sources: 4 }] };
+    assert.match(sql, /new_values \?& ARRAY/);
+    return { rows: [{ mdasCovered: 2, servicesMapped: 5, verifiedFeeItems: 0, sourceSupportedFeeItems: 3, sources: 4 }] };
   });
   await withServer(createApp({ config, pool }), async (baseUrl) => {
     const response = await request(baseUrl, '/public/stats');
     assert.equal(response.status, 200);
-    assert.deepEqual(response.body, { mdasCovered: 2, servicesMapped: 5, verifiedFeeItems: 3, sources: 4 });
+    assert.deepEqual(response.body, { mdasCovered: 2, servicesMapped: 5, verifiedFeeItems: 0, sourceSupportedFeeItems: 3, sources: 4 });
   });
 });
 
@@ -170,18 +171,20 @@ test('service detail exposes only current fee options, preserves unknown/conflic
     if (sql.includes('fs.fee_option_id = f.id')) {
       assert.match(sql, /f\.is_current = TRUE/);
       assert.match(sql, /f\.verification_status <> 'superseded'/);
+      assert.match(sql, /new_values \?& ARRAY/);
+      assert.match(sql, /source_supported/);
       return { rows: [
         { id: 21, pricingModel: 'unknown', amount: null, verificationStatus: 'conflicting', sources: [{ id: 31, title: 'Approved schedule', sourceType: 'approved_fee_schedule', publisher: 'MDA', url: 'https://source.example.invalid' }] },
-        { id: 22, pricingModel: 'fixed', amount: '100.00', verificationStatus: 'verified', sources: [{ id: 32, title: 'Other notice', sourceType: 'official_notice', publisher: 'MDA', url: 'https://notice.example.invalid' }, { id: 31, title: 'Approved schedule', sourceType: 'approved_fee_schedule', publisher: 'MDA', url: 'https://source.example.invalid' }] },
+        { id: 22, pricingModel: 'fixed', amount: '100.00', verificationStatus: 'source_supported', verifiedAt: null, sources: [{ id: 32, title: 'Other notice', sourceType: 'official_notice', publisher: 'MDA', url: 'https://notice.example.invalid' }, { id: 31, title: 'Approved schedule', sourceType: 'approved_fee_schedule', publisher: 'MDA', url: 'https://source.example.invalid' }] },
         { id: 23, pricingModel: 'unknown', amount: null, verificationStatus: 'pending', sources: [], evidenceSummary: 'private review', actorAdminUserId: 5, notes: 'private notes' },
-        { id: 24, pricingModel: 'free', amount: null, verificationStatus: 'verified', sources: [] },
+        { id: 24, pricingModel: 'free', amount: null, verificationStatus: 'pending', sources: [] },
       ] };
     }
     if (sql.includes('FROM official_channels')) {
       return { rows: [{ id: 41, channelType: 'portal', name: 'Official portal', url: 'https://portal.example.invalid', instructions: 'Use the official portal.' }] };
     }
     if (sql.includes('COUNT(*) FILTER')) {
-      return { rows: [{ verified: 1, pending: 0, conflicting: 1, unableToVerify: 0 }] };
+      return { rows: [{ verified: 0, sourceSupported: 1, pending: 1, conflicting: 1, unableToVerify: 0 }] };
     }
     throw new Error(`Unexpected SQL: ${sql} ${JSON.stringify(values)}`);
   });
@@ -195,6 +198,8 @@ test('service detail exposes only current fee options, preserves unknown/conflic
     assert.equal(service.feeOptions[0].amount, null);
     assert.equal(service.feeOptions[0].verificationStatus, 'conflicting');
     assert.deepEqual(service.feeOptions[0].sources.map((source) => source.title), ['Approved schedule']);
+    assert.equal(service.feeOptions[1].verificationStatus, 'source_supported');
+    assert.equal(service.feeOptions[1].verifiedAt, null);
     assert.deepEqual(service.feeOptions[1].sources.map((source) => source.title), ['Other notice', 'Approved schedule']);
     assert.deepEqual(service.feeOptions[2].sources, []);
     assert.equal(service.feeOptions[2].pricingModel, 'unknown');

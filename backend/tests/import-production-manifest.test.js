@@ -6,11 +6,16 @@ const batch3Manifest = require('../../research/production-import/batch-03-mdas.j
 const {
   BATCH_02_SLUGS,
   BATCH_03_SLUGS,
+  DEFAULT_MANIFEST_PATH,
+  FRSC_CATALOGUE_PATH,
+  buildFrscManifest,
   dryRunReport,
   importBatch,
+  loadManifest,
   selectBatch,
   validateManifest,
 } = require('../scripts/import-production-manifest');
+const frscCatalogue = require('../../research/production-import/frsc-service-catalogue.json');
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -44,12 +49,12 @@ function fakePool() {
       }
       if (sql.startsWith('SELECT * FROM services')) return { rows: state.services.filter((row) => row.mda_id === values[0] && row.slug === values[1]).map(clone) };
       if (sql.startsWith('INSERT INTO services')) {
-        const row = { id: nextId('services'), mda_id: values[0], name: values[1], slug: values[2], notes: values[8], is_active: values[9] };
+        const row = { id: nextId('services'), mda_id: values[0], name: values[1], slug: values[2], description: values[3], category: values[4], jurisdiction: values[5], requirements: JSON.parse(values[6]), process_steps: JSON.parse(values[7]), notes: values[8], is_active: values[9] };
         state.services.push(row); return { rows: [clone(row)] };
       }
       if (sql.startsWith('UPDATE services')) {
-        const row = state.services.find((item) => item.id === values[2]);
-        Object.assign(row, { name: values[0], notes: values[1], is_active: true });
+        const row = state.services.find((item) => item.id === values[7]);
+        Object.assign(row, { name: values[0], description: values[1], category: values[2], jurisdiction: values[3], requirements: JSON.parse(values[4]), process_steps: JSON.parse(values[5]), notes: values[6], is_active: true });
         return { rows: [clone(row)] };
       }
       if (sql.startsWith('SELECT * FROM sources')) return { rows: state.sources.filter((row) => row.title === values[0] && row.source_type === values[1] && row.url === values[2]).map(clone) };
@@ -198,7 +203,7 @@ test('dry-run performs no writes and preserves free, formula and conflicting sem
   assert.equal(allServices.find((service) => service.name === 'Date-of-birth modification').verificationStatus, 'conflicting');
 });
 
-test('apply path is idempotent, preserves conflicting fees, links evidence, creates channels and audit/history events', async () => {
+test('apply path is idempotent, preserves fee evidence and conflicts, links sources, and creates channels without review events', async () => {
   const pool = fakePool();
   const validated = validateManifest(manifest);
   const first = await importBatch({ manifest: validated, batch: 'batch-01', pool, actorAdminUserId: null });
@@ -206,7 +211,7 @@ test('apply path is idempotent, preserves conflicting fees, links evidence, crea
   assert.equal(first.mdaCount, 5);
   assert.equal(first.serviceCount, 25);
   assert.equal(first.officialChannelCount, 29);
-  assert.equal(first.verificationEvents, 25);
+  assert.equal(first.verificationEvents, 0);
   assert.equal(second.created, 0);
   assert.equal(second.updated, 0);
   assert.equal(second.linked, 0);
@@ -217,9 +222,9 @@ test('apply path is idempotent, preserves conflicting fees, links evidence, crea
   assert.equal(pool.state.sources.length, 9);
   assert.equal(pool.state.feeSources.length, 30);
   assert.equal(pool.state.channels.length, 29);
-  assert.equal(pool.state.verifications.length, 25);
+  assert.equal(pool.state.verifications.length, 0);
   assert.ok(pool.state.audits.some((audit) => audit.action === 'import.channel.created'));
-  assert.ok(pool.state.audits.some((audit) => audit.action === 'import.verification.created'));
+  assert.equal(pool.state.audits.some((audit) => audit.action === 'import.verification.created'), false);
   const conflictingService = pool.state.services.find((service) => service.slug === 'date-of-birth-modification');
   const conflictingFee = pool.state.fees.find((fee) => fee.service_id === conflictingService.id);
   assert.equal(conflictingFee.verification_status, 'conflicting');
@@ -235,7 +240,7 @@ test('Batch 2 apply path is idempotent and preserves USD, percentage and conflic
   assert.equal(first.mdaCount, 5);
   assert.equal(first.serviceCount, 22);
   assert.equal(first.officialChannelCount, 21);
-  assert.equal(first.verificationEvents, 22);
+  assert.equal(first.verificationEvents, 0);
   assert.equal(second.created, 0);
   assert.equal(second.updated, 0);
   assert.equal(second.linked, 0);
@@ -246,7 +251,7 @@ test('Batch 2 apply path is idempotent and preserves USD, percentage and conflic
   assert.equal(pool.state.sources.length, 11);
   assert.equal(pool.state.feeSources.length, 26);
   assert.equal(pool.state.channels.length, 21);
-  assert.equal(pool.state.verifications.length, 22);
+  assert.equal(pool.state.verifications.length, 0);
   const percentageService = pool.state.services.find((service) => service.slug === 'deed-of-assignment-gift');
   const percentageFee = pool.state.fees.find((fee) => fee.service_id === percentageService.id);
   assert.equal(percentageFee.pricing_model, 'percentage');
@@ -270,7 +275,7 @@ test('Batch 3 apply path is idempotent and preserves pending, USD, variable and 
   assert.equal(first.serviceCount, 30);
   assert.equal(first.evidenceLinkCount, 37);
   assert.equal(first.officialChannelCount, 35);
-  assert.equal(first.verificationEvents, 30);
+  assert.equal(first.verificationEvents, 0);
   assert.equal(second.created, 0);
   assert.equal(second.updated, 0);
   assert.equal(second.linked, 0);
@@ -281,7 +286,7 @@ test('Batch 3 apply path is idempotent and preserves pending, USD, variable and 
   assert.equal(pool.state.sources.length, 8);
   assert.equal(pool.state.feeSources.length, 37);
   assert.equal(pool.state.channels.length, 35);
-  assert.equal(pool.state.verifications.length, 30);
+  assert.equal(pool.state.verifications.length, 0);
   const nafdacServiceIds = new Set(pool.state.services.filter((service) => service.mda_id === pool.state.mdas.find((mda) => mda.slug === 'nafdac').id).map((service) => service.id));
   assert.ok(pool.state.fees.filter((fee) => nafdacServiceIds.has(fee.service_id)).every((fee) => fee.verification_status === 'pending'));
   const variableService = pool.state.services.find((service) => service.slug === 'general-nafdac-tariff-register');
@@ -294,4 +299,45 @@ test('Batch 3 apply path is idempotent and preserves pending, USD, variable and 
   assert.equal(usdFee.amount, 500);
   const sonSource = pool.state.sources.find((source) => source.url === 'https://son.gov.ng/soncap-faq/');
   assert.equal(pool.state.feeSources.filter((link) => link.source_id === sonSource.id).length, 6);
+});
+
+test('FRSC catalogue integration validates, preserves confidential SLA protection, and imports idempotently', async () => {
+  assert.ok(FRSC_CATALOGUE_PATH.endsWith('frsc-service-catalogue.json'));
+  assert.equal(frscCatalogue.confidentiality.markedConfidential, true);
+  assert.equal(frscCatalogue.confidentiality.publiclyHostedByFeeLens, false);
+  assert.equal(frscCatalogue.confidentiality.sha256, '3a38011ca7c790cef0c3ffe98c7e2521df51fa4a8f60594985a99c3699c12a18');
+  for (const source of Object.values(frscCatalogue.sources)) {
+    assert.equal(source.url.includes('REVIEWED_SLA_2026'), false, 'Public source register must not expose the confidential SLA PDF URL');
+  }
+
+  const withFrsc = validateManifest(buildFrscManifest(manifest, frscCatalogue));
+  const frscMda = withFrsc.mdas.find((mda) => mda.slug === 'frsc-drivers-licence');
+  assert.equal(frscMda.name, 'Federal Road Safety Corps');
+  assert.equal(frscMda.services.length, 13);
+  const allFeeOptions = frscMda.services.flatMap((service) => service.feeOptions);
+  assert.equal(allFeeOptions.length, 30);
+  assert.equal(allFeeOptions.filter((option) => option.verificationStatus === 'verified').length, 9);
+  assert.equal(allFeeOptions.filter((option) => option.verificationStatus === 'pending').length, 7);
+  assert.equal(allFeeOptions.filter((option) => option.verificationStatus === 'conflicting').length, 14);
+
+  const onlineVerification = frscMda.services.find((service) => service.slug === 'frsc-drivers-licence-online-verification');
+  assert.equal(onlineVerification.verificationStatus, 'pending');
+  assert.equal(onlineVerification.amount, null);
+
+  const fullLoaded = validateManifest(loadManifest(DEFAULT_MANIFEST_PATH));
+  const fullReport = dryRunReport(fullLoaded, 'batch-01');
+  assert.equal(fullReport.mdaCount, 5);
+  assert.equal(fullReport.duplicateRiskCount, 0);
+  assert.equal(fullReport.writes, 0);
+
+  const pool = fakePool();
+  const first = await importBatch({ manifest: withFrsc, batch: 'batch-01', pool, actorAdminUserId: null });
+  const second = await importBatch({ manifest: withFrsc, batch: 'batch-01', pool, actorAdminUserId: null });
+  assert.equal(first.mdaCount, 5);
+  assert.equal(first.serviceCount, 34);
+  assert.equal(first.feeOptionCount, 51);
+  assert.equal(second.created, 0);
+  assert.equal(second.updated, 0);
+  assert.equal(second.linked, 0);
+  assert.equal(second.verificationEvents, 0);
 });
