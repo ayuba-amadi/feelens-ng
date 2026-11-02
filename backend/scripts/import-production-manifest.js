@@ -376,7 +376,7 @@ function buildNimcManifest(baseManifest, catalogue) {
       return {
         name: row.name,
         slug: row.slug,
-        description: row.description ?? (`${row.audience || ''}. ${row.location || ''}. ${row.notes || ''}`.trim() || null),
+        description: row.description !== undefined ? row.description : (`${row.audience || ''}. ${row.location || ''}. ${row.notes || ''}`.trim() || null),
         category: row.category,
         jurisdiction: row.jurisdiction || (row.category.startsWith('Diaspora') ? 'Diaspora' : row.category.startsWith('Institutional') ? 'Institutional' : 'Within Nigeria'),
         requirements: Array.isArray(row.requirements) ? row.requirements : [],
@@ -889,7 +889,7 @@ async function linkSource(client, feeId, sourceId, source, actorAdminUserId, isP
   return Boolean(result.rows[0]);
 }
 
-async function createVerifiedReviewEvent(client, fee, sourceId, evidence, actorAdminUserId) {
+async function createVerifiedReviewEvent(client, fee, sourceId, evidence, actorAdminUserId, mdaSlug = 'nipc') {
   if (fee.verification_status !== 'verified') return false;
   if (!actorAdminUserId) throw new Error('Verified catalogue fees require IMPORT_ACTOR_ADMIN_ID for an auditable review event.');
   const actor = await client.query("SELECT id, display_name FROM admin_users WHERE id=$1 AND role='admin' AND is_active=TRUE", [actorAdminUserId]);
@@ -907,14 +907,21 @@ async function createVerifiedReviewEvent(client, fee, sourceId, evidence, actorA
   );
   if (existing.rows.length) return false;
   const checkedAt = fee.verified_at || new Date().toISOString();
+  const isNimc = mdaSlug === 'nimc';
+  const reviewNotes = isNimc
+    ? 'Values compared with the NIMC Service Level Agreement and the cited section.'
+    : 'Values compared with the NIPC Service Level Agreement and the cited section.';
+  const reviewMethod = isNimc
+    ? 'Direct comparison with the authoritative NIMC SLA; source section, printed page, and PDF page recorded.'
+    : 'Direct comparison with the authoritative NIPC SLA; source section and printed page recorded.';
   const result = await client.query(
     `INSERT INTO verification_events
        (service_id,fee_option_id,source_id,status,checked_at,checked_by,notes,actor_admin_user_id,
         evidence_summary,verification_method,new_values)
      VALUES ($1,$2,$3,'verified',$4,$5,$6,$7,$8,$9,$10::jsonb) RETURNING id`,
     [fee.service_id, fee.id, sourceId, checkedAt, actor.rows[0].display_name,
-      'Values compared with the NIPC Service Level Agreement and the cited section.', actorAdminUserId,
-      evidence.notes, 'Direct comparison with the authoritative NIPC SLA; source section and printed page recorded.', JSON.stringify(snapshot)],
+      reviewNotes, actorAdminUserId,
+      evidence.notes, reviewMethod, JSON.stringify(snapshot)],
   );
   await audit(client, actorAdminUserId, 'import.verification.created', 'verification_event', result.rows[0].id, null, { ...snapshot, sourceId, status: 'verified', checkedAt });
   return true;
@@ -1268,7 +1275,7 @@ async function importMda(client, mda, actorAdminUserId) {
       const feeResult = await findOrCreateFee(client, serviceResult.row.id, optionService, actorAdminUserId);
       counters.created += feeResult.created ? 1 : 0;
       for (const [index, source] of sources.entries()) counters.linked += await linkSource(client, feeResult.row.id, source.id, optionService.evidence[index], actorAdminUserId, index === 0) ? 1 : 0;
-      if (mda.slug === 'nipc' && sources[0]) counters.verificationEvents += await createVerifiedReviewEvent(client, feeResult.row, sources[0].id, optionService.evidence[0], actorAdminUserId) ? 1 : 0;
+      if ((mda.slug === 'nipc' || (mda.slug === 'nimc' && actorAdminUserId)) && sources[0]) counters.verificationEvents += await createVerifiedReviewEvent(client, feeResult.row, sources[0].id, optionService.evidence[0], actorAdminUserId, mda.slug) ? 1 : 0;
     }
     if (service.officialActionUrl) {
       const channel = { channelType: service.officialChannelType, name: `${service.name} official action channel`, url: service.officialActionUrl, contactValue: null, instructions: service.paymentGuide };

@@ -4,6 +4,7 @@ import { Layers3 } from 'lucide-react';
 import { publicApi } from '../lib/api';
 import { useApiResource } from '../hooks/use-api';
 import { asArray, formatCount, valueOf } from '../lib/format';
+import { NIMC_NAVIGATION_FILTERS, groupNimcServices } from '../lib/nimc';
 import { ExternalLink } from '../components/common/ExternalLink';
 import { MetricCard } from '../components/common/MetricCard';
 import { MdaLogo } from '../components/common/MdaLogo';
@@ -41,19 +42,14 @@ export function MdaDetailPage() {
   const officialChannels = valueOf(mda, 'officialChannels', 'official_channels') || [];
   const name = valueOf(mda, 'name', 'fullName') || 'Unnamed MDA';
   const acronym = valueOf(mda, 'acronym', 'shortName');
-  const isSingleCategoryGroup = categories.length === 1 && services.length > 0 && services.length <= 4;
+  const isNimcGrouped = slug === 'nimc' && services.length > 0;
+  const nimcSections = isNimcGrouped ? groupNimcServices(services, selectedCategory) : [];
+  const isSingleCategoryGroup = !isNimcGrouped && categories.length === 1 && services.length > 0 && services.length <= 4;
   const singleCategoryLabel = isSingleCategoryGroup ? categories[0] : null;
   const singleJurisdictionLabel = isSingleCategoryGroup
     ? (valueOf(services[0], 'jurisdiction') || valueOf(mda, 'jurisdiction') || 'Within Nigeria')
     : null;
-  const sortedSingleCategoryServices = isSingleCategoryGroup && slug === 'nimc'
-    ? [...services].sort((left, right) => {
-      const order = ['nimc-date-of-birth-modification', 'nimc-other-information-modification'];
-      const leftIndex = order.indexOf(valueOf(left, 'slug'));
-      const rightIndex = order.indexOf(valueOf(right, 'slug'));
-      return (leftIndex === -1 ? 99 : leftIndex) - (rightIndex === -1 ? 99 : rightIndex);
-    })
-    : services;
+
   return (
     <div className="page-shell space-y-5 py-5 sm:space-y-6 sm:py-8">
       <section className="surface-card p-4 sm:p-6">
@@ -70,16 +66,78 @@ export function MdaDetailPage() {
         </div>
       </section>
 
-      {isSingleCategoryGroup ? (
+      {isNimcGrouped ? (
+        <section aria-labelledby="mda-services-heading" className="space-y-5">
+          <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+            <div>
+              <p id="mda-services-heading" className="eyebrow">Services</p>
+              <p className="mt-1 text-sm font-medium text-slate-600">
+                {formatCount(services.length)} verified official services across {formatCount(groupNimcServices(services, 'all').length)} categories
+              </p>
+            </div>
+            <nav className="flex flex-wrap justify-center gap-1.5 sm:justify-end" aria-label="NIMC service regions">
+              {NIMC_NAVIGATION_FILTERS.map((filter) => (
+                <button
+                  type="button"
+                  key={filter.key}
+                  className={`min-h-9 rounded-full border px-3 text-xs font-semibold transition-colors ${
+                    selectedCategory === filter.key
+                      ? 'border-leaf bg-leaf text-white'
+                      : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
+                  }`}
+                  aria-pressed={selectedCategory === filter.key}
+                  onClick={() => setSelectedCategory(filter.key)}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          <div className="space-y-6">
+            {nimcSections.map((group, groupIndex) => {
+              const prevGroup = groupIndex > 0 ? nimcSections[groupIndex - 1] : null;
+              const showSuperHeading = group.superHeading && group.superHeading !== prevGroup?.superHeading;
+              const showJurisdictionHeading = group.jurisdiction !== prevGroup?.jurisdiction;
+
+              return (
+                <div key={group.key} id={group.key} className="space-y-3">
+                  {showSuperHeading ? (
+                    <div className="border-t border-slate-200 pt-5 text-center sm:text-left">
+                      <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-leaf">{group.superHeading}</p>
+                    </div>
+                  ) : null}
+                  <div className="text-center sm:text-left">
+                    {showJurisdictionHeading ? (
+                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{group.jurisdiction}</p>
+                    ) : null}
+                    <div className="mt-1 flex flex-col items-center gap-0.5 sm:flex-row sm:items-baseline sm:justify-between">
+                      <h2 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">{group.category}</h2>
+                      <p className="text-sm font-medium text-slate-600">
+                        {formatCount(group.services.length)} {group.services.length === 1 ? 'service' : 'services'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid items-stretch gap-3 md:grid-cols-2 lg:grid-cols-3">
+                    {group.services.map((service, index) => (
+                      <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} compact />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ) : isSingleCategoryGroup ? (
         <section aria-labelledby="mda-services-heading">
           <div className="text-center sm:text-left">
             <p className="eyebrow">Services</p>
             <p className="mt-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{singleJurisdictionLabel}</p>
-          <h2 id="mda-services-heading" className="mt-1 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{slug === 'nipc' ? 'Featured Services' : singleCategoryLabel}</h2>
+            <h2 id="mda-services-heading" className="mt-1 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{slug === 'nipc' ? 'Featured Services' : singleCategoryLabel}</h2>
             <p className="mt-1 text-sm font-medium text-slate-600">{formatCount(services.length)} {services.length === 1 ? 'service' : 'services'}</p>
           </div>
           <div className="mt-4 grid items-stretch gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {sortedSingleCategoryServices.map((service, index) => (
+            {services.map((service, index) => (
               <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} compact />
             ))}
           </div>
@@ -147,4 +205,3 @@ export function MdaDetailPage() {
     </div>
   );
 }
-

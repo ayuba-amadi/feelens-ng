@@ -11,7 +11,11 @@ export function ServiceCard({ service, compact = false }) {
   const fee = status === 'conflicting'
     ? { label: 'Conflicting fee options', detail: 'Authoritative records disagree. Review the evidence before paying.' }
     : feeOptions.length ? formatFee(feeOptions[0]) : { label: 'Fee not established', detail: 'No fee option is available to display.' };
-  const subtitle = valueOf(service, 'description', 'summary');
+  const isNimc = String(slug || '').startsWith('nimc-');
+  const rawName = valueOf(service, 'name', 'title') || 'Unnamed service';
+  const emDashParts = isNimc && rawName.includes(' — ') ? rawName.split(' — ') : null;
+  const displayTitle = emDashParts ? emDashParts[0].trim() : rawName;
+  const subtitle = valueOf(service, 'description', 'summary') || (emDashParts ? emDashParts.slice(1).join(' — ').trim() : null);
   const showShortSubtitle = subtitle && String(subtitle).trim().length > 0 && String(subtitle).trim().length <= 80;
   const officialUrl = valueOf(service, 'officialUrl', 'official_url', 'officialChannelUrl');
   const sourceCount = valueOf(service, 'sourceCount');
@@ -38,7 +42,7 @@ export function ServiceCard({ service, compact = false }) {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h3 className={`break-words text-lg font-semibold leading-6 text-ink${nipcService ? ' text-center' : ''}`}>
-            {valueOf(service, 'name', 'title') || 'Unnamed service'}
+            {displayTitle}
           </h3>
           {showShortSubtitle ? (
             <p className="mt-1 text-sm text-slate-600">{subtitle}</p>
@@ -47,11 +51,15 @@ export function ServiceCard({ service, compact = false }) {
         {!compact ? <StatusBadge status={status} /> : null}
       </div>
       {nipcService ? <p className="mt-3 text-center text-sm font-semibold text-slate-700">{isOsicNepc ? 'Responsible agency: Nigerian Export Promotion Council (NEPC)' : 'Nigerian Investment Promotion Commission (NIPC)'}</p> : null}
-      <div className="mt-3.5 rounded-xl bg-[#f4f8f5] p-3.5">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Official fee</p>
-        <p className="mt-1 text-xl font-bold tracking-tight text-ink">{cardFee.label}</p>
-        {isNipcEdi && cap ? <p className="mt-1 text-sm font-semibold text-ink">Cap: {cap}</p> : null}
-        {!compact && cardFee.detail ? <p className="mt-1 text-sm leading-5 text-slate-600">{cardFee.detail}</p> : null}
+      <div className="mt-auto pt-3.5">
+        <div className="rounded-xl bg-[#f4f8f5] p-3.5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Official fee</p>
+          <p className="mt-1 text-xl font-bold tracking-tight text-ink">
+            {isNimc && String(cardFee.label).toLowerCase() === 'free' ? 'FREE' : cardFee.label}
+          </p>
+          {isNipcEdi && cap ? <p className="mt-1 text-sm font-semibold text-ink">Cap: {cap}</p> : null}
+          {!compact && cardFee.detail ? <p className="mt-1 text-sm leading-5 text-slate-600">{cardFee.detail}</p> : null}
+        </div>
       </div>
       {nipcService && timeline ? <p className="mt-3 text-sm leading-5 text-slate-700"><span className="font-semibold">Timeline:</span> {timeline}</p> : null}
       {compact ? (

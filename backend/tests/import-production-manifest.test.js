@@ -1397,7 +1397,7 @@ test('direct Batch 1 import canonicalizes CAC before database writes', async () 
   assert.equal(first.verificationEvents, 0);
 });
 
-test('NIMC stage-1 curation publishes only the two Section 12.5 Regular Modification Services (Within Nigeria) and retires non-curated NIMC records non-destructively', async () => {
+test('NIMC approved catalogue publishes exactly 6 categories and 20 services across domestic and diaspora tables, preserves USD and free pricing models, and retires non-curated NIMC records non-destructively', async () => {
   const pool = fakePool();
   const nimcMda = {
     id: 2,
@@ -1430,18 +1430,31 @@ test('NIMC stage-1 curation publishes only the two Section 12.5 Regular Modifica
     {
       id: 98,
       mda_id: 2,
-      name: 'Correction of date of birth',
+      name: 'Correction of Date of Birth',
       slug: 'nimc-date-of-birth-modification',
-      description: 'Old conflicting description',
-      category: 'NIN modifications',
-      jurisdiction: 'Nigeria',
-      requirements: ['Old requirement'],
-      process_steps: ['Old step'],
-      notes: 'Old conflicting note',
+      description: 'Day / Month / Year',
+      category: 'Regular Modification Services',
+      jurisdiction: 'Within Nigeria',
+      requirements: [],
+      process_steps: [],
+      notes: null,
       is_active: true,
     },
+    {
+      id: 100,
+      mda_id: 2,
+      name: 'New enrolment — Adult',
+      slug: 'nimc-diaspora-regular-enrolment-adult-africa',
+      description: 'Archived diaspora service',
+      category: 'Diaspora regular enrolment',
+      jurisdiction: 'African countries',
+      requirements: [],
+      process_steps: [],
+      notes: null,
+      is_active: false,
+    },
   );
-  pool.state.ids.services = 98;
+  pool.state.ids.services = 100;
 
   pool.state.fees.push(
     {
@@ -1463,34 +1476,69 @@ test('NIMC stage-1 curation publishes only the two Section 12.5 Regular Modifica
       next_review_at: null,
     },
     {
-      id: 100,
-      service_id: 98,
-      pricing_model: 'unknown',
-      currency: 'NGN',
-      amount: null,
+      id: 102,
+      service_id: 100,
+      pricing_model: 'fixed',
+      currency: 'USD',
+      amount: 50,
       min_amount: null,
       max_amount: null,
       percentage: null,
       formula: null,
-      conditions: 'Old conflicting note',
-      label: 'Correction of date of birth',
-      notes: 'Old conflicting note',
+      conditions: null,
+      label: 'Old unverified fee',
+      notes: null,
       is_current: true,
-      verification_status: 'conflicting',
+      verification_status: 'pending',
       verified_at: null,
       next_review_at: null,
     },
   );
-  pool.state.ids.fees = 100;
+  pool.state.ids.fees = 102;
 
   const fullLoaded = validateManifest(loadManifest(DEFAULT_MANIFEST_PATH));
   const nimc = fullLoaded.mdas.find((mda) => mda.slug === 'nimc');
-  assert.equal(nimc.services.length, 2);
+  assert.equal(nimc.services.length, 20);
+  const uniqueSlugs = new Set(nimc.services.map((service) => service.slug));
+  assert.equal(uniqueSlugs.size, 20);
+
+  const categoryCounts = new Map();
+  for (const service of nimc.services) {
+    const key = `${service.jurisdiction} :: ${service.category}`;
+    categoryCounts.set(key, (categoryCounts.get(key) || 0) + 1);
+  }
+  assert.deepEqual(Array.from(categoryCounts.entries()), [
+    ['Within Nigeria :: Regular Modification Services', 2],
+    ['African Countries :: Regular Enrolment', 4],
+    ['African Countries :: Regular Modification', 2],
+    ['African Countries :: Premium Enrolment', 5],
+    ['African Countries :: Premium Modification', 2],
+    ['Non-African Countries :: Regular Enrolment', 5],
+  ]);
+
   assert.deepEqual(
-    nimc.services.map((service) => [service.slug, service.name, service.description, service.category, service.jurisdiction, service.amount, service.verificationStatus]),
+    nimc.services.map((service) => [service.slug, service.name, service.currency, service.pricingModel, service.amount, service.verificationStatus]),
     [
-      ['nimc-date-of-birth-modification', 'Correction of Date of Birth', 'Day / Month / Year', 'Regular Modification Services', 'Within Nigeria', 28574, 'verified'],
-      ['nimc-other-information-modification', 'Change of Other Information', 'Name, Address, etc.', 'Regular Modification Services', 'Within Nigeria', 2000, 'verified'],
+      ['nimc-date-of-birth-modification', 'Correction of Date of Birth', 'NGN', 'fixed', 28574, 'verified'],
+      ['nimc-other-information-modification', 'Change of Other Information', 'NGN', 'fixed', 2000, 'verified'],
+      ['nimc-diaspora-regular-enrolment-adult-africa', 'New Enrolment — Adult', 'USD', 'fixed', 50, 'verified'],
+      ['nimc-diaspora-regular-enrolment-child-africa', 'New Enrolment — Child', 'USD', 'fixed', 30, 'verified'],
+      ['nimc-diaspora-child-to-adult-migration-africa', 'Child-to-Adult Migration', 'USD', 'free', null, 'verified'],
+      ['nimc-diaspora-regular-slip-reissue-africa', 'NIN Slip Re-issue', 'USD', 'fixed', 6, 'verified'],
+      ['nimc-diaspora-regular-dob-africa', 'Correction of Date of Birth', 'USD', 'fixed', 55, 'verified'],
+      ['nimc-diaspora-regular-other-fields-africa', 'Change of Other Fields', 'USD', 'fixed', 10, 'verified'],
+      ['nimc-diaspora-premium-enrolment-adult-africa', 'New Enrolment — Adult', 'USD', 'fixed', 60, 'verified'],
+      ['nimc-diaspora-premium-enrolment-child-africa', 'New Enrolment — Child', 'USD', 'fixed', 30, 'verified'],
+      ['nimc-diaspora-premium-child-to-adult-africa', 'Child-to-Adult Migration', 'USD', 'free', null, 'verified'],
+      ['nimc-diaspora-premium-slip-reissue-africa', 'NIN Slip Re-issue', 'USD', 'fixed', 6, 'verified'],
+      ['nimc-diaspora-premium-gmpc-africa', 'GMPC Issuance/Reissuance', 'USD', 'fixed', 50, 'verified'],
+      ['nimc-diaspora-premium-dob-africa', 'Correction of Date of Birth', 'USD', 'fixed', 60, 'verified'],
+      ['nimc-diaspora-premium-other-fields-africa', 'Change of Other Fields', 'USD', 'fixed', 10, 'verified'],
+      ['nimc-diaspora-regular-enrolment-adult-non-africa', 'New Enrolment — Adult', 'USD', 'fixed', 70, 'verified'],
+      ['nimc-diaspora-regular-enrolment-child-non-africa', 'New Enrolment — Child', 'USD', 'fixed', 50, 'verified'],
+      ['nimc-diaspora-child-to-adult-non-africa', 'Child-to-Adult Migration', 'USD', 'free', null, 'verified'],
+      ['nimc-diaspora-regular-slip-reissue-non-africa', 'NIN Slip Re-issue', 'USD', 'fixed', 8, 'verified'],
+      ['nimc-diaspora-regular-gmpc-non-africa', 'GMPC Issuance/Reissuance', 'USD', 'fixed', 50, 'verified'],
     ],
   );
 
@@ -1500,8 +1548,9 @@ test('NIMC stage-1 curation publishes only the two Section 12.5 Regular Modifica
   assert.equal(second.writes, 0);
 
   const activeNimcServices = pool.state.services.filter((service) => service.mda_id === 2 && service.is_active);
-  assert.equal(activeNimcServices.length, 2);
+  assert.equal(activeNimcServices.length, 20);
   assert.equal(pool.state.services.find((service) => service.id === 8).is_active, false);
+  assert.equal(pool.state.services.find((service) => service.id === 100).is_active, true);
   assert.equal(pool.state.fees.find((fee) => fee.id === 8).is_current, false);
-  assert.equal(pool.state.fees.find((fee) => fee.id === 100).is_current, false);
+  assert.equal(pool.state.fees.find((fee) => fee.id === 102).is_current, false);
 });

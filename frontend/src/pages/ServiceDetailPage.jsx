@@ -4,7 +4,7 @@ import { CalendarDays, ChevronRight, ShieldCheck } from 'lucide-react';
 import { publicApi } from '../lib/api';
 import { useApiResource } from '../hooks/use-api';
 import { asArray, formatCurrency, formatDate, formatFee, formatSourceType, valueOf } from '../lib/format';
-import { nimcPdfPage, nimcSectionLabel } from '../lib/nimc';
+import { nimcPdfPage, nimcPrintedPage, nimcSectionLabel } from '../lib/nimc';
 import { ExternalLink } from '../components/common/ExternalLink';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { EmptyState, ErrorState, LoadingState } from '../components/common/States';
@@ -42,12 +42,16 @@ export function ServiceDetailPage() {
   const primarySource = sources[0] || null;
   const primarySourceUrl = primarySource ? valueOf(primarySource, 'url', 'officialUrl', 'official_url') : null;
   const primarySourcePdfPage = primarySource ? nimcPdfPage(primarySource) : null;
+  const primarySourcePrintedPage = primarySource ? nimcPrintedPage(primarySource) : null;
   const primarySourceHref = primarySourceUrl
     ? (primarySourceUrl.includes('#page=') || !primarySourcePdfPage ? primarySourceUrl : `${primarySourceUrl}#page=${primarySourcePdfPage}`)
     : officialUrl;
   const primarySourceSection = primarySource ? (nimcSectionLabel(primarySource) || valueOf(primarySource, 'pageOrSection', 'documentReference')) : null;
   const isSingleSimpleFee = feeOptions.length === 1 && String(status).toLowerCase() !== 'conflicting';
   const primaryFee = feeOptions.length === 1 ? formatFee(feeOptions[0]) : null;
+  const primaryFeeLabel = primaryFee
+    ? (mdaSlug === 'nimc' && primaryFee.label === 'Free' ? 'FREE' : primaryFee.label)
+    : null;
   const sourceTypeLabel = primarySource
     ? (['official_document', 'service_level_agreement', 'official_guideline'].includes(String(valueOf(primarySource, 'sourceType', 'source_type') || '').toLowerCase())
       ? 'Official MDA document'
@@ -96,7 +100,7 @@ export function ServiceDetailPage() {
           {isSingleSimpleFee && primaryFee ? (
             <div className="mt-4 w-full rounded-2xl border border-leaf/20 bg-[#f4f8f5] p-4 sm:max-w-md">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Official fee</p>
-              <p className="mt-1 text-3xl font-black tracking-tight text-ink sm:text-4xl">{primaryFee.label}</p>
+              <p className="mt-1 text-3xl font-black tracking-tight text-ink sm:text-4xl">{primaryFeeLabel}</p>
               {String(valueOf(feeOptions[0], 'pricingModel', 'pricing_model')).toLowerCase() === 'percentage'
                 && valueOf(feeOptions[0], 'maximumAmount', 'maxAmount', 'max_amount') !== undefined ? (
                 <p className="mt-1 text-sm font-semibold text-ink">Cap: {formatCurrency(valueOf(feeOptions[0], 'maximumAmount', 'maxAmount', 'max_amount'), valueOf(feeOptions[0], 'currency') || 'NGN')}</p>
@@ -251,10 +255,27 @@ export function ServiceDetailPage() {
                 <dd className="mt-0.5 text-slate-800">{primarySourceSection}</dd>
               </div>
             ) : null}
+            {primarySourcePrintedPage ? (
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Printed page</dt>
+                <dd className="mt-0.5 text-slate-800">Page {primarySourcePrintedPage}</dd>
+              </div>
+            ) : null}
+            {primarySourcePdfPage ? (
+              <div>
+                <dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">PDF page</dt>
+                <dd className="mt-0.5 text-slate-800">Page {primarySourcePdfPage}</dd>
+              </div>
+            ) : null}
             <div>
               <dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Official amount</dt>
               <dd className="mt-0.5 font-semibold text-ink">
-                {feeOptions.length ? feeOptions.map((option) => formatFee(option).label).join('; ') : 'Not available'}
+                {feeOptions.length
+                  ? feeOptions.map((option) => {
+                    const label = formatFee(option).label;
+                    return mdaSlug === 'nimc' && label === 'Free' ? 'FREE' : label;
+                  }).join('; ')
+                  : 'Not available'}
               </dd>
             </div>
             {lastChecked ? (
