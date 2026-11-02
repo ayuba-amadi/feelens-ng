@@ -41,6 +41,102 @@ export function MdaDetailPage() {
   const officialChannels = valueOf(mda, 'officialChannels', 'official_channels') || [];
   const name = valueOf(mda, 'name', 'fullName') || 'Unnamed MDA';
   const acronym = valueOf(mda, 'acronym', 'shortName');
-  return <div className="page-shell space-y-6 py-6 sm:py-8"><section className="surface-card p-5 sm:p-6"><div className="flex flex-col items-center gap-3 text-center lg:flex-row lg:text-left lg:items-start lg:justify-between"><div className="flex min-w-0 flex-col items-center gap-3 lg:flex-row lg:items-start"><MdaLogo name={name} acronym={acronym} slug={slug} size="large" /><div className="min-w-0"><p className="eyebrow">MDA profile</p><h1 className="mt-2 break-words text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{name}</h1>{acronym ? <p className="mt-2 text-sm font-medium uppercase tracking-[0.1em] text-slate-500">{acronym}</p> : null}</div></div>{website ? <ExternalLink href={website} label={`Visit the official ${name} website (opens in a new tab)`}>Official website</ExternalLink> : null}</div></section><section aria-labelledby="fee-coverage-title"><p id="fee-coverage-title" className="eyebrow">Fee coverage</p><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"><MetricCard label="Mapped services" value={mappedServices === undefined ? '—' : formatCount(mappedServices)} />{verified !== undefined ? <MetricCard label="Verified fees" value={formatCount(verified)} /> : null}<MetricCard label="Source-supported — awaiting human review" value={typeof sourceSupported === 'number' ? formatCount(sourceSupported) : sourceSupported} /><MetricCard label="Pending" value={typeof pending === 'number' ? formatCount(pending) : pending} /><MetricCard label="Conflicting / unresolved" value={typeof unresolved === 'number' ? formatCount(unresolved) : unresolved} /></div></section><section><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Service list</p><h2 className="section-heading mt-2">Services linked to this MDA</h2></div>{services.length ? <span className="text-sm text-slate-500">{formatCount(filteredServices.length)} of {formatCount(services.length)} listed</span> : null}</div>{categories.length ? <div className="mt-4 flex gap-2 overflow-x-auto pb-1" aria-label="Service categories"><button type="button" className={`min-h-10 shrink-0 rounded-full border px-3 text-sm font-semibold ${selectedCategory === 'all' ? 'border-leaf bg-leaf text-white' : 'border-slate-300 bg-white text-slate-700'}`} aria-pressed={selectedCategory === 'all'} onClick={() => setSelectedCategory('all')}>All services</button>{categories.map((category) => <button type="button" key={category} className={`min-h-10 shrink-0 rounded-full border px-3 text-sm font-semibold ${selectedCategory === category ? 'border-leaf bg-leaf text-white' : 'border-slate-300 bg-white text-slate-700'}`} aria-pressed={selectedCategory === category} onClick={() => setSelectedCategory(category)}>{category}</button>)}</div> : null}<div className="mt-5">{servicesState.status === 'loading' ? <LoadingState label="Loading services…" /> : servicesState.status === 'error' ? <ErrorState title="Services are not available yet" description="This MDA profile loaded, but its public service list could not be reached." /> : services.length === 0 ? <EmptyState title="No services mapped yet" description="Services will appear here when they have been reviewed and added to the public catalogue." icon={Layers3} /> : filteredServices.length === 0 ? <EmptyState title="No services in this category" description="Choose another category to continue browsing the published records." icon={Layers3} /> : <div className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3">{filteredServices.map((service, index) => <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} />)}</div>}</div></section>{officialChannels.length ? <section><p className="eyebrow">Official MDA channel</p><h2 className="section-heading mt-2">Start from the official institution channel</h2><div className="mt-5 grid gap-4 sm:grid-cols-2">{officialChannels.map((channel, index) => <OfficialChannelCard key={valueOf(channel, 'id', 'url') || index} channel={channel} />)}</div></section> : null}</div>;
+  const isSingleCategoryGroup = categories.length === 1 && services.length > 0 && services.length <= 4;
+  const singleCategoryLabel = isSingleCategoryGroup ? categories[0] : null;
+  const singleJurisdictionLabel = isSingleCategoryGroup
+    ? (valueOf(services[0], 'jurisdiction') || valueOf(mda, 'jurisdiction') || 'Within Nigeria')
+    : null;
+  return (
+    <div className="page-shell space-y-5 py-5 sm:space-y-6 sm:py-8">
+      <section className="surface-card p-4 sm:p-6">
+        <div className="flex flex-col items-center gap-2.5 text-center lg:flex-row lg:items-start lg:justify-between lg:text-left">
+          <div className="flex min-w-0 flex-col items-center gap-2.5 lg:flex-row lg:items-start lg:gap-4">
+            <MdaLogo name={name} acronym={acronym} slug={slug} size="large" />
+            <div className="min-w-0">
+              <p className="eyebrow">MDA profile</p>
+              <h1 className="mt-1.5 break-words text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{name}</h1>
+              {acronym ? <p className="mt-1 text-sm font-semibold uppercase tracking-[0.12em] text-slate-600">{acronym}</p> : null}
+            </div>
+          </div>
+          {website ? <ExternalLink href={website} label={`Visit the official ${name} website (opens in a new tab)`}>Official website</ExternalLink> : null}
+        </div>
+      </section>
+
+      {isSingleCategoryGroup ? (
+        <section aria-labelledby="mda-services-heading">
+          <div className="text-center sm:text-left">
+            <p className="eyebrow">Services</p>
+            <p className="mt-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{singleJurisdictionLabel}</p>
+            <h2 id="mda-services-heading" className="mt-1 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{singleCategoryLabel}</h2>
+            <p className="mt-1 text-sm font-medium text-slate-600">{formatCount(services.length)} {services.length === 1 ? 'service' : 'services'}</p>
+          </div>
+          <div className="mt-4 grid items-stretch gap-4 md:grid-cols-2">
+            {services.map((service, index) => (
+              <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} compact />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <>
+          <section aria-labelledby="fee-coverage-title">
+            <p id="fee-coverage-title" className="eyebrow">Fee coverage</p>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <MetricCard label="Mapped services" value={mappedServices === undefined ? '—' : formatCount(mappedServices)} />
+              {verified !== undefined ? <MetricCard label="Verified fees" value={formatCount(verified)} /> : null}
+              <MetricCard label="Source-supported — awaiting human review" value={typeof sourceSupported === 'number' ? formatCount(sourceSupported) : sourceSupported} />
+              <MetricCard label="Pending" value={typeof pending === 'number' ? formatCount(pending) : pending} />
+              <MetricCard label="Conflicting / unresolved" value={typeof unresolved === 'number' ? formatCount(unresolved) : unresolved} />
+            </div>
+          </section>
+          <section>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="eyebrow">Service list</p>
+                <h2 className="section-heading mt-2">Services linked to this MDA</h2>
+              </div>
+              {services.length ? <span className="text-sm text-slate-500">{formatCount(filteredServices.length)} of {formatCount(services.length)} listed</span> : null}
+            </div>
+            {categories.length > 1 ? (
+              <div className="mt-4 flex gap-2 overflow-x-auto pb-1" aria-label="Service categories">
+                <button type="button" className={`min-h-10 shrink-0 rounded-full border px-3 text-sm font-semibold ${selectedCategory === 'all' ? 'border-leaf bg-leaf text-white' : 'border-slate-300 bg-white text-slate-700'}`} aria-pressed={selectedCategory === 'all'} onClick={() => setSelectedCategory('all')}>All services</button>
+                {categories.map((category) => (
+                  <button type="button" key={category} className={`min-h-10 shrink-0 rounded-full border px-3 text-sm font-semibold ${selectedCategory === category ? 'border-leaf bg-leaf text-white' : 'border-slate-300 bg-white text-slate-700'}`} aria-pressed={selectedCategory === category} onClick={() => setSelectedCategory(category)}>{category}</button>
+                ))}
+              </div>
+            ) : null}
+            <div className="mt-5">
+              {servicesState.status === 'loading' ? (
+                <LoadingState label="Loading services…" />
+              ) : servicesState.status === 'error' ? (
+                <ErrorState title="Services are not available yet" description="This MDA profile loaded, but its public service list could not be reached." />
+              ) : services.length === 0 ? (
+                <EmptyState title="No services mapped yet" description="Services will appear here when they have been reviewed and added to the public catalogue." icon={Layers3} />
+              ) : filteredServices.length === 0 ? (
+                <EmptyState title="No services in this category" description="Choose another category to continue browsing the published records." icon={Layers3} />
+              ) : (
+                <div className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {filteredServices.map((service, index) => (
+                    <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        </>
+      )}
+
+      {officialChannels.length ? (
+        <section>
+          <p className="eyebrow">Official MDA channel</p>
+          <h2 className="section-heading mt-2">Start from the official institution channel</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {officialChannels.map((channel, index) => (
+              <OfficialChannelCard key={valueOf(channel, 'id', 'url') || index} channel={channel} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </div>
+  );
 }
 

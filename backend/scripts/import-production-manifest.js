@@ -6,7 +6,9 @@ const { recordAuditLog } = require('../src/services/audit-log.service');
 const { withTransaction } = require('../src/utils/database');
 const { pricingModels, sourceTypes, verificationStatuses } = require('../src/validation/admin.schemas');
 
-const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
+const REPOSITORY_ROOT = fs.existsSync(path.join(path.resolve(__dirname, '..'), 'research/production-import'))
+  ? path.resolve(__dirname, '..')
+  : path.resolve(__dirname, '../..');
 const DEFAULT_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-01-mdas.json');
 const BATCH_02_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-02-mdas.json');
 const FCTIRS_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/fctirs-service-catalogue.json');
@@ -364,32 +366,18 @@ function buildNimcManifest(baseManifest, catalogue) {
         return {
           key,
           ...source,
-          pageOrSection: row.page,
+          pageOrSection: row.page || source.documentReference || null,
           notes: row.evidenceNotes?.[key] || row.evidenceNote || source.notes,
         };
       });
-      const requirements = row.slug === 'nimc-nin-first-time-enrolment-and-slip'
-        ? ['Provide a valid supporting document accepted by NIMC.', 'Attend the enrolment process for demographic and biometric capture.']
-        : row.slug === 'nimc-nin-slip-reissuance-loss-damage-theft'
-          ? ['For loss or theft, provide the police report, court affidavit, evidence of payment and photo ID listed by NIMC.', 'For damage, provide the damaged slip and evidence of payment.']
-          : row.slug === 'nimc-date-of-birth-modification' || row.slug === 'nimc-other-information-modification'
-            ? ['Bring the original NIN slip, payment evidence, a signed application letter and supporting document as required by the field.', 'Use the NIMC centre or the supported self-service route for the requested field.']
-            : [];
-      const processSteps = row.slug === 'nimc-nin-first-time-enrolment-and-slip'
-        ? ['Use NIMC pre-enrolment where available.', 'Attend an official NIMC enrolment centre for the supported capture and verification steps.', 'Collect the NIN slip after NIMC processing.']
-        : row.slug === 'nimc-date-of-birth-modification' || row.slug === 'nimc-other-information-modification'
-          ? ['Review NIMC\'s current modification instructions and payment route.', 'Submit the supported documents and complete the centre or self-service workflow.', 'Keep the transaction evidence and follow NIMC notifications.']
-          : row.slug === 'nimc-nin-slip-reissuance-loss-damage-theft' || row.slug === 'nimc-nin-slip-reissuance-after-modification'
-            ? ['Follow NIMC\'s re-issuance instructions for the applicable reason.', 'Present the required evidence and complete the official payment route.', 'Collect or retrieve the re-issued slip through the official channel.']
-            : [];
       return {
         name: row.name,
         slug: row.slug,
-        description: `${row.audience}. ${row.location}. ${row.notes}`,
+        description: row.description ?? (`${row.audience || ''}. ${row.location || ''}. ${row.notes || ''}`.trim() || null),
         category: row.category,
-        jurisdiction: row.category.startsWith('Diaspora') ? 'Diaspora' : row.category.startsWith('Institutional') ? 'Institutional' : 'Nigeria',
-        requirements,
-        processSteps,
+        jurisdiction: row.jurisdiction || (row.category.startsWith('Diaspora') ? 'Diaspora' : row.category.startsWith('Institutional') ? 'Institutional' : 'Within Nigeria'),
+        requirements: Array.isArray(row.requirements) ? row.requirements : [],
+        processSteps: Array.isArray(row.processSteps) ? row.processSteps : [],
         pricingModel: row.pricingModel,
         amount: row.amount ?? null,
         minimumAmount: row.minimumAmount ?? null,
@@ -397,16 +385,16 @@ function buildNimcManifest(baseManifest, catalogue) {
         currency: row.currency,
         percentage: row.percentage ?? null,
         formula: row.formula ?? null,
-        conditions: row.notes || null,
+        conditions: row.conditions ?? row.notes ?? null,
         verificationStatus: row.status,
-        lastChecked: '2026-10-31',
+        lastChecked: row.lastChecked || '2026-11-02',
         evidence,
-        officialActionUrl: row.actionUrl || 'https://nimc.gov.ng/',
+        officialActionUrl: row.actionUrl !== undefined ? row.actionUrl : 'https://nimc.gov.ng/',
         officialChannelType: row.channelType || 'website',
-        paymentGuide: row.status === 'conflicting'
+        paymentGuide: row.paymentGuide || (row.status === 'conflicting'
           ? 'Official NIMC evidence does not establish one conclusive amount or band. Review every linked source and confirm the applicable amount with NIMC before payment.'
-          : row.notes,
-        notes: row.notes,
+          : row.notes || 'Follow the official NIMC procedure before payment.'),
+        notes: row.notes ?? null,
       };
     }),
   };
@@ -1052,8 +1040,113 @@ async function reconcileInteriorVerificationClaims(client, mdaId, actorAdminUser
   return { updated: updatedCount };
 }
 
+async function reconcileNimcObsoleteRecords(client, mdaId, canonicalSlugs, actorAdminUserId) {
+  const counters = { updated: 0 };
+
+  const obsoleteServices = await client.query(
+    `SELECT *
+       FROM services
+      WHERE mda_id = $1
+        AND NOT (slug = ANY($2::text[]))
+      FOR UPDATE`,
+    [mdaId, canonicalSlugs],
+  );
+
+  for (const service of obsoleteServices.rows) {
+    if (service.is_active === true) {
+      const updatedService = await client.query(
+        `UPDATE services
+            SET is_active = FALSE,
+                updated_at = NOW()
+          WHERE id = $1
+          RETURNING *`,
+        [service.id],
+      );
+
+      await audit(
+        client,
+        actorAdminUserId,
+        'import.service.retired',
+        'service',
+        service.id,
+        service,
+        updatedService.rows[0],
+      );
+
+      counters.updated += 1;
+    }
+
+    const currentFees = await client.query(
+      `SELECT *
+         FROM fee_options
+        WHERE service_id = $1
+          AND is_current = TRUE
+        FOR UPDATE`,
+      [service.id],
+    );
+
+    for (const fee of currentFees.rows) {
+      const updatedFee = await client.query(
+        `UPDATE fee_options
+            SET is_current = FALSE,
+                verification_status = 'superseded',
+                updated_at = NOW()
+          WHERE id = $1
+          RETURNING *`,
+        [fee.id],
+      );
+
+      await audit(
+        client,
+        actorAdminUserId,
+        'import.fee.superseded',
+        'fee_option',
+        fee.id,
+        fee,
+        updatedFee.rows[0],
+      );
+
+      counters.updated += 1;
+    }
+
+    const activeChannels = await client.query(
+      `SELECT *
+         FROM official_channels
+        WHERE service_id = $1
+          AND is_active = TRUE
+        FOR UPDATE`,
+      [service.id],
+    );
+
+    for (const channel of activeChannels.rows) {
+      const updatedChannel = await client.query(
+        `UPDATE official_channels
+            SET is_active = FALSE,
+                updated_at = NOW()
+          WHERE id = $1
+          RETURNING *`,
+        [channel.id],
+      );
+
+      await audit(
+        client,
+        actorAdminUserId,
+        'import.channel.retired',
+        'official_channel',
+        channel.id,
+        channel,
+        updatedChannel.rows[0],
+      );
+
+      counters.updated += 1;
+    }
+  }
+
+  return counters;
+}
+
 async function reconcileNpcJambCurrentFees(client, mdaSlug, serviceId, service, actorAdminUserId) {
-  if (!['npc', 'jamb'].includes(mdaSlug)) return { updated: 0 };
+  if (!['npc', 'jamb', 'nimc'].includes(mdaSlug)) return { updated: 0 };
 
   const canonicalOptions = service.feeOptions?.length ? service.feeOptions : [service];
   const canonicalCurrentIdentities = new Set(canonicalOptions
@@ -1103,6 +1196,15 @@ async function importMda(client, mda, actorAdminUserId) {
     const reconciliation = await reconcileFctirsObsoleteRecords(
       client,
       mdaResult.row.id,
+      actorAdminUserId,
+    );
+    counters.updated += reconciliation.updated;
+  }
+  if (mda.slug === 'nimc') {
+    const reconciliation = await reconcileNimcObsoleteRecords(
+      client,
+      mdaResult.row.id,
+      mda.services.map((service) => service.slug),
       actorAdminUserId,
     );
     counters.updated += reconciliation.updated;
@@ -1256,4 +1358,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_MANIFEST_PATH, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, INTERIOR_CATALOGUE_PATH, INTERIOR_LEGACY_FEES, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildInteriorManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, feeIdentityKey, feeValues, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, reconcileInteriorVerificationClaims, reconcileNpcJambCurrentFees, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_MANIFEST_PATH, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, INTERIOR_CATALOGUE_PATH, INTERIOR_LEGACY_FEES, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildInteriorManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, feeIdentityKey, feeValues, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, reconcileInteriorVerificationClaims, reconcileNimcObsoleteRecords, reconcileNpcJambCurrentFees, selectBatch, validateManifest };

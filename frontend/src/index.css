@@ -67,7 +67,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .mda-logo-normal { width: 2.75rem; height: 2.75rem; }
-.mda-logo-large { width: 3.5rem; height: 3.5rem; }
+.mda-logo-large { width: 4.25rem; height: 4.25rem; }
 .mda-logo-dark { border-color: #0b2638; background: #0b2638; }
 
 .hero-grid {

@@ -6,6 +6,7 @@
   "description": "FeeLens NG public frontend",
   "scripts": {
     "dev": "vite",
+    "test": "node --test",
     "lint": "eslint src",
     "build": "vite build",
     "preview": "vite preview"

@@ -13,6 +13,7 @@ const sourceTypes = [
   'official_website',
   'official_portal',
   'official_notice',
+  'official_document',
   'official_faq',
   'official_fee_page',
   'official_process_page',

@@ -60,6 +60,14 @@ function fakePool() {
         if (hasJurisdiction) row.jurisdiction = values[6];
         return { rows: [clone(row)] };
       }
+      if (sql.includes('FROM services') && sql.includes('NOT (slug = ANY') && !sql.includes('JOIN services')) {
+        const slugs = values[1];
+        return {
+          rows: state.services
+            .filter((row) => row.mda_id === values[0] && !slugs.includes(row.slug))
+            .map(clone),
+        };
+      }
       if (sql.includes('FROM services') && sql.includes('slug = ANY') && !sql.includes('JOIN services')) {
         const slugs = values[1];
         return {
@@ -429,30 +437,32 @@ test('apply path is idempotent, preserves fee evidence and conflicts, links sour
   assert.equal(pool.state.verifications.length, 0);
   assert.ok(pool.state.audits.some((audit) => audit.action === 'import.channel.created'));
   assert.equal(pool.state.audits.some((audit) => audit.action === 'import.verification.created'), false);
-  const conflictingService = pool.state.services.find(
+  const dobService = pool.state.services.find(
     (service) => service.slug === 'nimc-date-of-birth-modification',
   );
-
-  assert.ok(
-    conflictingService,
-    'Canonical NIMC date-of-birth modification service must be imported.',
-  );
-
-  const conflictingFees = pool.state.fees.filter(
-    (fee) => fee.service_id === conflictingService.id,
+  const otherInfoService = pool.state.services.find(
+    (service) => service.slug === 'nimc-other-information-modification',
   );
 
   assert.ok(
-    conflictingFees.length >= 1,
-    'NIMC date-of-birth modification must retain its fee evidence.',
+    dobService && otherInfoService,
+    'Canonical NIMC regular modification services within Nigeria must be imported.',
   );
 
-  assert.ok(
-    conflictingFees.some(
-      (fee) => fee.verification_status === 'conflicting',
-    ),
-    'NIMC date-of-birth modification must retain a conflicting fee state.',
+  const dobFees = pool.state.fees.filter(
+    (fee) => fee.service_id === dobService.id && fee.is_current,
   );
+  const otherInfoFees = pool.state.fees.filter(
+    (fee) => fee.service_id === otherInfoService.id && fee.is_current,
+  );
+
+  assert.equal(dobFees.length, 1);
+  assert.equal(dobFees[0].amount, 28574);
+  assert.equal(dobFees[0].verification_status, 'verified');
+
+  assert.equal(otherInfoFees.length, 1);
+  assert.equal(otherInfoFees[0].amount, 2000);
+  assert.equal(otherInfoFees[0].verification_status, 'verified');
 });
 
 test('Batch 2 apply path is idempotent and preserves percentage, NPC fee conflict and JAMB values', async () => {
@@ -1360,4 +1370,113 @@ test('direct Batch 1 import canonicalizes CAC before database writes', async () 
   assert.equal(second.verificationEvents, 0);
 
   assert.equal(first.verificationEvents, 0);
+});
+
+test('NIMC stage-1 curation publishes only the two Section 12.5 Regular Modification Services (Within Nigeria) and retires non-curated NIMC records non-destructively', async () => {
+  const pool = fakePool();
+  const nimcMda = {
+    id: 2,
+    name: 'National Identity Management Commission',
+    slug: 'nimc',
+    acronym: 'NIMC',
+    description: 'Existing NIMC',
+    website_url: 'https://nimc.gov.ng/',
+    coverage_status: 'pilot',
+    is_active: true,
+    jurisdiction: 'Federal',
+  };
+  pool.state.mdas.push(nimcMda);
+  pool.state.ids.mdas = 2;
+
+  pool.state.services.push(
+    {
+      id: 8,
+      mda_id: 2,
+      name: 'Date-of-birth modification',
+      slug: 'date-of-birth-modification',
+      description: 'Legacy duplicate',
+      category: 'Modification',
+      jurisdiction: 'Nigeria',
+      requirements: [],
+      process_steps: [],
+      notes: null,
+      is_active: true,
+    },
+    {
+      id: 98,
+      mda_id: 2,
+      name: 'Correction of date of birth',
+      slug: 'nimc-date-of-birth-modification',
+      description: 'Old conflicting description',
+      category: 'NIN modifications',
+      jurisdiction: 'Nigeria',
+      requirements: ['Old requirement'],
+      process_steps: ['Old step'],
+      notes: 'Old conflicting note',
+      is_active: true,
+    },
+  );
+  pool.state.ids.services = 98;
+
+  pool.state.fees.push(
+    {
+      id: 8,
+      service_id: 8,
+      pricing_model: 'unknown',
+      currency: 'NGN',
+      amount: null,
+      min_amount: null,
+      max_amount: null,
+      percentage: null,
+      formula: null,
+      conditions: null,
+      label: 'Date-of-birth modification',
+      notes: null,
+      is_current: true,
+      verification_status: 'conflicting',
+      verified_at: null,
+      next_review_at: null,
+    },
+    {
+      id: 100,
+      service_id: 98,
+      pricing_model: 'unknown',
+      currency: 'NGN',
+      amount: null,
+      min_amount: null,
+      max_amount: null,
+      percentage: null,
+      formula: null,
+      conditions: 'Old conflicting note',
+      label: 'Correction of date of birth',
+      notes: 'Old conflicting note',
+      is_current: true,
+      verification_status: 'conflicting',
+      verified_at: null,
+      next_review_at: null,
+    },
+  );
+  pool.state.ids.fees = 100;
+
+  const fullLoaded = validateManifest(loadManifest(DEFAULT_MANIFEST_PATH));
+  const nimc = fullLoaded.mdas.find((mda) => mda.slug === 'nimc');
+  assert.equal(nimc.services.length, 2);
+  assert.deepEqual(
+    nimc.services.map((service) => [service.slug, service.name, service.description, service.category, service.jurisdiction, service.amount, service.verificationStatus]),
+    [
+      ['nimc-date-of-birth-modification', 'Correction of Date of Birth', 'Day / Month / Year', 'Regular Modification Services', 'Within Nigeria', 28574, 'verified'],
+      ['nimc-other-information-modification', 'Change of Other Information', 'Name, Address, etc.', 'Regular Modification Services', 'Within Nigeria', 2000, 'verified'],
+    ],
+  );
+
+  const first = await importBatch({ manifest: fullLoaded, batch: 'batch-01', pool, actorAdminUserId: null });
+  const second = await importBatch({ manifest: fullLoaded, batch: 'batch-01', pool, actorAdminUserId: null });
+  assert.ok(first.writes > 0);
+  assert.equal(second.writes, 0);
+
+  const activeNimcServices = pool.state.services.filter((service) => service.mda_id === 2 && service.is_active);
+  assert.equal(activeNimcServices.length, 2);
+  assert.equal(pool.state.services.find((service) => service.id === 8).is_active, false);
+  assert.equal(pool.state.fees.find((fee) => fee.id === 8).is_current, false);
+  assert.equal(pool.state.fees.find((fee) => fee.id === 100).is_current, false);
 });

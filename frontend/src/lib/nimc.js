@@ -4,13 +4,30 @@ export const NIS_SLA_OFFICIAL_URL = 'https://immigration.gov.ng/wp-content/uploa
 export const NIS_SLA_HOSTED_URL = '/sources/nis-service-level-agreement-2026.pdf';
 
 export function isNimcCharterSource(source = {}) {
-  return source.url === NIMC_CHARTER_OFFICIAL_URL || String(source.title || '').toLowerCase().includes('nimc service charter');
+  const url = String(source.url || source.officialUrl || source.official_url || '').toLowerCase();
+  const title = String(source.title || source.name || '').toLowerCase();
+  return url === NIMC_CHARTER_OFFICIAL_URL.toLowerCase()
+    || url.endsWith(NIMC_CHARTER_HOSTED_URL.toLowerCase())
+    || title.includes('nimc service charter')
+    || title.includes('nimc service level agreement');
 }
 
 export function nimcPdfPage(source = {}) {
-  const reference = String(source.pageOrSection || source.page_or_section || '');
-  const match = reference.match(/PDF\s+p\.?\s*(\d+)/i);
+  const reference = String(source.pageOrSection || source.page_or_section || source.documentReference || source.document_reference || '');
+  const match = reference.match(/PDF\s+(?:page|p\.?)\s*(\d+)/i);
   return match ? Number(match[1]) : null;
+}
+
+export function nimcPrintedPage(source = {}) {
+  const reference = String(source.pageOrSection || source.page_or_section || source.documentReference || source.document_reference || '');
+  const match = reference.match(/Printed\s+(?:page|p\.?)\s*(\d+)/i);
+  return match ? Number(match[1]) : null;
+}
+
+export function nimcSectionLabel(source = {}) {
+  const reference = String(source.pageOrSection || source.page_or_section || source.documentReference || source.document_reference || '');
+  const match = reference.match(/Section\s+([^·;]+)/i);
+  return match ? match[1].trim() : null;
 }
 
 export function nimcViewerHref(source = {}) {
