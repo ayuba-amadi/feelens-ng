@@ -23,17 +23,16 @@ export const CAC_FEATURED_GROUPS = [
   },
 ];
 
-const FEATURED_SLUGS = new Set(CAC_FEATURED_GROUPS.flatMap((group) => group.slugs));
-
 export function groupCacServices(services = []) {
-  const bySlug = new Map(services.map((service) => [service.slug, service]));
   const featuredGroups = CAC_FEATURED_GROUPS.map((group) => ({
     ...group,
-    services: group.slugs.map((slug) => bySlug.get(slug)).filter(Boolean),
+    services: services.filter((service) => (
+      service.catalogueGroup === group.key
+      && group.slugs.includes(service.slug)
+    )),
   }));
-  const otherServices = services.filter((service) => {
-    return !FEATURED_SLUGS.has(service.slug);
-  });
+  const featuredSlugs = new Set(featuredGroups.flatMap((group) => group.services.map((service) => service.slug)));
+  const otherServices = services.filter((service) => !featuredSlugs.has(service.slug));
   return { featuredGroups, otherServices };
 }
 

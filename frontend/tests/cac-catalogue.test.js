@@ -7,6 +7,10 @@ import { collectPages } from '../src/lib/pagination.js';
 
 const catalogue = JSON.parse(await readFile(new URL('../../research/production-import/cac-service-catalogue.json', import.meta.url), 'utf8'));
 const bySlug = new Map(catalogue.services.map((service) => [service.slug, service]));
+const apiCatalogueServices = catalogue.services.map((service) => ({
+  ...service,
+  catalogueGroup: CAC_FEATURED_GROUPS.find((group) => group.slugs.includes(service.slug))?.key || 'other',
+}));
 
 test('CAC featured groups contain exactly the approved five registration and five name-change services', () => {
   assert.deepEqual(CAC_FEATURED_GROUPS.map((group) => [group.label, group.slugs]), [
@@ -25,11 +29,25 @@ test('CAC featured groups contain exactly the approved five registration and fiv
       'cac-014-change-of-name-limited-liability-partnership',
     ]],
   ]);
-  const grouped = groupCacServices(catalogue.services);
+  const grouped = groupCacServices(apiCatalogueServices);
   assert.deepEqual(grouped.featuredGroups.map((group) => group.services.length), [5, 5]);
   assert.equal(grouped.featuredGroups.flatMap((group) => group.services).length, 10);
-  assert.equal(grouped.otherServices.length, catalogue.services.length - 10);
+  assert.equal(grouped.otherServices.length, apiCatalogueServices.length - 10);
   assert.equal(grouped.otherServices.some((service) => CAC_FEATURED_GROUPS.some((group) => group.slugs.includes(service.slug))), false);
+});
+
+test('API catalogueGroup is primary and the approved slug list is a defensive allowlist', () => {
+  const businessName = apiCatalogueServices.find((service) => service.slug === 'business-name-registration-ctc-registration-documents');
+  const unknownRegistration = { slug: 'unapproved-registration', name: 'Unapproved registration', catalogueGroup: 'registration' };
+  const input = [
+    { ...businessName, catalogueGroup: 'other' },
+    { ...unknownRegistration },
+    ...apiCatalogueServices.filter((service) => service.slug !== businessName.slug),
+  ];
+  const grouped = groupCacServices(input);
+  assert.equal(grouped.featuredGroups.flatMap((group) => group.services).length, 9);
+  assert.ok(grouped.otherServices.some((service) => service.slug === businessName.slug));
+  assert.ok(grouped.otherServices.some((service) => service.slug === 'unapproved-registration'));
 });
 
 test('CAC service collection follows pagination so all Other Services stay reachable', async () => {
@@ -92,9 +110,9 @@ test('company name changes retain three separate tiered amounts and conditions',
 });
 
 test('only approved CAC records are featured; remaining catalogue records are retained as Other Services', () => {
-  const grouped = groupCacServices(catalogue.services);
+  const grouped = groupCacServices(apiCatalogueServices);
   assert.equal(grouped.featuredGroups.flatMap((group) => group.services).length, 10);
-  assert.equal(grouped.otherServices.length, catalogue.services.length - 10);
+  assert.equal(grouped.otherServices.length, apiCatalogueServices.length - 10);
   assert.ok(grouped.otherServices.every((service) => Array.isArray(service.feeOptions)));
   assert.ok(grouped.otherServices.every((service) => Array.isArray(service.requirements)));
 });
