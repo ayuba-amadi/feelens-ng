@@ -28,8 +28,9 @@ export function formatCount(value) {
 export function formatCurrency(amount, currency = 'NGN') {
   const numericAmount = Number(amount);
   if (!Number.isFinite(numericAmount)) return null;
-  if (currency === 'USD') return `US$${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(numericAmount)}`;
-  try { return new Intl.NumberFormat('en-NG', { style: 'currency', currency, maximumFractionDigits: 2 }).format(numericAmount); } catch { return `${currency} ${new Intl.NumberFormat('en-NG', { maximumFractionDigits: 2 }).format(numericAmount)}`; }
+  const fractionDigits = Number.isInteger(numericAmount) ? 0 : 2;
+  if (currency === 'USD') return `US$${new Intl.NumberFormat('en-US', { minimumFractionDigits: fractionDigits, maximumFractionDigits: 2 }).format(numericAmount)}`;
+  try { return new Intl.NumberFormat('en-NG', { style: 'currency', currency, minimumFractionDigits: fractionDigits, maximumFractionDigits: 2 }).format(numericAmount); } catch { return `${currency} ${new Intl.NumberFormat('en-NG', { minimumFractionDigits: fractionDigits, maximumFractionDigits: 2 }).format(numericAmount)}`; }
 }
 
 export function formatFee(option) {

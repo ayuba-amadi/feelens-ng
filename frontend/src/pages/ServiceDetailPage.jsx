@@ -104,7 +104,9 @@ export function ServiceDetailPage() {
               <div className="mt-3 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <StatusBadge status={status} />
               </div>
-              {primaryFee.detail ? <p className="mt-2.5 text-left text-xs leading-5 text-slate-600">{primaryFee.detail}</p> : null}
+              {primaryFee.detail && primaryFee.detail !== 'Fixed fee' ? (
+                <p className="mt-2.5 text-left text-xs leading-5 text-slate-600">{primaryFee.detail}</p>
+              ) : null}
               {valueOf(feeOptions[0], 'notes') ? <p className="mt-2.5 border-t border-slate-200/80 pt-2.5 text-left text-xs leading-5 text-slate-600">{valueOf(feeOptions[0], 'notes')}</p> : null}
               {valueOf(feeOptions[0], 'conditions') ? (
                 <p className="mt-2.5 border-t border-slate-200/80 pt-2.5 text-left text-xs leading-5 text-slate-600">
@@ -126,7 +128,7 @@ export function ServiceDetailPage() {
             </span>
             {primarySourceHref ? (
               <ExternalLink href={primarySourceHref} className="min-h-9 text-xs">
-                {primarySourceUrl?.startsWith('https://feelens.ng/sources/') ? 'View evidence copy' : 'View official source'}
+                {isNipcSlaService && primarySourceUrl?.startsWith('https://feelens.ng/sources/') ? 'View evidence copy' : 'View official source'}
               </ExternalLink>
             ) : null}
           </div>

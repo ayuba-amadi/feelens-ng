@@ -46,6 +46,14 @@ export function MdaDetailPage() {
   const singleJurisdictionLabel = isSingleCategoryGroup
     ? (valueOf(services[0], 'jurisdiction') || valueOf(mda, 'jurisdiction') || 'Within Nigeria')
     : null;
+  const sortedSingleCategoryServices = isSingleCategoryGroup && slug === 'nimc'
+    ? [...services].sort((left, right) => {
+      const order = ['nimc-date-of-birth-modification', 'nimc-other-information-modification'];
+      const leftIndex = order.indexOf(valueOf(left, 'slug'));
+      const rightIndex = order.indexOf(valueOf(right, 'slug'));
+      return (leftIndex === -1 ? 99 : leftIndex) - (rightIndex === -1 ? 99 : rightIndex);
+    })
+    : services;
   return (
     <div className="page-shell space-y-5 py-5 sm:space-y-6 sm:py-8">
       <section className="surface-card p-4 sm:p-6">
@@ -71,7 +79,7 @@ export function MdaDetailPage() {
             <p className="mt-1 text-sm font-medium text-slate-600">{formatCount(services.length)} {services.length === 1 ? 'service' : 'services'}</p>
           </div>
           <div className="mt-4 grid items-stretch gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, index) => (
+            {sortedSingleCategoryServices.map((service, index) => (
               <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} compact />
             ))}
           </div>
