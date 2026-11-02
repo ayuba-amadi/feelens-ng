@@ -67,10 +67,10 @@ export function MdaDetailPage() {
           <div className="text-center sm:text-left">
             <p className="eyebrow">Services</p>
             <p className="mt-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{singleJurisdictionLabel}</p>
-            <h2 id="mda-services-heading" className="mt-1 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{singleCategoryLabel}</h2>
+          <h2 id="mda-services-heading" className="mt-1 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{slug === 'nipc' ? 'Featured Services' : singleCategoryLabel}</h2>
             <p className="mt-1 text-sm font-medium text-slate-600">{formatCount(services.length)} {services.length === 1 ? 'service' : 'services'}</p>
           </div>
-          <div className="mt-4 grid items-stretch gap-4 md:grid-cols-2">
+          <div className="mt-4 grid items-stretch gap-3 md:grid-cols-2 lg:grid-cols-3">
             {services.map((service, index) => (
               <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} compact />
             ))}

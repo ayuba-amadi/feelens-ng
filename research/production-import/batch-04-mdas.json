@@ -1,0 +1,210 @@
+{
+  "batch": "batch-04",
+  "mdas": [
+    {
+      "name": "Nigerian Investment Promotion Commission",
+      "acronym": "NIPC",
+      "slug": "nipc",
+      "jurisdiction": "Federal",
+      "officialWebsite": "https://nipc.gov.ng/",
+      "coverageStatus": "pilot",
+      "description": "The Nigerian Investment Promotion Commission promotes investment opportunities and supports investors in Nigeria.",
+      "officialChannels": [
+        {
+          "channelType": "website",
+          "name": "NIPC official website",
+          "url": "https://nipc.gov.ng/",
+          "contactValue": null,
+          "instructions": "Use the NIPC website for official institutional information."
+        }
+      ],
+      "services": [
+        {
+          "name": "Business Registration Certificate",
+          "slug": "business-registration-certificate",
+          "description": "Timeline: 48 working hours from receipt of a complete application. The listed fees are non-refundable.",
+          "category": "Investment Services",
+          "jurisdiction": "Federal",
+          "requirements": [
+            "Certificate of Incorporation (CAC)",
+            "Status Report or CAC Form 1.1",
+            "CO2 & CO7 for older entities",
+            "Memorandum & Articles of Association",
+            "Power of Attorney / Letter of Authority where applicable",
+            "Proof of payment of processing fee",
+            { "title": "Source note", "items": ["The company’s Annual Returns Filing with CAC must be up to date."] }
+          ],
+          "processSteps": [
+            "Log in to the SWIP portal (swip.nipc.gov.ng).",
+            "Complete the online form and upload the required documents.",
+            "Pay the processing fee online.",
+            "NIPC reviews and processes the application within 48 working hours from receipt of a complete application.",
+            "The certificate is issued electronically."
+          ],
+          "pricingModel": "fixed",
+          "amount": 150000,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-11-02",
+          "evidence": [
+            {
+              "key": "nipc-sla",
+              "title": "Nigerian Investment Promotion Commission — Service Level Agreement",
+              "sourceType": "service_level_agreement",
+              "url": "https://feelens.ng/sources/nipc-service-level-agreement.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-11-02",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Investment Promotion Commission",
+              "pageOrSection": "Section 6.1 · Printed page 7 · PDF page 7",
+              "documentReference": "Section 6.1 · Printed page 7 · PDF page 7",
+              "notes": "NIPC SLA section 6.1 states the Business Registration Certificate timeline, non-refundable fee options, required documents, process and online availability."
+            }
+          ],
+          "officialActionUrl": "https://swip.nipc.gov.ng/",
+          "officialChannelType": "portal",
+          "paymentGuide": "The SLA identifies the SWIP portal as the fully online service channel. No mandatory physical visit is required.",
+          "notes": null,
+          "feeOptions": [
+            { "pricingModel": "fixed", "amount": 150000, "currency": "NGN", "label": "New Application", "notes": "Non-refundable, as stated by the SLA.", "verificationStatus": "verified", "page": "Section 6.1 · Printed page 7 · PDF page 7" },
+            { "pricingModel": "fixed", "amount": 50000, "currency": "NGN", "label": "Annual Renewal", "notes": "Non-refundable, as stated by the SLA.", "verificationStatus": "verified", "page": "Section 6.1 · Printed page 7 · PDF page 7" },
+            { "pricingModel": "fixed", "amount": 100000, "currency": "NGN", "label": "Amendment", "notes": "Non-refundable, as stated by the SLA.", "verificationStatus": "verified", "page": "Section 6.1 · Printed page 7 · PDF page 7" }
+          ]
+        },
+        {
+          "name": "Economic Development Incentive — New Application",
+          "slug": "economic-development-incentive-new-application",
+          "description": "Timeline: 12 weeks total — Part I (NIPC): 4 weeks; Part II (FMITI / IID): 4 weeks; Part III (NRS): 4 weeks.",
+          "category": "Investment Services",
+          "jurisdiction": "Federal",
+          "requirements": [
+            "Completed EDI Application Form (Part I)",
+            "Certificate of Incorporation",
+            "Memorandum & Articles of Association",
+            "Audited Accounts (last 5 years, if applicable)",
+            "Project Profile",
+            "Evidence of fee payments",
+            "Power of Attorney where applicable"
+          ],
+          "processSteps": [
+            "Apply to NIPC with the requisite fee.",
+            "Agree on a presentation date.",
+            "Present the project to NIPC.",
+            "NIPC performs due diligence and a site visit.",
+            "The NIPC Technical Committee makes a decision: approve or request additional information.",
+            "NIPC submits to the Minister for review and onward submission to the President.",
+            "Presidential approval.",
+            "NIPC issues the EDI Certificate.",
+            "Part II: Apply to IID for Production Duty Certification.",
+            "IID issues the Production Duty Certificate.",
+            "Part III: Apply to NRS for QCE Certification.",
+            "NRS issues a Qualifying Capital Expenditure (QCE) Certificate."
+          ],
+          "pricingModel": "percentage",
+          "amount": null,
+          "maximumAmount": 5000000,
+          "percentage": 0.01,
+          "currency": "NGN",
+          "formula": null,
+          "conditions": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-11-02",
+          "evidence": [
+            {
+              "key": "nipc-sla",
+              "title": "Nigerian Investment Promotion Commission — Service Level Agreement",
+              "sourceType": "service_level_agreement",
+              "url": "https://feelens.ng/sources/nipc-service-level-agreement.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-11-02",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Investment Promotion Commission",
+              "pageOrSection": "Section 6.2 · Printed page 7 · PDF page 7",
+              "documentReference": "Section 6.2 · Printed page 7 · PDF page 7",
+              "notes": "NIPC SLA section 6.2 states a 0.01% fee capped at ₦5,000,000, the staged 12-week timeline, required documents and process. The calculation base is not stated."
+            }
+          ],
+          "officialActionUrl": null,
+          "officialChannelType": "portal",
+          "paymentGuide": "The SLA does not identify an online service channel for this service.",
+          "notes": null,
+          "feeOptions": [
+            { "pricingModel": "percentage", "amount": null, "maximumAmount": 5000000, "percentage": 0.01, "currency": "NGN", "label": "New Application", "notes": "0.01%, capped at ₦5,000,000. The calculation base is not stated by the SLA.", "verificationStatus": "verified", "page": "Section 6.2 · Printed page 7 · PDF page 7" }
+          ]
+        },
+        {
+          "name": "Export Certificate Registration",
+          "slug": "osic-export-certificate-registration",
+          "description": "Responsible service agency: Nigerian Export Promotion Council (NEPC). This is the NIPC / OSIC SLA listing; NEPC administers the certificate. Timeline: 48 working hours after confirmation of payment.",
+          "category": "Investment Services",
+          "jurisdiction": "Federal",
+          "requirements": [
+            { "title": "Limited Liability Company", "items": [
+              "Certificate of Incorporation issued by CAC",
+              "Copy of Memorandum and Articles of Association",
+              "Copy of Form CAC 1.1 — Section C (Particulars of Directors) or Status Report. The source notes this was formerly Form CO7 or Form CAC 7.",
+              "Board resolution to register the company with NEPC (Company Seal affixed and signed)."
+            ] },
+            { "title": "Co-operative Society", "items": [
+              "Certificate of Registration issued by the appropriate State Ministry of Commerce, Local Government or FCT Area Council as applicable",
+              "Bye Laws of the Society",
+              "Board resolution to register with NEPC (Society Seal affixed and signed)."
+            ] },
+            { "title": "Government and Non-Government Organisations", "items": [
+              "Certificate of Registration issued by the Corporate Affairs Commission",
+              "Constitution of the Government Organisation or Non-Governmental Organisation",
+              "Memorandum for Guidance of Applicant",
+              "Board of Trustees resolution to register with NEPC (Company Seal affixed and signed)."
+            ] }
+          ],
+          "processSteps": [
+            "Visit nepc.gov.ng and open Getting Started to read about E-registration.",
+            "Select TAKE ME THERE to open the NEPC E-registration platform.",
+            "Select Create an Account.",
+            "Create an account using an email address (company email preferred) and enter the security code.",
+            "Select Verify E-mail.",
+            "Open the email from NEPC and follow its verification link.",
+            "Create a password and continue to the E-registration platform.",
+            "Complete the forms.",
+            "Upload the documents in PDF format when prompted.",
+            "Proceed to make payment."
+          ],
+          "pricingModel": "fixed",
+          "amount": 13500,
+          "currency": "NGN",
+          "formula": null,
+          "verificationStatus": "verified",
+          "lastChecked": "2026-11-02",
+          "evidence": [
+            {
+              "key": "nipc-sla",
+              "title": "Nigerian Investment Promotion Commission — Service Level Agreement",
+              "sourceType": "service_level_agreement",
+              "url": "https://feelens.ng/sources/nipc-service-level-agreement.pdf",
+              "publicationDate": null,
+              "effectiveDate": null,
+              "lastChecked": "2026-11-02",
+              "evidenceTier": 2,
+              "publisher": "Nigerian Investment Promotion Commission",
+              "pageOrSection": "Section 6.3 · Printed page 7 · PDF pages 7–8",
+              "documentReference": "Section 6.3 · Printed page 7 · PDF pages 7–8",
+              "notes": "NIPC SLA section 6.3 lists Export Certificate Registration under NEPC, its timeline, fees, organisation-specific documents and process."
+            }
+          ],
+          "officialActionUrl": "https://nepc.gov.ng/ereg/exporter/",
+          "officialChannelType": "portal",
+          "paymentGuide": "NEPC administers this service through its E-registration platform. Confirm the current route in NEPC’s official channel.",
+          "notes": null,
+          "feeOptions": [
+            { "pricingModel": "fixed", "amount": 13500, "currency": "NGN", "label": "New Certificate Registration", "verificationStatus": "verified", "page": "Section 6.3 · Printed page 7 · PDF page 8" },
+            { "pricingModel": "fixed", "amount": 7500, "currency": "NGN", "label": "Expired Certificate Renewal", "verificationStatus": "verified", "page": "Section 6.3 · Printed page 7 · PDF page 8" },
+            { "pricingModel": "fixed", "amount": 12500, "currency": "NGN", "label": "Late Certificate Renewal", "conditions": "After three months of expiry", "verificationStatus": "verified", "page": "Section 6.3 · Printed page 7 · PDF page 8" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -10,9 +10,13 @@ export function EvidenceCard({ source }) {
   const viewerHref = nimcViewerHref(source) || nisViewerHref(source);
   const excerpt = valueOf(source, 'excerpt');
   const rawReference = valueOf(source, 'pageOrSection', 'page_or_section', 'documentReference', 'document_reference');
-  const sectionLabel = nimcSectionLabel(source);
-  const printedPage = nimcPrintedPage(source);
-  const pdfPage = nimcPdfPage(source);
+  const nipcSection = String(rawReference || '').match(/Section\s+(6\.[123])/i)?.[1] || null;
+  const nipcPrintedPage = String(rawReference || '').match(/Printed page\s+(\d+)/i)?.[1] || null;
+  const nipcPdfPages = String(rawReference || '').match(/PDF pages?\s+([\d–-]+)/i)?.[1] || null;
+  const nipcPdfPage = nipcPdfPages?.match(/\d+/)?.[0] || null;
+  const sectionLabel = nipcSection || nimcSectionLabel(source);
+  const printedPage = nipcPrintedPage ? Number(nipcPrintedPage) : nimcPrintedPage(source);
+  const pdfPage = nipcPdfPage ? Number(nipcPdfPage) : nimcPdfPage(source);
   const pubDate = valueOf(source, 'publicationDate', 'publication_date', 'effectiveDate');
   const accessedAt = valueOf(source, 'accessedAt', 'accessed_at', 'retrievedAt', 'checkedAt');
   const pdfPageSuffix = pdfPage ? `#page=${pdfPage}` : '';
@@ -45,7 +49,7 @@ export function EvidenceCard({ source }) {
           <div>
             <dt className="text-xs font-bold uppercase tracking-[0.1em] text-slate-500">Printed page</dt>
             <dd className="mt-1 text-slate-700">
-              {printedPage}{pdfPage ? ` (PDF page ${pdfPage})` : ''}
+              {printedPage}{nipcPdfPages ? ` (PDF pages ${nipcPdfPages})` : pdfPage ? ` (PDF page ${pdfPage})` : ''}
             </dd>
           </div>
         ) : null}
@@ -75,8 +79,8 @@ export function EvidenceCard({ source }) {
       ) : null}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 border-t border-slate-100 pt-3">
         {sourceHref ? (
-          <ExternalLink href={sourceHref} className="text-sm" label={`View official source: ${title} (opens in a new tab)`}>
-            View official source
+          <ExternalLink href={sourceHref} className="text-sm" label={`${url.includes('/sources/') ? 'View evidence copy' : 'View official source'}: ${title} (opens in a new tab)`}>
+            {url.includes('/sources/') ? 'View evidence copy' : 'View official source'}
           </ExternalLink>
         ) : null}
         {viewerHref ? (

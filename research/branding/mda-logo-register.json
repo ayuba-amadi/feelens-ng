@@ -154,6 +154,17 @@
     "notes": "Logo asset is served from the Nigerian Copyright Commission official website."
   },
   {
+    "mda_name": "Nigerian Investment Promotion Commission",
+    "slug": "nipc",
+    "official_website": "https://nipc.gov.ng/",
+    "logo_source_url": "https://nipc.gov.ng/img/asset/bWVkaWEvaG9tZS9uaXBjLWxvZ28ucG5n/nipc-logo.png?s=e0cbd5dc97172a901f3678217572ab86&w=640",
+    "asset_filename": "frontend/src/assets/mda-logos/nipc.png",
+    "asset_type": "png",
+    "verification_status": "verified",
+    "last_checked": "2026-11-02",
+    "notes": "Logo downloaded from the NIPC official website and displayed with contain sizing to preserve its aspect ratio."
+  },
+  {
     "mda_name": "Nigerian Communications Commission",
     "slug": "ncc",
     "official_website": "https://ncc.gov.ng/",

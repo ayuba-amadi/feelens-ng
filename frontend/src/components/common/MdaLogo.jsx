@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Monogram } from './Monogram';
 
-const logos = import.meta.glob(['../../assets/mda-logos/*.webp', '../../assets/mda-logos/*.svg'], { eager: true, query: '?url', import: 'default' });
-const bySlug = Object.fromEntries(Object.entries(logos).map(([path, url]) => [path.split('/').pop().replace(/\.(webp|svg)$/, ''), url]));
+const logos = import.meta.glob(['../../assets/mda-logos/*.webp', '../../assets/mda-logos/*.svg', '../../assets/mda-logos/*.png'], { eager: true, query: '?url', import: 'default' });
+const bySlug = Object.fromEntries(Object.entries(logos).map(([path, url]) => [path.split('/').pop().replace(/\.(webp|svg|png)$/, ''), url]));
 
 export function MdaLogo({ name, acronym, slug, size = 'normal' }) {
   const [failedSource, setFailedSource] = useState(null);

@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { CalendarDays, ChevronRight, ShieldCheck } from 'lucide-react';
 import { publicApi } from '../lib/api';
 import { useApiResource } from '../hooks/use-api';
-import { asArray, formatDate, formatFee, formatSourceType, valueOf } from '../lib/format';
+import { asArray, formatCurrency, formatDate, formatFee, formatSourceType, valueOf } from '../lib/format';
 import { nimcPdfPage, nimcSectionLabel } from '../lib/nimc';
 import { ExternalLink } from '../components/common/ExternalLink';
 import { StatusBadge } from '../components/common/StatusBadge';
@@ -53,6 +53,11 @@ export function ServiceDetailPage() {
       ? 'Official MDA document'
       : formatSourceType(valueOf(primarySource, 'sourceType', 'source_type')) || 'Official MDA document')
     : 'Official MDA document';
+  const isNipcSlaService = mdaSlug === 'nipc';
+  const responsibleAgency = slug === 'osic-export-certificate-registration'
+    ? 'Nigerian Export Promotion Council (NEPC)'
+    : isNipcSlaService ? 'Nigerian Investment Promotion Commission (NIPC)' : null;
+  const timeline = String(description || '').match(/Timeline:\s*(.*?)(?:\.|$)/i)?.[1]?.trim();
 
   return (
     <div className="page-shell space-y-5 py-5 sm:space-y-6 sm:py-8">
@@ -68,7 +73,14 @@ export function ServiceDetailPage() {
           <h1 className="mt-2 break-words text-2xl font-black tracking-tight text-ink sm:text-4xl">
             {valueOf(service, 'name', 'title') || 'Unnamed service'}
           </h1>
-          {description ? (
+          {responsibleAgency ? <p className="mt-2 text-sm font-semibold text-slate-700">Responsible agency: {responsibleAgency}</p> : null}
+          {isNipcSlaService && timeline ? (
+            <div className="mt-4 w-full rounded-2xl border border-leaf/20 bg-[#f4f8f5] p-4 text-left sm:max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-600">Timeline</p>
+              <p className="mt-1 text-base font-semibold leading-6 text-ink">{timeline}</p>
+            </div>
+          ) : null}
+          {description && !isNipcSlaService ? (
             <p className={`mt-1.5 max-w-2xl text-sm leading-6 text-slate-600 ${isShortSubtitle ? 'text-center sm:text-left font-medium' : 'text-left mt-2.5'}`}>
               {description}
             </p>
@@ -85,9 +97,15 @@ export function ServiceDetailPage() {
             <div className="mt-4 w-full rounded-2xl border border-leaf/20 bg-[#f4f8f5] p-4 sm:max-w-md">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Official fee</p>
               <p className="mt-1 text-3xl font-black tracking-tight text-ink sm:text-4xl">{primaryFee.label}</p>
+              {String(valueOf(feeOptions[0], 'pricingModel', 'pricing_model')).toLowerCase() === 'percentage'
+                && valueOf(feeOptions[0], 'maximumAmount', 'maxAmount', 'max_amount') !== undefined ? (
+                <p className="mt-1 text-sm font-semibold text-ink">Cap: {formatCurrency(valueOf(feeOptions[0], 'maximumAmount', 'maxAmount', 'max_amount'), valueOf(feeOptions[0], 'currency') || 'NGN')}</p>
+              ) : null}
               <div className="mt-3 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <StatusBadge status={status} />
               </div>
+              {primaryFee.detail ? <p className="mt-2.5 text-left text-xs leading-5 text-slate-600">{primaryFee.detail}</p> : null}
+              {valueOf(feeOptions[0], 'notes') ? <p className="mt-2.5 border-t border-slate-200/80 pt-2.5 text-left text-xs leading-5 text-slate-600">{valueOf(feeOptions[0], 'notes')}</p> : null}
               {valueOf(feeOptions[0], 'conditions') ? (
                 <p className="mt-2.5 border-t border-slate-200/80 pt-2.5 text-left text-xs leading-5 text-slate-600">
                   Conditions: {valueOf(feeOptions[0], 'conditions')}
@@ -108,7 +126,7 @@ export function ServiceDetailPage() {
             </span>
             {primarySourceHref ? (
               <ExternalLink href={primarySourceHref} className="min-h-9 text-xs">
-                View official source
+                {primarySourceUrl?.startsWith('https://feelens.ng/sources/') ? 'View evidence copy' : 'View official source'}
               </ExternalLink>
             ) : null}
           </div>
@@ -145,6 +163,34 @@ export function ServiceDetailPage() {
             )}
           </div>
         </section>
+      ) : null}
+
+      {channels.length && !isSingleSimpleFee ? (
+        <section>
+          <p className="eyebrow">Continue officially</p>
+          <h2 className="section-heading mt-2">Official service channel</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {channels.map((channel, index) => <OfficialChannelCard key={valueOf(channel, 'id', 'url') || index} channel={channel} />)}
+          </div>
+        </section>
+      ) : null}
+
+      {requirements.length || procedure.length ? (
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          {requirements.length ? (
+            <section>
+              <p className="eyebrow">Before you start</p>
+              <h2 className="section-heading mt-2">Required documents</h2>
+              <div className="mt-4"><ul className="surface-card divide-y divide-slate-100 p-1">
+                {requirements.map((requirement, index) => {
+                  const items = Array.isArray(requirement?.items) ? requirement.items : null;
+                  return <li key={index} className="flex gap-3 p-4 text-sm leading-6 text-slate-700"><ShieldCheck size={17} className="mt-1 shrink-0 text-leaf" aria-hidden="true" />{items ? <div className="min-w-0"><h3 className="font-bold text-ink">{requirement.title}</h3><ul className="mt-2 list-disc space-y-1 pl-5">{items.map((item, itemIndex) => <li key={itemIndex}>{item}</li>)}</ul></div> : typeof requirement === 'string' ? requirement : valueOf(requirement, 'name', 'description', 'label') || 'Requirement not described'}</li>;
+                })}
+              </ul></div>
+            </section>
+          ) : null}
+          {procedure.length ? <section><p className="eyebrow">Process</p><h2 className="section-heading mt-2">How the service works</h2><div className="mt-4"><ol className="space-y-3">{procedure.map((step, index) => <li key={index} className="surface-card flex gap-3 p-4"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-leaf text-xs font-black text-white">{index + 1}</span><span className="text-sm leading-6 text-slate-700">{typeof step === 'string' ? step : valueOf(step, 'title', 'description', 'name') || 'Procedure step not described'}</span></li>)}</ol></div></section> : null}
+        </div>
       ) : null}
 
       {String(status).toLowerCase() === 'conflicting' ? (
@@ -232,55 +278,6 @@ export function ServiceDetailPage() {
           </dl>
         </div>
       </details>
-
-      {requirements.length || procedure.length ? (
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          {requirements.length ? (
-            <section>
-              <p className="eyebrow">Before you start</p>
-              <h2 className="section-heading mt-2">Requirements</h2>
-              <div className="mt-4">
-                <ul className="surface-card divide-y divide-slate-100 p-1">
-                  {requirements.map((requirement, index) => (
-                    <li key={index} className="flex gap-3 p-4 text-sm leading-6 text-slate-700">
-                      <ShieldCheck size={17} className="mt-1 shrink-0 text-leaf" aria-hidden="true" />
-                      {typeof requirement === 'string' ? requirement : valueOf(requirement, 'name', 'description', 'label') || 'Requirement not described'}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
-          ) : null}
-          {procedure.length ? (
-            <section>
-              <p className="eyebrow">Process</p>
-              <h2 className="section-heading mt-2">How the service works</h2>
-              <div className="mt-4">
-                <ol className="space-y-3">
-                  {procedure.map((step, index) => (
-                    <li key={index} className="surface-card flex gap-3 p-4">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-leaf text-xs font-black text-white">{index + 1}</span>
-                      <span className="text-sm leading-6 text-slate-700">{typeof step === 'string' ? step : valueOf(step, 'title', 'description', 'name') || 'Procedure step not described'}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </section>
-          ) : null}
-        </div>
-      ) : null}
-
-      {channels.length && !isSingleSimpleFee ? (
-        <section>
-          <p className="eyebrow">Continue officially</p>
-          <h2 className="section-heading mt-2">Official service channel</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {channels.map((channel, index) => (
-              <OfficialChannelCard key={valueOf(channel, 'id', 'url') || index} channel={channel} />
-            ))}
-          </div>
-        </section>
-      ) : null}
 
       <VerificationExplanation status={status} summary={valueOf(service, 'verificationSummary')} />
       <p className="text-xs leading-5 text-slate-500">FeeLens is independent civic technology. It is not a government agency, payment processor, application portal, agent or middleman, and does not collect government payments. Review the linked official channel before completing a transaction.</p>

@@ -20,6 +20,7 @@ const NPC_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-impor
 const JAMB_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/jamb-service-catalogue.json');
 const NECO_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/neco-service-catalogue.json');
 const BATCH_03_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-03-mdas.json');
+const BATCH_04_MANIFEST_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/batch-04-mdas.json');
 const INTERIOR_CATALOGUE_PATH = path.join(REPOSITORY_ROOT, 'research/production-import/interior-marriage-service-catalogue.json');
 const INTERIOR_LEGACY_FEES = {
   'ordinary-marriage-application': 75000,
@@ -32,6 +33,7 @@ const BATCH_ALIASES = new Map([
   ['batch-01', 'batch-01'], ['batch-01-mdas', 'batch-01'],
   ['batch-02', 'batch-02'], ['batch-02-mdas', 'batch-02'],
   ['batch-03', 'batch-03'], ['batch-03-mdas', 'batch-03'],
+  ['batch-04', 'batch-04'], ['batch-04-mdas', 'batch-04'],
 ]);
 const BATCH_01_SLUGS = ['fct-irs', 'nimc', 'nigeria-immigration-service', 'frsc-drivers-licence', 'cac'];
 const FCTIRS_OBSOLETE_SERVICE_SLUGS = [
@@ -40,7 +42,8 @@ const FCTIRS_OBSOLETE_SERVICE_SLUGS = [
 ];
 const BATCH_02_SLUGS = ['agis', 'fct-high-court', 'npc', 'jamb', 'nepc'];
 const BATCH_03_SLUGS = ['nafdac', 'son', 'ministry-interior-marriage-registry', 'nigerian-copyright-commission', 'ncc'];
-const BATCH_SLUGS = { 'batch-01': BATCH_01_SLUGS, 'batch-02': BATCH_02_SLUGS, 'batch-03': BATCH_03_SLUGS };
+const BATCH_04_SLUGS = ['nipc'];
+const BATCH_SLUGS = { 'batch-01': BATCH_01_SLUGS, 'batch-02': BATCH_02_SLUGS, 'batch-03': BATCH_03_SLUGS, 'batch-04': BATCH_04_SLUGS };
 
 const dateValue = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const nullableDate = dateValue.nullable();
@@ -702,7 +705,7 @@ function loadManifest(manifestPath) {
 
 function selectBatch(manifest, batch = 'batch-01') {
   const selectedBatch = canonicalBatch(batch);
-  if (!selectedBatch || !BATCH_SLUGS[selectedBatch]) throw new Error('Only batch-01, batch-02, and batch-03 are supported by this importer.');
+  if (!selectedBatch || !BATCH_SLUGS[selectedBatch]) throw new Error('Only batch-01, batch-02, batch-03, and batch-04 are supported by this importer.');
   const allowedSlugs = BATCH_SLUGS[selectedBatch];
   const selected = manifest.mdas.filter((mda) => allowedSlugs.includes(mda.slug))
     .sort((left, right) => allowedSlugs.indexOf(left.slug) - allowedSlugs.indexOf(right.slug));
@@ -884,6 +887,37 @@ async function linkSource(client, feeId, sourceId, source, actorAdminUserId, isP
   );
   if (result.rows[0]) await audit(client, actorAdminUserId, 'import.fee.source_linked', 'fee_option', feeId, null, result.rows[0]);
   return Boolean(result.rows[0]);
+}
+
+async function createVerifiedReviewEvent(client, fee, sourceId, evidence, actorAdminUserId) {
+  if (fee.verification_status !== 'verified') return false;
+  if (!actorAdminUserId) throw new Error('Verified catalogue fees require IMPORT_ACTOR_ADMIN_ID for an auditable review event.');
+  const actor = await client.query("SELECT id, display_name FROM admin_users WHERE id=$1 AND role='admin' AND is_active=TRUE", [actorAdminUserId]);
+  if (!actor.rows[0]) throw new Error('IMPORT_ACTOR_ADMIN_ID must identify an active administrator.');
+  const snapshot = {
+    id: fee.id, service_id: fee.service_id, pricing_model: fee.pricing_model, currency: fee.currency,
+    amount: fee.amount, min_amount: fee.min_amount, max_amount: fee.max_amount,
+    percentage: fee.percentage, formula: fee.formula, conditions: fee.conditions,
+    label: fee.label, is_current: fee.is_current, verification_status: fee.verification_status,
+  };
+  const existing = await client.query(
+    `SELECT 1 FROM verification_events WHERE service_id=$1 AND fee_option_id=$2 AND source_id=$3
+       AND status='verified' AND actor_admin_user_id=$4 AND new_values=$5::jsonb LIMIT 1`,
+    [fee.service_id, fee.id, sourceId, actorAdminUserId, JSON.stringify(snapshot)],
+  );
+  if (existing.rows.length) return false;
+  const checkedAt = fee.verified_at || new Date().toISOString();
+  const result = await client.query(
+    `INSERT INTO verification_events
+       (service_id,fee_option_id,source_id,status,checked_at,checked_by,notes,actor_admin_user_id,
+        evidence_summary,verification_method,new_values)
+     VALUES ($1,$2,$3,'verified',$4,$5,$6,$7,$8,$9,$10::jsonb) RETURNING id`,
+    [fee.service_id, fee.id, sourceId, checkedAt, actor.rows[0].display_name,
+      'Values compared with the NIPC Service Level Agreement and the cited section.', actorAdminUserId,
+      evidence.notes, 'Direct comparison with the authoritative NIPC SLA; source section and printed page recorded.', JSON.stringify(snapshot)],
+  );
+  await audit(client, actorAdminUserId, 'import.verification.created', 'verification_event', result.rows[0].id, null, { ...snapshot, sourceId, status: 'verified', checkedAt });
+  return true;
 }
 
 async function findOrCreateChannel(client, owner, channel, actorAdminUserId) {
@@ -1234,6 +1268,7 @@ async function importMda(client, mda, actorAdminUserId) {
       const feeResult = await findOrCreateFee(client, serviceResult.row.id, optionService, actorAdminUserId);
       counters.created += feeResult.created ? 1 : 0;
       for (const [index, source] of sources.entries()) counters.linked += await linkSource(client, feeResult.row.id, source.id, optionService.evidence[index], actorAdminUserId, index === 0) ? 1 : 0;
+      if (mda.slug === 'nipc' && sources[0]) counters.verificationEvents += await createVerifiedReviewEvent(client, feeResult.row, sources[0].id, optionService.evidence[0], actorAdminUserId) ? 1 : 0;
     }
     if (service.officialActionUrl) {
       const channel = { channelType: service.officialChannelType, name: `${service.name} official action channel`, url: service.officialActionUrl, contactValue: null, instructions: service.paymentGuide };
@@ -1330,7 +1365,7 @@ function parseArguments(argv) {
   return options;
 }
 
-function printUsage() { console.log('Usage: node backend/scripts/import-production-manifest.js [manifest.json] [--batch batch-01] [--dry-run|--apply]'); }
+function printUsage() { console.log('Usage: node backend/scripts/import-production-manifest.js [manifest.json] [--batch batch-01|batch-02|batch-03|batch-04] [--dry-run|--apply]'); }
 
 function printReport(report, mode, manifestPath, batch) {
   console.log(JSON.stringify({ mode, manifestPath, batch, mdaCount: report.mdaCount, serviceCount: report.serviceCount, feeOptionCount: report.feeOptionCount, verifiedCount: report.verifiedCount, conflictingCount: report.conflictingCount, pendingCount: report.pendingCount, unableToVerifyCount: report.unableToVerifyCount, supersededCount: report.supersededCount, uniqueEvidenceCount: report.uniqueEvidenceCount, evidenceLinkCount: report.evidenceLinkCount, officialChannelCount: report.officialChannelCount, duplicateRiskCount: report.duplicateRiskCount, validationWarnings: report.validationWarnings || [], validationErrors: report.validationErrors || [], writes: report.writes, created: report.created || 0, updated: report.updated || 0, linked: report.linked || 0, verificationEvents: report.verificationEvents || 0 }, null, 2));
@@ -1358,4 +1393,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_MANIFEST_PATH, BATCH_03_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, INTERIOR_CATALOGUE_PATH, INTERIOR_LEGACY_FEES, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildInteriorManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, feeIdentityKey, feeValues, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, reconcileInteriorVerificationClaims, reconcileNimcObsoleteRecords, reconcileNpcJambCurrentFees, selectBatch, validateManifest };
+module.exports = { BATCH_01_SLUGS, BATCH_02_MANIFEST_PATH, BATCH_02_SLUGS, BATCH_03_MANIFEST_PATH, BATCH_03_SLUGS, BATCH_04_MANIFEST_PATH, BATCH_04_SLUGS, CAC_CATALOGUE_PATH, DEFAULT_MANIFEST_PATH, FCTIRS_CATALOGUE_PATH, FCTIRS_OBSOLETE_SERVICE_SLUGS, FRSC_CATALOGUE_PATH, INTERIOR_CATALOGUE_PATH, INTERIOR_LEGACY_FEES, JAMB_CATALOGUE_PATH, NECO_CATALOGUE_PATH, NIMC_CATALOGUE_PATH, NIS_CATALOGUE_PATH, NPC_CATALOGUE_PATH, buildCacManifest, buildFctirsManifest, buildFrscManifest, buildInteriorManifest, buildJambManifest, buildNimcManifest, buildNisManifest, buildNpcManifest, canonicalizeImportManifest, countManifest, dryRunReport, feeIdentityKey, feeValues, importBatch, loadManifest, loadNecoCatalogue, manifestSchema, parseArguments, reconcileFctirsObsoleteRecords, reconcileInteriorVerificationClaims, reconcileNimcObsoleteRecords, reconcileNpcJambCurrentFees, selectBatch, validateManifest };

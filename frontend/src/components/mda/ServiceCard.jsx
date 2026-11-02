@@ -1,6 +1,6 @@
 import { ArrowRight, CalendarDays, ExternalLink as ExternalLinkIcon, Tag } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { formatDate, formatFee, valueOf } from '../../lib/format';
+import { formatCurrency, formatDate, formatFee, valueOf } from '../../lib/format';
 import { ExternalLink } from '../common/ExternalLink';
 import { StatusBadge } from '../common/StatusBadge';
 
@@ -18,6 +18,18 @@ export function ServiceCard({ service, compact = false }) {
   const checkedAt = valueOf(service, 'lastChecked', 'last_checked', 'checkedAt');
   const hasEvidence = valueOf(service, 'hasEvidence');
   const hasOfficialChannels = valueOf(service, 'hasOfficialChannels');
+  const isNipcRegistration = slug === 'business-registration-certificate';
+  const isNipcEdi = slug === 'economic-development-incentive-new-application';
+  const isOsicNepc = slug === 'osic-export-certificate-registration';
+  const nipcService = isNipcRegistration || isNipcEdi || isOsicNepc;
+  const timeline = String(subtitle || '').match(/Timeline:\s*(.*?)(?:\.|$)/i)?.[1]?.trim();
+  const ediFee = feeOptions[0];
+  const cap = formatCurrency(valueOf(ediFee, 'maximumAmount', 'maxAmount', 'max_amount'), valueOf(ediFee, 'currency') || 'NGN');
+  const cardFee = isNipcRegistration || isOsicNepc
+    ? { label: `${feeOptions.length} fee options`, detail: 'See each application and renewal amount in the service details.' }
+    : isNipcEdi
+      ? { label: `${Number(valueOf(ediFee, 'percentage')).toString()}%`, detail: cap ? `Capped at ${cap}; calculation base not stated.` : 'Percentage-based fee.' }
+      : fee;
   const evidenceLabel = sourceCount !== undefined && sourceCount !== null
     ? `${sourceCount} source${Number(sourceCount) === 1 ? '' : 's'} available`
     : 'Evidence available';
@@ -25,7 +37,7 @@ export function ServiceCard({ service, compact = false }) {
     <article className="surface-card flex h-full flex-col p-4 sm:p-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h3 className="break-words text-lg font-semibold leading-6 text-ink">
+          <h3 className={`break-words text-lg font-semibold leading-6 text-ink${nipcService ? ' text-center' : ''}`}>
             {valueOf(service, 'name', 'title') || 'Unnamed service'}
           </h3>
           {showShortSubtitle ? (
@@ -34,10 +46,14 @@ export function ServiceCard({ service, compact = false }) {
         </div>
         {!compact ? <StatusBadge status={status} /> : null}
       </div>
+      {nipcService ? <p className="mt-3 text-center text-sm font-semibold text-slate-700">{isOsicNepc ? 'Responsible agency: Nigerian Export Promotion Council (NEPC)' : 'Nigerian Investment Promotion Commission (NIPC)'}</p> : null}
       <div className="mt-3.5 rounded-xl bg-[#f4f8f5] p-3.5">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Official fee</p>
-        <p className="mt-1 text-xl font-bold tracking-tight text-ink">{fee.label}</p>
+        <p className="mt-1 text-xl font-bold tracking-tight text-ink">{cardFee.label}</p>
+        {isNipcEdi && cap ? <p className="mt-1 text-sm font-semibold text-ink">Cap: {cap}</p> : null}
+        {!compact && cardFee.detail ? <p className="mt-1 text-sm leading-5 text-slate-600">{cardFee.detail}</p> : null}
       </div>
+      {nipcService && timeline ? <p className="mt-3 text-sm leading-5 text-slate-700"><span className="font-semibold">Timeline:</span> {timeline}</p> : null}
       {compact ? (
         <div className="mt-3.5 flex items-center justify-between gap-3 pt-1">
           <StatusBadge status={status} />

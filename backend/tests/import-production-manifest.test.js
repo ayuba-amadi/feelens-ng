@@ -3,9 +3,11 @@ const assert = require('node:assert/strict');
 const manifest = require('../../research/production-import/batch-01-mdas.json');
 const batch2Manifest = require('../../research/production-import/batch-02-mdas.json');
 const batch3Manifest = require('../../research/production-import/batch-03-mdas.json');
+const batch4Manifest = require('../../research/production-import/batch-04-mdas.json');
 const {
   BATCH_02_SLUGS,
   BATCH_03_SLUGS,
+  BATCH_04_SLUGS,
   CAC_CATALOGUE_PATH,
   DEFAULT_MANIFEST_PATH,
   FCTIRS_CATALOGUE_PATH,
@@ -253,21 +255,44 @@ test('Batch 1 filtering excludes non-Batch-1 records', () => {
   assert.deepEqual(selected.excludedMdas, ['batch-02-example']);
 });
 
-test('Batch 1, Batch 2 and Batch 3 filters are isolated and each batch has exactly five MDAs', () => {
+test('Batches 1–3 remain isolated and NIPC batch 4 contains exactly one MDA', () => {
   const batch1 = selectBatch(validateManifest(manifest), 'batch-01');
   const batch2 = selectBatch(validateManifest(batch2Manifest), 'batch-02');
   const batch3 = selectBatch(validateManifest(batch3Manifest), 'batch-03');
+  const batch4 = selectBatch(validateManifest(batch4Manifest), 'batch-04');
   assert.deepEqual(batch1.mdas.map((mda) => mda.slug), ['fct-irs', 'nimc', 'nigeria-immigration-service', 'frsc-drivers-licence', 'cac']);
   assert.deepEqual(batch2.mdas.map((mda) => mda.slug), BATCH_02_SLUGS);
   assert.deepEqual(batch3.mdas.map((mda) => mda.slug), BATCH_03_SLUGS);
+  assert.deepEqual(batch4.mdas.map((mda) => mda.slug), BATCH_04_SLUGS);
   assert.equal(batch2.mdas.length, 5);
   assert.equal(batch3.mdas.length, 5);
+  assert.equal(batch4.mdas.length, 1);
   assert.throws(() => selectBatch(validateManifest(manifest), 'batch-02'), /batch-02 requires exactly/);
   assert.throws(() => selectBatch(validateManifest(batch2Manifest), 'batch-01'), /batch-01 requires exactly/);
   assert.throws(() => selectBatch(validateManifest(manifest), 'batch-03'), /batch-03 requires exactly/);
   assert.throws(() => selectBatch(validateManifest(batch2Manifest), 'batch-03'), /batch-03 requires exactly/);
   assert.throws(() => selectBatch(validateManifest(batch3Manifest), 'batch-01'), /batch-01 requires exactly/);
   assert.throws(() => selectBatch(validateManifest(batch3Manifest), 'batch-02'), /batch-02 requires exactly/);
+  assert.throws(() => selectBatch(validateManifest(batch4Manifest), 'batch-01'), /batch-01 requires exactly/);
+  assert.throws(() => selectBatch(validateManifest(batch4Manifest), 'batch-03'), /batch-03 requires exactly/);
+});
+
+test('NIPC batch contains only the three approved services and seven fee options', () => {
+  const validated = validateManifest(batch4Manifest);
+  const report = dryRunReport(validated, 'batch-04');
+  assert.equal(report.mdaCount, 1);
+  assert.equal(report.serviceCount, 3);
+  assert.equal(report.feeOptionCount, 7);
+  assert.equal(report.uniqueEvidenceCount, 1);
+  assert.equal(report.evidenceLinkCount, 7);
+  assert.equal(report.verifiedCount, 7);
+  assert.equal(report.officialChannelCount, 3);
+  const nipc = validated.mdas[0];
+  const edi = nipc.services.find((service) => service.slug === 'economic-development-incentive-new-application');
+  const exportService = nipc.services.find((service) => service.slug === 'osic-export-certificate-registration');
+  assert.equal(edi.feeOptions[0].pricingModel, 'percentage');
+  assert.equal(edi.feeOptions[0].maximumAmount, 5000000);
+  assert.equal(exportService.feeOptions[2].conditions, 'After three months of expiry');
 });
 
 test('Batch 2 manifest validates free, USD, percentage, formula and conflicting semantics', () => {
