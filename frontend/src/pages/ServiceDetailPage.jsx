@@ -49,7 +49,7 @@ export function ServiceDetailPage() {
   const isSingleSimpleFee = feeOptions.length === 1 && String(status).toLowerCase() !== 'conflicting';
   const primaryFee = feeOptions.length === 1 ? formatFee(feeOptions[0]) : null;
   const sourceTypeLabel = primarySource
-    ? (String(valueOf(primarySource, 'sourceType', 'source_type') || '').toLowerCase() === 'official_document'
+    ? (['official_document', 'service_level_agreement', 'official_guideline'].includes(String(valueOf(primarySource, 'sourceType', 'source_type') || '').toLowerCase())
       ? 'Official MDA document'
       : formatSourceType(valueOf(primarySource, 'sourceType', 'source_type')) || 'Official MDA document')
     : 'Official MDA document';

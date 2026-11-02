@@ -6,7 +6,7 @@ import { isNimcCharterSource, nimcPdfPage, nimcPrintedPage, nimcSectionLabel, ni
 test('NIMC SLA source metadata resolves PDF page 31, printed page 28, and Section 12.5', () => {
   const source = {
     title: 'NIMC Service Level Agreement',
-    sourceType: 'official_document',
+    sourceType: 'service_level_agreement',
     url: 'https://feelens.ng/sources/nimc-service-charter-february-2026.pdf',
     pageOrSection: 'Section 12.5 Regular Modification Services (Within Nigeria) · Printed page 28 (PDF page 31)',
   };
@@ -16,7 +16,7 @@ test('NIMC SLA source metadata resolves PDF page 31, printed page 28, and Sectio
   assert.equal(nimcPrintedPage(source), 28);
   assert.equal(nimcSectionLabel(source), '12.5 Regular Modification Services (Within Nigeria)');
   assert.equal(nimcViewerHref(source), '/sources/nimc-service-charter?page=31');
-  assert.equal(formatSourceType(source.sourceType), 'Official Document');
+  assert.equal(formatSourceType(source.sourceType), 'Service Level Agreement');
 });
 
 test('NIMC regular modification fee formatting renders exact NGN currency amounts', () => {

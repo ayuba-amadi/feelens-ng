@@ -21,6 +21,10 @@ export function EvidenceCard({ source }) {
   const accessedAt = valueOf(source, 'accessedAt', 'accessed_at', 'retrievedAt', 'checkedAt');
   const pdfPageSuffix = pdfPage ? `#page=${pdfPage}` : '';
   const sourceHref = url ? (url.includes('#page=') ? url : `${url}${pdfPageSuffix}`) : null;
+  const rawSourceType = valueOf(source, 'sourceType', 'source_type', 'type');
+  const sourceTypeText = String(rawSourceType || '').toLowerCase() === 'service_level_agreement'
+    ? 'Official Document · Service Level Agreement'
+    : (formatSourceType(rawSourceType) || 'Official Document');
   return (
     <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 text-left">
       <div className="flex items-start gap-3">
@@ -30,7 +34,7 @@ export function EvidenceCard({ source }) {
         <div className="min-w-0">
           <h3 className="break-words font-bold text-ink">{title}</h3>
           <p className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-slate-500">
-            {formatSourceType(valueOf(source, 'sourceType', 'source_type', 'type')) || 'Official Document'}
+            {sourceTypeText}
           </p>
         </div>
       </div>
