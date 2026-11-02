@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { formatCurrency, formatDate, formatFee, valueOf } from '../../lib/format';
 import { ExternalLink } from '../common/ExternalLink';
 import { StatusBadge } from '../common/StatusBadge';
+import { cacFeaturedCardFee } from '../../lib/cac';
 
 export function ServiceCard({ service, compact = false }) {
   const slug = valueOf(service, 'slug');
@@ -25,15 +26,16 @@ export function ServiceCard({ service, compact = false }) {
   const isNipcRegistration = slug === 'business-registration-certificate';
   const isNipcEdi = slug === 'economic-development-incentive-new-application';
   const isOsicNepc = slug === 'osic-export-certificate-registration';
+  const cacCardFee = cacFeaturedCardFee(slug);
   const nipcService = isNipcRegistration || isNipcEdi || isOsicNepc;
   const timeline = String(subtitle || '').match(/Timeline:\s*(.*?)(?:\.|$)/i)?.[1]?.trim();
   const ediFee = feeOptions[0];
   const cap = formatCurrency(valueOf(ediFee, 'maximumAmount', 'maxAmount', 'max_amount'), valueOf(ediFee, 'currency') || 'NGN');
-  const cardFee = isNipcRegistration || isOsicNepc
+  const cardFee = cacCardFee || (isNipcRegistration || isOsicNepc
     ? { label: `${feeOptions.length} fee options`, detail: 'See each application and renewal amount in the service details.' }
     : isNipcEdi
       ? { label: `${Number(valueOf(ediFee, 'percentage')).toString()}%`, detail: cap ? `Capped at ${cap}; calculation base not stated.` : 'Percentage-based fee.' }
-      : fee;
+      : fee);
   const evidenceLabel = sourceCount !== undefined && sourceCount !== null
     ? `${sourceCount} source${Number(sourceCount) === 1 ? '' : 's'} available`
     : 'Evidence available';
@@ -58,7 +60,7 @@ export function ServiceCard({ service, compact = false }) {
             {isNimc && String(cardFee.label).toLowerCase() === 'free' ? 'FREE' : cardFee.label}
           </p>
           {isNipcEdi && cap ? <p className="mt-1 text-sm font-semibold text-ink">Cap: {cap}</p> : null}
-          {!compact && cardFee.detail ? <p className="mt-1 text-sm leading-5 text-slate-600">{cardFee.detail}</p> : null}
+          {cardFee.detail && (!compact || cacCardFee) ? <p className="mt-1 text-sm leading-5 text-slate-600">{cardFee.detail}</p> : null}
         </div>
       </div>
       {nipcService && timeline ? <p className="mt-3 text-sm leading-5 text-slate-700"><span className="font-semibold">Timeline:</span> {timeline}</p> : null}

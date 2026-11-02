@@ -12,6 +12,7 @@ import { FeeOptionCard } from '../components/service/FeeOptionCard';
 import { EvidenceCard } from '../components/service/EvidenceCard';
 import { OfficialChannelCard } from '../components/service/OfficialChannelCard';
 import { VerificationExplanation } from '../components/service/VerificationExplanation';
+import { cacCompanyChangeFeeOptions, isCacBusinessNameRegistration, isCacCompanyNameChange, isCacCompanyRegistration } from '../lib/cac';
 
 export function ServiceDetailPage() {
   const { slug } = useParams();
@@ -58,6 +59,20 @@ export function ServiceDetailPage() {
       : formatSourceType(valueOf(primarySource, 'sourceType', 'source_type')) || 'Official MDA document')
     : 'Official MDA document';
   const isNipcSlaService = mdaSlug === 'nipc';
+  const isCacBusinessNameService = mdaSlug === 'cac' && isCacBusinessNameRegistration(slug);
+  const isCacCompanyRegistrationService = mdaSlug === 'cac' && isCacCompanyRegistration(slug);
+  const isCacCompanyNameChangeService = mdaSlug === 'cac' && isCacCompanyNameChange(slug);
+  const isCacCompanyNameChangeFormula = isCacCompanyNameChangeService
+    && feeOptions.length === 1
+    && String(valueOf(feeOptions[0], 'pricingModel', 'pricing_model')).toLowerCase() === 'formula';
+  const cacCompanyNameChangeOptions = isCacCompanyNameChangeFormula ? cacCompanyChangeFeeOptions() : [];
+  const businessNamePrimaryFeeIndex = isCacBusinessNameService
+    ? feeOptions.findIndex((option) => String(valueOf(option, 'pricingModel', 'pricing_model')).toLowerCase() === 'fixed' && Number(valueOf(option, 'amount')) === 20_000)
+    : -1;
+  const businessNameAdditionalFeeOptions = businessNamePrimaryFeeIndex < 0
+    ? []
+    : feeOptions.filter((_, index) => index !== businessNamePrimaryFeeIndex);
+  const showGenericFeeOptions = !isCacBusinessNameService && !isCacCompanyRegistrationService && !isCacCompanyNameChangeFormula;
   const responsibleAgency = slug === 'osic-export-certificate-registration'
     ? 'Nigerian Export Promotion Council (NEPC)'
     : isNipcSlaService ? 'Nigerian Investment Promotion Commission (NIPC)' : null;
@@ -97,7 +112,7 @@ export function ServiceDetailPage() {
             </div>
           ) : null}
 
-          {isSingleSimpleFee && primaryFee ? (
+          {isSingleSimpleFee && primaryFee && !isCacCompanyRegistrationService ? (
             <div className="mt-4 w-full rounded-2xl border border-leaf/20 bg-[#f4f8f5] p-4 sm:max-w-md">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Official fee</p>
               <p className="mt-1 text-3xl font-black tracking-tight text-ink sm:text-4xl">{primaryFeeLabel}</p>
@@ -139,7 +154,73 @@ export function ServiceDetailPage() {
         </div>
       </section>
 
-      {!isSingleSimpleFee ? (
+      {isCacCompanyRegistrationService ? (
+        <section aria-labelledby="cac-company-fee-structure">
+          <p className="eyebrow">Primary fee answer</p>
+          <h2 id="cac-company-fee-structure" className="section-heading mt-2">Official fee structure</h2>
+          <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            <article className="surface-card p-4 sm:p-5">
+              <h3 className="font-bold text-ink">Small and other than Small Companies</h3>
+              <p className="mt-2 text-xl font-bold leading-7 text-ink">₦10,000 per ₦1,000,000 or part thereof</p>
+              <p className="mt-1 text-sm leading-5 text-slate-600">The charge depends on the applicable share capital.</p>
+            </article>
+            <article className="surface-card p-4 sm:p-5">
+              <h3 className="font-bold text-ink">Public Companies</h3>
+              <p className="mt-2 text-xl font-bold leading-7 text-ink">₦20,000 per ₦1,000,000 or part thereof</p>
+              <p className="mt-1 text-sm leading-5 text-slate-600">The charge depends on the applicable share capital.</p>
+            </article>
+          </div>
+          <div className="surface-card mt-3 p-4 sm:p-5">
+            <h3 className="font-bold text-ink">Stamp duty</h3>
+            <ul className="mt-2 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">
+              <li>Company limited by shares: 0.75% of the total value of share capital.</li>
+              <li>Company limited by guarantee: ₦1,000.</li>
+            </ul>
+            <p className="mt-3 border-t border-slate-100 pt-3 text-sm font-medium leading-6 text-slate-700">The final amount depends on the applicable company and share-capital category. FeeLens does not calculate a total without the relevant share-capital details.</p>
+          </div>
+          <div className="mt-3"><StatusBadge status={status} /></div>
+        </section>
+      ) : null}
+
+      {isCacBusinessNameService ? (
+        <section aria-labelledby="cac-business-name-fee">
+          <p className="eyebrow">Primary fee answer</p>
+          <h2 id="cac-business-name-fee" className="section-heading mt-2">Official CAC fee</h2>
+          <div className="surface-card mt-4 p-4 sm:p-5">
+            <p className="text-3xl font-black tracking-tight text-ink">₦20,000</p>
+            <p className="mt-1 text-sm leading-5 text-slate-600">Registration of Business Name</p>
+            <div className="mt-3"><StatusBadge status={status} /></div>
+          </div>
+          {businessNameAdditionalFeeOptions.length ? (
+            <details className="surface-card mt-3 px-4">
+              <summary className="min-h-12 cursor-pointer py-3 font-semibold text-ink">Additional source-supported fee records ({businessNameAdditionalFeeOptions.length})</summary>
+              <p className="border-t border-slate-100 py-3 text-sm leading-5 text-slate-600">These records remain linked to their evidence and are shown separately from the CAC registration fee.</p>
+              <div className="grid gap-3 pb-4 lg:grid-cols-2">
+                {businessNameAdditionalFeeOptions.map((option) => <FeeOptionCard key={valueOf(option, 'id', 'label')} option={option} />)}
+              </div>
+            </details>
+          ) : null}
+        </section>
+      ) : null}
+
+      {isCacCompanyNameChangeFormula ? (
+        <section aria-labelledby="cac-company-name-change-fees">
+          <p className="eyebrow">Primary fee answer</p>
+          <h2 id="cac-company-name-change-fees" className="section-heading mt-2">Official fee options</h2>
+          <div className="mt-4 grid gap-3 lg:grid-cols-3">
+            {cacCompanyNameChangeOptions.map((option) => (
+              <article key={option.label} className="surface-card p-4 sm:p-5">
+                <h3 className="font-bold leading-5 text-ink">{option.label}</h3>
+                <p className="mt-2 text-2xl font-black tracking-tight text-ink">{formatCurrency(option.amount)}</p>
+                <p className="mt-1 text-sm leading-5 text-slate-600">{option.conditions}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-3"><StatusBadge status={status} /></div>
+        </section>
+      ) : null}
+
+      {!isSingleSimpleFee && showGenericFeeOptions ? (
         <section>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -171,7 +252,7 @@ export function ServiceDetailPage() {
         </section>
       ) : null}
 
-      {channels.length && !isSingleSimpleFee ? (
+      {channels.length && (!isSingleSimpleFee || mdaSlug === 'cac') ? (
         <section>
           <p className="eyebrow">Continue officially</p>
           <h2 className="section-heading mt-2">Official service channel</h2>

@@ -29,6 +29,7 @@ const MDA_SELECT = `
 
 const SERVICE_SELECT = `
   s.id, s.mda_id AS "mdaId", s.name, s.slug, s.description, s.category,
+  s.catalogue_group AS "catalogueGroup",
   s.jurisdiction, s.requirements, s.process_steps AS "processSteps", s.notes,
   s.is_active AS "isActive", s.created_at AS "createdAt", s.updated_at AS "updatedAt",
   m.name AS "mdaName", m.acronym AS "mdaAcronym"`;

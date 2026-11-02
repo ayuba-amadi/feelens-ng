@@ -167,6 +167,7 @@ function servicePublicSelect() {
     s.name,
     s.description,
     s.category,
+    s.catalogue_group AS "catalogueGroup",
     s.jurisdiction,
     ${currentFeesJson('s')} AS "feeOptions",
     ${verificationStatusSql('s')} AS "verificationStatus",

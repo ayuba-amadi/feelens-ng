@@ -1,3 +1,5 @@
+import { collectPages } from './pagination';
+
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 const MIN_PUBLIC_SEARCH_LENGTH = 2;
 
@@ -146,6 +148,12 @@ export const publicApi = {
   async getServicesForMda(slug, params = {}, options) {
     const payload = await apiRequest(`/public/mdas/${encodeURIComponent(slug)}/services${queryString(params)}`, options);
     return normalizeList(payload, ['items', 'services'], normalizeService);
+  },
+
+  async getAllServicesForMda(slug, options) {
+    return collectPages(
+      (page, pageSize) => publicApi.getServicesForMda(slug, { page, pageSize }, options),
+    );
   },
 
   async getServiceBySlug(slug, options) {

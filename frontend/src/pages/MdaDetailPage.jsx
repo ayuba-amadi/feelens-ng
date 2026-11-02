@@ -5,6 +5,7 @@ import { publicApi } from '../lib/api';
 import { useApiResource } from '../hooks/use-api';
 import { asArray, formatCount, valueOf } from '../lib/format';
 import { NIMC_NAVIGATION_FILTERS, groupNimcServices } from '../lib/nimc';
+import { CacCatalogue } from '../components/mda/CacCatalogue';
 import { ExternalLink } from '../components/common/ExternalLink';
 import { MetricCard } from '../components/common/MetricCard';
 import { MdaLogo } from '../components/common/MdaLogo';
@@ -20,7 +21,11 @@ function coverageCount(services, statuses) {
 export function MdaDetailPage() {
   const { slug } = useParams();
   const mdaState = useApiResource((options) => publicApi.getMdaBySlug(slug, options), [slug]);
-  const servicesState = useApiResource((options) => publicApi.getServicesForMda(slug, { pageSize: 100 }, options), [slug]);
+  const servicesState = useApiResource((options) => (
+    slug === 'cac'
+      ? publicApi.getAllServicesForMda(slug, options)
+      : publicApi.getServicesForMda(slug, { pageSize: 100 }, options)
+  ), [slug]);
   const mda = mdaState.status === 'success' ? mdaState.data : null;
   const servicesData = servicesState.status === 'success' ? servicesState.data : null;
   const services = asArray(servicesData?.items);
@@ -43,6 +48,7 @@ export function MdaDetailPage() {
   const name = valueOf(mda, 'name', 'fullName') || 'Unnamed MDA';
   const acronym = valueOf(mda, 'acronym', 'shortName');
   const isNimcGrouped = slug === 'nimc' && services.length > 0;
+  const isCacGrouped = slug === 'cac';
   const nimcSections = isNimcGrouped ? groupNimcServices(services, selectedCategory) : [];
   const isSingleCategoryGroup = !isNimcGrouped && categories.length === 1 && services.length > 0 && services.length <= 4;
   const singleCategoryLabel = isSingleCategoryGroup ? categories[0] : null;
@@ -66,7 +72,9 @@ export function MdaDetailPage() {
         </div>
       </section>
 
-      {isNimcGrouped ? (
+      {isCacGrouped ? (
+        <CacCatalogue services={services} state={servicesState.status} />
+      ) : isNimcGrouped ? (
         <section aria-labelledby="mda-services-heading" className="space-y-5">
           <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
             <div>
