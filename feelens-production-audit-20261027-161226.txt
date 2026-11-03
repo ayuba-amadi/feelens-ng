@@ -1,0 +1,436 @@
+
+
+============================================================
+FEELENS PRODUCTION RELIABILITY AUDIT
+============================================================
+Generated: 2026-10-27T16:12:26+01:00
+Repository: /home/amadi/Documents/GitHub/feelens-ng-production
+
+
+============================================================
+1. GIT STATE
+============================================================
+
+$ git branch --show-current
+production-data-import
+
+$ git status --short
+ M frontend/src/components/common/StatusBadge.jsx
+ M frontend/src/components/mda/MdaFilters.jsx
+ M frontend/src/pages/AboutPage.jsx
+ M frontend/src/pages/HomePage.jsx
+ M frontend/src/pages/admin/AdminEntityFormPage.jsx
+ M frontend/src/pages/admin/AdminEntityListPage.jsx
+?? feelens-production-audit-20261027-161226.txt
+
+$ git log --oneline -15
+d56aa49 feat: add privacy-conscious Sentry monitoring
+7bea3ab fix: expand About page content sections
+4e88b08 fix: refine FeeLens About page typography
+064e0bf docs: clarify FeeLens project support and public navigation
+b0b8be0 docs: add FeeLens project support acknowledgement
+da83434 feat: finalize FeeLens public transparency experience
+6fdae74 fix: simplify public MDA detail pages
+a2b1350 feat: polish FeeLens public interface
+ec7c0d4 docs: record 15-MDA production freeze
+aadd1c9 feat: complete 15-MDA production data rollout
+8c4911a feat: prepare batch 1 FeeLens production import
+24a4396 fix: normalize cPanel API mount prefix
+7e9d9b6 feat: support isolated PostgreSQL application schema
+6a31b1f fix: scope CMS migration constraints to target tables
+006886a fix: separate MDA coverage from fee verification status
+
+
+============================================================
+2. REPOSITORY STRUCTURE
+============================================================
+./backend/.env.example
+./backend/node_modules/.package-lock.json
+./backend/package.json
+./backend/package-lock.json
+./backend/scripts/check-syntax.js
+./backend/scripts/create-admin.js
+./backend/scripts/import-production-manifest.js
+./backend/src/app.js
+./backend/src/server.js
+./backend/tests/admin-api.test.js
+./backend/tests/admin-validation.test.js
+./backend/tests/api-mount-prefix.test.js
+./backend/tests/app.test.js
+./backend/tests/db-schema.test.js
+./backend/tests/import-production-manifest.test.js
+./backend/tests/public-api.test.js
+./backend/tests/sentry.test.js
+./database/migrations/001_initial_schema.sql
+./database/migrations/002_admin_auth.sql
+./database/migrations/003_admin_cms_support.sql
+./database/migrations/004_manifest_source_and_channel_support.sql
+./docs/admin-guide.md
+./docs/architecture.md
+./docs/deployment.md
+./docs/sentry-monitoring.md
+./feelens-production-audit-20261027-161226.txt
+./frontend/.env.example
+./frontend/.env.production.local
+./frontend/eslint.config.js
+./frontend/index.html
+./frontend/package.json
+./frontend/package-lock.json
+./frontend/postcss.config.js
+./frontend/src/App.jsx
+./frontend/src/index.css
+./frontend/src/main.jsx
+./frontend/tailwind.config.js
+./frontend/vite.config.js
+./.gitignore
+./README.md
+./research/branding/mda-logo-register.json
+./research/evidence/archive-manifest.csv
+./research/evidence/export-source-register.mjs
+./research/evidence/feelens-source-register.csv
+./research/evidence/feelens-source-register.json
+./research/evidence/README.md
+./research/production-import/batch-01-mdas.json
+./research/production-import/batch-02-mdas.json
+./research/production-import/batch-03-mdas.json
+./research/production-import/PRODUCTION_FREEZE_15_MDA.md
+./research/recovery/2026-10-18-git-diff-complete.patch
+./research/recovery/2026-10-18-git-status.txt
+./research/recovery/2026-10-18-untracked-files.txt
+./research/verification-methodology.md
+./SECURITY.md
+
+
+============================================================
+3. NODE / NPM
+============================================================
+
+$ node --version
+v24.19.0
+
+$ npm --version
+11.17.0
+
+
+============================================================
+4. BACKEND PACKAGE
+============================================================
+
+
+============================================================
+5. FRONTEND PACKAGE
+============================================================
+{
+  "name": "feelens-ng-frontend",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "vite",
+    "lint": "eslint src",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@sentry/react": "^11.9.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "vite": "^6.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@sentry/vite-plugin": "^11.9.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react": "^7.37.3",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}
+
+
+============================================================
+6. ENVIRONMENT VARIABLE REFERENCES
+============================================================
+./research/evidence/export-source-register.mjs:12:const apiBase = (process.env.FEELENS_API_BASE_URL || 'https://feelens.ng/api').replace(/\/$/, '');
+./research/evidence/export-source-register.mjs:13:const downloadedAt = process.env.FEELENS_EXPORT_DATE || '2026-10-25';
+./research/evidence/drive-package/FeeLens Evidence Library/05_Research_Notes/export-source-register.mjs:12:const apiBase = (process.env.FEELENS_API_BASE_URL || 'https://feelens.ng/api').replace(/\/$/, '');
+./research/evidence/drive-package/FeeLens Evidence Library/05_Research_Notes/export-source-register.mjs:13:const downloadedAt = process.env.FEELENS_EXPORT_DATE || '2026-10-25';
+./docs/deployment.md:40:3. Set a long random `SESSION_SECRET` outside the repository.
+./docs/deployment.md:41:4. Set `ALLOWED_ORIGINS` to the exact approved frontend origins.
+./docs/deployment.md:55:- exact approved browser origins in `ALLOWED_ORIGINS`
+./docs/deployment.md:56:- a long random `SESSION_SECRET`
+./frontend/vite.config.js:6:  process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT,
+./frontend/vite.config.js:9:const sentryRelease = process.env.SENTRY_RELEASE || undefined;
+./frontend/vite.config.js:13:      org: process.env.SENTRY_ORG,
+./frontend/vite.config.js:14:      project: process.env.SENTRY_PROJECT,
+./frontend/vite.config.js:15:      authToken: process.env.SENTRY_AUTH_TOKEN,
+./frontend/.env.example:1:VITE_API_BASE_URL=/api
+./frontend/src/monitoring/sentry.js:40:const dsn = import.meta.env.VITE_SENTRY_DSN;
+./frontend/src/monitoring/sentry.js:41:const release = import.meta.env.VITE_SENTRY_RELEASE || undefined;
+./frontend/src/lib/api.js:1:const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+./backend/scripts/create-admin.js:60:    email: process.env.ADMIN_EMAIL,
+./backend/scripts/create-admin.js:61:    displayName: process.env.ADMIN_DISPLAY_NAME,
+./backend/scripts/create-admin.js:62:    password: process.env.ADMIN_PASSWORD
+./backend/scripts/import-production-manifest.js:376:  if (process.env.DB_SCHEMA !== 'feelens_app') throw new Error('Refusing to write: DB_SCHEMA must be exactly feelens_app.');
+./backend/scripts/import-production-manifest.js:377:  const actorAdminUserId = process.env.IMPORT_ACTOR_ADMIN_ID ? Number(process.env.IMPORT_ACTOR_ADMIN_ID) : null;
+./backend/.env.example:4:DB_HOST=localhost
+./backend/.env.example:5:DB_PORT=5432
+./backend/.env.example:6:DB_NAME=
+./backend/.env.example:7:DB_SCHEMA=public
+./backend/.env.example:8:DB_USER=
+./backend/.env.example:9:DB_PASSWORD=
+./backend/.env.example:11:ALLOWED_ORIGINS=http://localhost:5173
+./backend/.env.example:13:SESSION_SECRET=
+./backend/src/config/env.js:9:  DB_HOST: z.string().trim().min(1),
+./backend/src/config/env.js:10:  DB_PORT: z.coerce.number().int().min(1).max(65535).default(5432),
+./backend/src/config/env.js:11:  DB_NAME: z.string().trim().min(1),
+./backend/src/config/env.js:12:  DB_SCHEMA: z.string()
+./backend/src/config/env.js:16:      'DB_SCHEMA must be a valid PostgreSQL schema identifier.',
+./backend/src/config/env.js:19:  DB_USER: z.string().trim().min(1),
+./backend/src/config/env.js:20:  DB_PASSWORD: z.string().min(1),
+./backend/src/config/env.js:21:  ALLOWED_ORIGINS: z.string().trim().min(1),
+./backend/src/config/env.js:22:  SESSION_SECRET: z.string().min(32),
+./backend/src/config/env.js:34:  const parsed = envSchema.safeParse(process.env);
+./backend/src/config/env.js:45:    ALLOWED_ORIGINS: parsed.data.ALLOWED_ORIGINS
+./backend/src/routes/auth.routes.js:102:        secure: process.env.NODE_ENV === 'production',
+./backend/src/db/pool.js:13:      host: config.DB_HOST,
+./backend/src/db/pool.js:14:      port: config.DB_PORT,
+./backend/src/db/pool.js:15:      database: config.DB_NAME,
+./backend/src/db/pool.js:16:      user: config.DB_USER,
+./backend/src/db/pool.js:17:      password: config.DB_PASSWORD,
+./backend/src/db/pool.js:18:      options: `-c search_path=${buildSearchPath(config.DB_SCHEMA)}`,
+./backend/src/app.js:42:      if (!origin || config.ALLOWED_ORIGINS.includes(origin)) {
+./backend/src/app.js:60:    secret: config.SESSION_SECRET,
+./backend/tests/app.test.js:5:process.env.NODE_ENV = 'test';
+./backend/tests/app.test.js:6:process.env.DB_HOST = 'localhost';
+./backend/tests/app.test.js:7:process.env.DB_PORT = '5432';
+./backend/tests/app.test.js:8:process.env.DB_NAME = 'feelens_test';
+./backend/tests/app.test.js:9:process.env.DB_USER = 'feelens_test';
+./backend/tests/app.test.js:10:process.env.DB_PASSWORD = 'not-a-real-password';
+./backend/tests/app.test.js:11:process.env.ALLOWED_ORIGINS = 'http://localhost:5173';
+./backend/tests/app.test.js:12:const TEST_SESSION_SECRET = ['test', 'only', 'session', 'secret', 'for', 'tests', 'only'].join('-');
+./backend/tests/app.test.js:13:process.env[['SESSION', 'SECRET'].join('_')] = TEST_SESSION_SECRET;
+./backend/tests/app.test.js:20:  DB_HOST: 'localhost',
+./backend/tests/app.test.js:21:  DB_PORT: 5432,
+./backend/tests/app.test.js:22:  DB_NAME: 'feelens_test',
+./backend/tests/app.test.js:23:  DB_USER: 'feelens_test',
+./backend/tests/app.test.js:24:  DB_PASSWORD: 'not-a-real-password',
+./backend/tests/app.test.js:25:  ALLOWED_ORIGINS: ['http://localhost:5173'],
+./backend/tests/app.test.js:26:  SESSION_SECRET: TEST_SESSION_SECRET
+./backend/tests/sentry.test.js:23:      DB_PASSWORD: 'secret',
+./backend/tests/sentry.test.js:24:      SESSION_SECRET: 'secret',
+./backend/tests/sentry.test.js:40:  assert.equal(sanitized.extra.DB_PASSWORD, undefined);
+./backend/tests/sentry.test.js:41:  assert.equal(sanitized.extra.SESSION_SECRET, undefined);
+./backend/tests/admin-api.test.js:8:  NODE_ENV: 'test', PORT: 0, DB_HOST: 'localhost', DB_PORT: 5432,
+./backend/tests/admin-api.test.js:9:  DB_NAME: 'isolated_test', DB_USER: 'isolated_test', DB_PASSWORD: 'not-real',
+./backend/tests/admin-api.test.js:10:  ALLOWED_ORIGINS: ['http://localhost:5173'],
+./backend/tests/admin-api.test.js:11:  SESSION_SECRET: 'isolated-test-session-secret-with-sufficient-length',
+./backend/tests/public-api.test.js:8:  NODE_ENV: 'test', PORT: 0, DB_HOST: 'localhost', DB_PORT: 5432,
+./backend/tests/public-api.test.js:9:  DB_NAME: 'isolated_test', DB_USER: 'isolated_test', DB_PASSWORD: 'not-real',
+./backend/tests/public-api.test.js:10:  ALLOWED_ORIGINS: ['http://localhost:5173'],
+./backend/tests/public-api.test.js:11:  SESSION_SECRET: 'isolated-test-session-secret-with-sufficient-length',
+
+
+============================================================
+7. DATABASE CODE
+============================================================
+
+
+============================================================
+8. AUTH / SESSION CODE
+============================================================
+
+
+============================================================
+9. HEALTH AND ERROR HANDLING
+============================================================
+
+
+============================================================
+10. SECRET LEAK CHECK
+============================================================
+
+
+============================================================
+11. BACKEND TESTS
+============================================================
+npm error code ENOENT
+npm error syscall open
+npm error path /home/amadi/Documents/GitHub/feelens-ng-production/package.json
+npm error errno -2
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/home/amadi/Documents/GitHub/feelens-ng-production/package.json'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm error A complete log of this run can be found in: /home/amadi/.npm/_logs/2026-10-27T15_12_32_215Z-debug-0.log
+
+
+============================================================
+12. FRONTEND LINT
+============================================================
+
+> feelens-ng-frontend@0.1.0 lint
+> eslint src
+
+
+
+============================================================
+13. FRONTEND BUILD
+============================================================
+
+> feelens-ng-frontend@0.1.0 build
+> vite build
+
+vite v6.4.4 building for production...
+transforming...
+✓ 1911 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.14 kB │ gzip:   0.50 kB
+dist/assets/index-ebHr3ByW.css   33.45 kB │ gzip:   6.72 kB
+dist/assets/index-Bl6Wj9yf.js   525.65 kB │ gzip: 137.48 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 16.75s
+
+
+============================================================
+14. LIVE PUBLIC API
+============================================================
+
+--- /api/health ---
+{"status":"ok"}
+HTTP_STATUS=200
+TIME_TOTAL=5.991982
+
+--- /api/db-health ---
+{"status":"unavailable","error":"Database unavailable."}
+HTTP_STATUS=503
+TIME_TOTAL=0.851020
+
+--- /api/public/stats ---
+{"error":"Internal server error."}
+HTTP_STATUS=500
+TIME_TOTAL=0.858330
+
+--- /api/public/mdas?page=1&pageSize=5 ---
+{"error":"Internal server error."}
+HTTP_STATUS=500
+TIME_TOTAL=1.043574
+
+--- /api/public/sources?page=1&pageSize=5 ---
+{"error":"Internal server error."}
+HTTP_STATUS=500
+TIME_TOTAL=0.876575
+
+
+============================================================
+15. REMOTE CPANEL / PASSENGER AUDIT
+============================================================
+
+--- HOST ---
+das124.truehost.cloud
+2026-10-27T11:13:22-04:00
+vgrphaph
+
+--- NODE ---
+v22.23.4
+
+--- PASSENGER PROCESSES ---
+vgrphaph 3314966  0.0  0.0 2016200 127012 ?      Ssl  Oct25   0:23 lsnode:/home/vgrphaph/feelens-api/
+vgrphaph 3315203  0.0  0.0 2010068 118520 ?      Ssl  Oct25   0:21 lsnode:/home/vgrphaph/feelens-api/
+
+--- APP TREE ---
+/home/vgrphaph/feelens-api/node_modules/.package-lock.json
+/home/vgrphaph/feelens-api/package-lock.json
+/home/vgrphaph/feelens-api/package.json
+/home/vgrphaph/feelens-api/scripts/check-syntax.js
+/home/vgrphaph/feelens-api/scripts/create-admin.js
+/home/vgrphaph/feelens-api/scripts/import-production-manifest.js
+/home/vgrphaph/feelens-api/server.js
+/home/vgrphaph/feelens-api/server.pre-release.js
+/home/vgrphaph/feelens-api/src/app.js
+/home/vgrphaph/feelens-api/src/server.js
+/home/vgrphaph/feelens-api/stderr.log
+/home/vgrphaph/feelens-api/tests/admin-api.test.js
+/home/vgrphaph/feelens-api/tests/admin-validation.test.js
+/home/vgrphaph/feelens-api/tests/api-mount-prefix.test.js
+/home/vgrphaph/feelens-api/tests/app.test.js
+/home/vgrphaph/feelens-api/tests/db-schema.test.js
+/home/vgrphaph/feelens-api/tests/import-production-manifest.test.js
+/home/vgrphaph/feelens-api/tests/public-api.test.js
+/home/vgrphaph/feelens-api/tests/sentry.test.js
+/home/vgrphaph/feelens-api/tmp/restart.txt
+
+--- RESTART FILE ---
+-rw-r--r-- 1 vgrphaph vgrphaph 0 Oct 25 16:16 /home/vgrphaph/feelens-api/tmp/restart.txt
+
+--- POSTGRES PORT ---
+POSTGRES_TCP=PASS
+
+--- CPANEL ENVIRONMENT ---
+NODE_ENV=production
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=vgrphaph_feelens_prod
+DB_SCHEMA=feelens_app
+DB_USER=vgrphaph_FeeLens
+DB_PASSWORD=<SET>
+SESSION_SECRET=<SET>
+ALLOWED_ORIGINS=https://feelens.ng,https://www.feelens.ng
+
+--- STDERR ---
+[Sentry] `beforeSendTransaction` and `ignoreTransactions` are ignored with `traceLifecycle: 'stream'` (enabled by default). Use `beforeSendSpan` and `ignoreSpans` instead, or set `traceLifecycle: 'static'`.
+[Sentry] `beforeSendTransaction` and `ignoreTransactions` are ignored with `traceLifecycle: 'stream'` (enabled by default). Use `beforeSendSpan` and `ignoreSpans` instead, or set `traceLifecycle: 'static'`.
+Unhandled application error.
+[Sentry] `beforeSendTransaction` and `ignoreTransactions` are ignored with `traceLifecycle: 'stream'` (enabled by default). Use `beforeSendSpan` and `ignoreSpans` instead, or set `traceLifecycle: 'static'`.
+[Sentry] `beforeSendTransaction` and `ignoreTransactions` are ignored with `traceLifecycle: 'stream'` (enabled by default). Use `beforeSendSpan` and `ignoreSpans` instead, or set `traceLifecycle: 'static'`.
+Unhandled application error.
+[Sentry] `beforeSendTransaction` and `ignoreTransactions` are ignored with `traceLifecycle: 'stream'` (enabled by default). Use `beforeSendSpan` and `ignoreSpans` instead, or set `traceLifecycle: 'static'`.
+[Sentry] `beforeSendTransaction` and `ignoreTransactions` are ignored with `traceLifecycle: 'stream'` (enabled by default). Use `beforeSendSpan` and `ignoreSpans` instead, or set `traceLifecycle: 'static'`.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+Unhandled application error.
+
+--- LIVE CHECK FROM HOST ---
+--- health ---
+{"status":"ok"}
+HTTP=200
+--- db-health ---
+{"status":"unavailable","error":"Database unavailable."}
+HTTP=503
+--- public/stats ---
+{"error":"Internal server error."}
+HTTP=500
+
+
+============================================================
+16. AUDIT COMPLETE
+============================================================
+REPORT=/home/amadi/Documents/GitHub/feelens-ng-production/feelens-production-audit-20261027-161226.txt

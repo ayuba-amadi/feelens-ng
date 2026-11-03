@@ -101,6 +101,14 @@ function publicMdaSelect() {
     m.jurisdiction,
     m.category,
     m.coverage_status AS "coverageStatus",
+    COALESCE(m.publication_priority, CASE m.slug
+      WHEN 'ofo' THEN 1
+      WHEN 'nimc' THEN 2
+      WHEN 'cac' THEN 3
+      WHEN 'nipc' THEN 4
+      WHEN 'nigeria-immigration-service' THEN 5
+      ELSE 100
+    END) AS "publicationOrder",
     m.website_url AS "officialWebsite",
     m.website_url AS "websiteUrl",
     COALESCE((
@@ -201,15 +209,24 @@ function sourceSearch(conditions, values, search, columns) {
 }
 
 function mdaSort(sort) {
+  const prioritySql = `COALESCE(m.publication_priority, CASE m.slug
+    WHEN 'ofo' THEN 1
+    WHEN 'nimc' THEN 2
+    WHEN 'cac' THEN 3
+    WHEN 'nipc' THEN 4
+    WHEN 'nigeria-immigration-service' THEN 5
+    ELSE 100
+  END)`;
   return {
-    coverage: "CASE m.coverage_status WHEN 'pilot' THEN 1 WHEN 'roadmap' THEN 2 WHEN 'inactive' THEN 3 ELSE 4 END",
+    coverage: `${prioritySql} ASC, CASE m.coverage_status WHEN 'pilot' THEN 1 WHEN 'roadmap' THEN 2 WHEN 'inactive' THEN 3 ELSE 4 END`,
+    priority: prioritySql,
     alpha: 'm.name',
     name: 'm.name',
-    live: "CASE WHEN m.coverage_status = 'pilot' AND (SELECT COUNT(*) FROM services ms WHERE ms.mda_id = m.id AND ms.is_active = TRUE) > 0 THEN 1 ELSE 2 END",
+    live: `${prioritySql} ASC, CASE WHEN m.coverage_status = 'pilot' AND (SELECT COUNT(*) FROM services ms WHERE ms.mda_id = m.id AND ms.is_active = TRUE) > 0 THEN 1 ELSE 2 END`,
     services: '"serviceCount"',
     status: 'm.coverage_status',
     updatedAt: 'm.updated_at',
-  }[sort] || 'm.name';
+  }[sort] || `${prioritySql} ASC, m.name`;
 }
 
 function serviceSort(sort) {

@@ -24,7 +24,7 @@ const {
 const MDA_SELECT = `
   id, name, slug, acronym, description, website_url AS "websiteUrl",
   entity_type AS "entityType", jurisdiction, category,
-  coverage_status AS "coverageStatus", is_active AS "isActive",
+  coverage_status AS "coverageStatus", publication_priority AS "publicationPriority", is_active AS "isActive",
   created_at AS "createdAt", updated_at AS "updatedAt"`;
 
 const SERVICE_SELECT = `
@@ -129,11 +129,11 @@ function createContentRouter(pool) {
         const result = await client.query(
           `INSERT INTO mdas
             (name, slug, acronym, description, website_url, entity_type, jurisdiction,
-             category, coverage_status, is_active)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+             category, coverage_status, publication_priority, is_active)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
            RETURNING ${MDA_SELECT}`,
           [value.name, value.slug, value.acronym, value.description, value.websiteUrl,
-            value.entityType, value.jurisdiction, value.category, value.coverageStatus, value.isActive],
+            value.entityType, value.jurisdiction, value.category, value.coverageStatus, value.publicationPriority, value.isActive],
         );
         await audit(client, req, 'mda.created', 'mda', result.rows[0].id, null, result.rows[0]);
         return result.rows[0];
@@ -174,10 +174,11 @@ function createContentRouter(pool) {
         const result = await client.query(
           `UPDATE mdas SET name=$1, slug=$2, acronym=$3, description=$4, website_url=$5,
              entity_type=$6, jurisdiction=$7, category=$8, coverage_status=$9,
-             is_active=$10, updated_at=NOW()
-           WHERE id=$11 RETURNING ${MDA_SELECT}`,
+             publication_priority=$10, is_active=$11, updated_at=NOW()
+           WHERE id=$12 RETURNING ${MDA_SELECT}`,
           [value.name, value.slug, value.acronym, value.description, value.websiteUrl,
-            value.entityType, value.jurisdiction, value.category, value.coverageStatus, value.isActive, id],
+            value.entityType, value.jurisdiction, value.category, value.coverageStatus,
+            value.publicationPriority, value.isActive, id],
         );
         await audit(client, req, 'mda.updated', 'mda', id, oldValue, result.rows[0]);
         return result.rows[0];

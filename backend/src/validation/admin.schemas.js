@@ -56,6 +56,7 @@ const mdaSchema = z.object({
   jurisdiction: optionalText(100),
   category: optionalText(100),
   coverageStatus: z.enum(coverageStatuses).default('pilot'),
+  publicationPriority: z.coerce.number().int().min(1).max(1000).default(100),
   isActive: z.boolean().default(true),
   updatedAt: z.iso.datetime({ offset: true }).optional(),
 }).strict();

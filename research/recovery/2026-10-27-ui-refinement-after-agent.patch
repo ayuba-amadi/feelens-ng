@@ -1,0 +1,399 @@
+diff --git a/backend/src/db/pool.js b/backend/src/db/pool.js
+index a63c509..1547807 100644
+--- a/backend/src/db/pool.js
++++ b/backend/src/db/pool.js
+@@ -1,5 +1,6 @@
+ const { Pool } = require('pg');
+ const { loadEnv } = require('../config/env');
++const { logDatabaseError } = require('../utils/database-errors');
+ 
+ let pool;
+ 
+@@ -21,8 +22,8 @@ function getPool(config = loadEnv()) {
+       connectionTimeoutMillis: 5_000
+     });
+ 
+-    pool.on('error', () => {
+-      console.error('Unexpected database pool error.');
++    pool.on('error', (error) => {
++      logDatabaseError(error, 'pool');
+     });
+   }
+ 
+diff --git a/backend/src/middleware/error-handler.js b/backend/src/middleware/error-handler.js
+index 2e3bc2a..b1da89d 100644
+--- a/backend/src/middleware/error-handler.js
++++ b/backend/src/middleware/error-handler.js
+@@ -1,3 +1,5 @@
++const { logDatabaseError } = require('../utils/database-errors');
++
+ function errorHandler(error, req, res, next) {
+   if (res.headersSent) {
+     return next(error);
+@@ -13,7 +15,8 @@ function errorHandler(error, req, res, next) {
+   const safeMessage = status >= 500 ? 'Internal server error.' : (error.message || 'Request failed.');
+ 
+   if (status >= 500) {
+-    console.error('Unhandled application error.');
++    if (error?.code) logDatabaseError(error, 'request');
++    else console.error('Unhandled application error.');
+   }
+ 
+   const response = { error: safeMessage };
+diff --git a/backend/src/routes/health.routes.js b/backend/src/routes/health.routes.js
+index 7cd2d14..89d5ddc 100644
+--- a/backend/src/routes/health.routes.js
++++ b/backend/src/routes/health.routes.js
+@@ -1,4 +1,5 @@
+ const express = require('express');
++const { logDatabaseError } = require('../utils/database-errors');
+ 
+ function createHealthRouter(pool) {
+   const router = express.Router();
+@@ -12,6 +13,7 @@ function createHealthRouter(pool) {
+       await pool.query('SELECT 1');
+       return res.status(200).json({ status: 'ok' });
+     } catch (error) {
++      logDatabaseError(error, 'health check');
+       return res.status(503).json({
+         status: 'unavailable',
+         error: 'Database unavailable.'
+diff --git a/docs/deployment.md b/docs/deployment.md
+index 5da81e3..3feb616 100644
+--- a/docs/deployment.md
++++ b/docs/deployment.md
+@@ -64,3 +64,13 @@ Do not put these values in source control. Apache must forward `/api/*` to Node
+ - Do not deploy unverified service, MDA, or fee data.
+ - Do not imply government endorsement in application copy, branding, or UI.
+ 
++
++## Current production checks and credential drift recovery
++
++Run checks from their own package directories, not the repository root: `cd backend && npm test && npm run lint`; separately `cd frontend && npm run lint && npm run build`. These commands do not require Python or ripgrep on the cPanel host.
++
++From `backend/`, run `node scripts/production-smoke-check.js https://feelens.ng` to check the five public endpoints. A non-200 response, timeout or network failure produces a nonzero exit. Run `node scripts/db-diagnostic.js` in the application environment to check required DB configuration, TCP/authentication and schema visibility without printing credentials. It does not write data. The schema check confirms visibility, not every table or permission.
++
++For a suspected `28P01` incident, first confirm the configured application's existing credential is available securely to an authorized operator, identify the intended PostgreSQL role and check TCP separately. Compare configuration and role state without displaying or copying secrets into logs, shell history, tickets or chat. If drift is confirmed, an authorized cPanel operator can use UAPI `Postgresql::set_password` to synchronize the role to the existing application credential through a secure operator-controlled mechanism. Do not place passwords in command arguments or logs. Coordinate any change, preserve the existing application credential, and do not change unrelated roles. Then run the DB diagnostic and smoke check, verify application login and public counts, and review monitoring. If unable to safely access the credential or UAPI, stop and involve the hosting administrator. This procedure is incident guidance, not authorization to change credentials.
++
++Serve fingerprinted `dist/assets/` with long-lived immutable caching, and HTML with revalidation; verify actual Apache headers before enabling the policy. Keep a rollback copy of the previous frontend and backend release. No migrations are needed for this refinement.
+diff --git a/frontend/src/App.jsx b/frontend/src/App.jsx
+index d57c352..b9a4c67 100644
+--- a/frontend/src/App.jsx
++++ b/frontend/src/App.jsx
+@@ -1,34 +1,35 @@
++import { lazy, Suspense } from 'react';
+ import { Route, Routes } from 'react-router-dom';
+ import { AdminLayout } from './components/admin/AdminLayout';
+ import { ProtectedAdminRoute } from './components/admin/ProtectedAdminRoute';
+ import { SiteLayout } from './components/layout/SiteLayout';
+ import { AdminAuthProvider } from './context/AdminAuthContext';
+-import { AboutPage } from './pages/AboutPage';
+-import { DataSourcesPage } from './pages/DataSourcesPage';
+-import { HomePage } from './pages/HomePage';
+-import { MdaDetailPage } from './pages/MdaDetailPage';
+-import { MdasPage } from './pages/MdasPage';
+-import { MethodologyPage } from './pages/MethodologyPage';
+-import { NotFoundPage } from './pages/NotFoundPage';
+-import { PrivacyPage } from './pages/PrivacyPage';
+-import { PolicyPage } from './pages/PolicyPage';
+-import { ServiceDetailPage } from './pages/ServiceDetailPage';
+-import { AdminAccountPage } from './pages/admin/AdminAccountPage';
+-import { AdminAuditLogsPage } from './pages/admin/AdminAuditLogsPage';
+-import { AdminChannelsPage } from './pages/admin/AdminChannelsPage';
+-import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+-import { AdminEntityDetailPage } from './pages/admin/AdminEntityDetailPage';
+-import { AdminEntityFormPage } from './pages/admin/AdminEntityFormPage';
+-import { AdminEntityListPage } from './pages/admin/AdminEntityListPage';
+-import { AdminFoiPage } from './pages/admin/AdminFoiPage';
+-import { AdminLoginPage } from './pages/admin/AdminLoginPage';
+-import { AdminUsersPage } from './pages/admin/AdminUsersPage';
+-import { AdminVerificationsPage } from './pages/admin/AdminVerificationsPage';
++const AboutPage = lazy(() => import('./pages/AboutPage').then((module) => ({ default: module.AboutPage })));
++const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage').then((module) => ({ default: module.DataSourcesPage })));
++const HomePage = lazy(() => import('./pages/HomePage').then((module) => ({ default: module.HomePage })));
++const MdaDetailPage = lazy(() => import('./pages/MdaDetailPage').then((module) => ({ default: module.MdaDetailPage })));
++const MdasPage = lazy(() => import('./pages/MdasPage').then((module) => ({ default: module.MdasPage })));
++const MethodologyPage = lazy(() => import('./pages/MethodologyPage').then((module) => ({ default: module.MethodologyPage })));
++const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
++const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then((module) => ({ default: module.PrivacyPage })));
++const PolicyPage = lazy(() => import('./pages/PolicyPage').then((module) => ({ default: module.PolicyPage })));
++const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage').then((module) => ({ default: module.ServiceDetailPage })));
++const AdminAccountPage = lazy(() => import('./pages/admin/AdminAccountPage').then((module) => ({ default: module.AdminAccountPage })));
++const AdminAuditLogsPage = lazy(() => import('./pages/admin/AdminAuditLogsPage').then((module) => ({ default: module.AdminAuditLogsPage })));
++const AdminChannelsPage = lazy(() => import('./pages/admin/AdminChannelsPage').then((module) => ({ default: module.AdminChannelsPage })));
++const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage').then((module) => ({ default: module.AdminDashboardPage })));
++const AdminEntityDetailPage = lazy(() => import('./pages/admin/AdminEntityDetailPage').then((module) => ({ default: module.AdminEntityDetailPage })));
++const AdminEntityFormPage = lazy(() => import('./pages/admin/AdminEntityFormPage').then((module) => ({ default: module.AdminEntityFormPage })));
++const AdminEntityListPage = lazy(() => import('./pages/admin/AdminEntityListPage').then((module) => ({ default: module.AdminEntityListPage })));
++const AdminFoiPage = lazy(() => import('./pages/admin/AdminFoiPage').then((module) => ({ default: module.AdminFoiPage })));
++const AdminLoginPage = lazy(() => import('./pages/admin/AdminLoginPage').then((module) => ({ default: module.AdminLoginPage })));
++const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage').then((module) => ({ default: module.AdminUsersPage })));
++const AdminVerificationsPage = lazy(() => import('./pages/admin/AdminVerificationsPage').then((module) => ({ default: module.AdminVerificationsPage })));
+ 
+ export default function App() {
+   return (
+     <AdminAuthProvider>
+-      <Routes>
++      <Suspense fallback={<div role="status" className="page-shell py-8">Loading page…</div>}><Routes>
+         <Route path="/admin/login" element={<AdminLoginPage />} />
+         <Route element={<ProtectedAdminRoute />}>
+           <Route element={<AdminLayout />}>
+@@ -61,7 +62,7 @@ export default function App() {
+           <Route path="/policy" element={<PolicyPage />} />
+           <Route path="*" element={<NotFoundPage />} />
+         </Route>
+-      </Routes>
++      </Routes></Suspense>
+     </AdminAuthProvider>
+   );
+ }
+diff --git a/frontend/src/components/common/MdaLogo.jsx b/frontend/src/components/common/MdaLogo.jsx
+index 32e10ad..2f61cfd 100644
+--- a/frontend/src/components/common/MdaLogo.jsx
++++ b/frontend/src/components/common/MdaLogo.jsx
+@@ -1,31 +1,16 @@
+-import { useEffect, useState } from 'react';
++import { useState } from 'react';
+ import { Monogram } from './Monogram';
+ 
+-export function MdaLogo({ name, acronym, slug, size = 'normal' }) {
+-  const logoSources = slug ? [
+-    `/mda-logos/${encodeURIComponent(slug)}.svg`,
+-    `/mda-logos/${encodeURIComponent(slug)}.png`
+-  ] : [];
+-  const [sourceIndex, setSourceIndex] = useState(0);
+-  const [imageLoaded, setImageLoaded] = useState(false);
+-  const logoSrc = logoSources[sourceIndex];
+-  const darkSurface = slug === 'ministry-interior-marriage-registry';
+-
+-  useEffect(() => {
+-    setSourceIndex(0);
+-    setImageLoaded(false);
+-  }, [slug]);
++const logos = import.meta.glob(['../../assets/mda-logos/*.webp', '../../assets/mda-logos/*.svg'], { eager: true, query: '?url', import: 'default' });
++const bySlug = Object.fromEntries(Object.entries(logos).map(([path, url]) => [path.split('/').pop().replace(/\.(webp|svg)$/, ''), url]));
+ 
+-  if (!logoSrc) return <Monogram name={name} acronym={acronym} size={size} />;
+-
+-  return <img
+-    className={`mda-logo mda-logo-${size === 'large' ? 'large' : 'normal'}${darkSurface ? ' mda-logo-dark' : ''}${imageLoaded ? '' : ' invisible'}`}
+-    src={logoSrc}
+-    alt={`${name || 'MDA'} official logo`}
+-    onLoad={() => setImageLoaded(true)}
+-    onError={() => {
+-      setImageLoaded(false);
+-      setSourceIndex((current) => current + 1);
+-    }}
+-  />;
++export function MdaLogo({ name, acronym, slug, size = 'normal' }) {
++  const [failedSource, setFailedSource] = useState(null);
++  const [loadedSource, setLoadedSource] = useState(null);
++  const src = bySlug[slug];
++  if (!src || failedSource === src) return <Monogram name={name} acronym={acronym} size={size} />;
++  const dimension = size === 'large' ? 56 : 44;
++  return <span className="relative block shrink-0" style={{ width: dimension, height: dimension }}><span className="absolute inset-0"><Monogram name={name} acronym={acronym} size={size} /></span><img className={`mda-logo mda-logo-${size === 'large' ? 'large' : 'normal'}${slug === 'ministry-interior-marriage-registry' ? ' mda-logo-dark' : ''}`}
++    style={{ position: 'relative', opacity: loadedSource === src ? 1 : 0 }} src={src} width={dimension} height={dimension} loading="lazy" decoding="async"
++    alt={`${name || 'MDA'} official logo`} onLoad={() => setLoadedSource(src)} onError={() => setFailedSource(src)} /></span>;
+ }
+diff --git a/frontend/src/components/common/StatusBadge.jsx b/frontend/src/components/common/StatusBadge.jsx
+index 7892264..8343104 100644
+--- a/frontend/src/components/common/StatusBadge.jsx
++++ b/frontend/src/components/common/StatusBadge.jsx
+@@ -4,11 +4,11 @@ import { normalizeStatus } from '../../lib/format';
+ const statusMeta = {
+   verified: { label: 'Verified', meaning: 'Supported by sufficient authoritative evidence.', icon: CheckCircle2, classes: 'border-emerald-200 bg-emerald-50 text-emerald-800' },
+   pending: { label: 'Pending', meaning: 'Current verification is still in progress.', icon: Clock3, classes: 'border-amber-200 bg-amber-50 text-amber-800' },
+-  conflicting: { label: 'Conflicting', meaning: 'Authoritative sources disagree.', icon: GitCompareArrows, classes: 'border-orange-200 bg-orange-50 text-orange-800' },
++  conflicting: { label: 'Conflicting official information', meaning: 'Authoritative sources disagree.', icon: GitCompareArrows, classes: 'border-orange-200 bg-orange-50 text-orange-800' },
+   unable_to_verify: { label: 'Unable to verify', meaning: 'A current authoritative amount could not be established.', icon: HelpCircle, classes: 'border-slate-300 bg-slate-100 text-slate-700' },
+   superseded: { label: 'Superseded', meaning: 'This record has been replaced by newer information.', icon: History, classes: 'border-slate-300 bg-slate-100 text-slate-700' },
+-  pilot: { label: 'Pilot', meaning: 'This MDA is included in the current FeeLens pilot.', icon: CheckCircle2, classes: 'border-emerald-200 bg-emerald-50 text-emerald-800' },
+-  roadmap: { label: 'Roadmap', meaning: 'This MDA is planned for future FeeLens coverage.', icon: Clock3, classes: 'border-slate-300 bg-slate-100 text-slate-700' },
++  pilot: { label: 'Published', meaning: 'This MDA is published in the FeeLens catalogue.', icon: CheckCircle2, classes: 'border-emerald-200 bg-emerald-50 text-emerald-800' },
++  roadmap: { label: 'Planned', meaning: 'This MDA is planned for future FeeLens coverage.', icon: Clock3, classes: 'border-slate-300 bg-slate-100 text-slate-700' },
+   inactive: { label: 'Inactive', meaning: 'This MDA is not currently active in the public catalogue.', icon: History, classes: 'border-slate-300 bg-slate-100 text-slate-600' },
+   status_not_listed: { label: 'Status not listed', meaning: 'The public record has not supplied a verification status.', icon: HelpCircle, classes: 'border-slate-200 bg-white text-slate-500' }
+ };
+diff --git a/frontend/src/components/mda/MdaCard.jsx b/frontend/src/components/mda/MdaCard.jsx
+index 9c44484..c878dad 100644
+--- a/frontend/src/components/mda/MdaCard.jsx
++++ b/frontend/src/components/mda/MdaCard.jsx
+@@ -13,6 +13,6 @@ export function MdaCard({ mda }) {
+   const jurisdiction = ['Federal', 'Federal Capital Territory', 'State', 'Local'].includes(jurisdictionValue) ? jurisdictionValue : null;
+   const coverageStatus = String(valueOf(mda, 'coverageStatus', 'coverage_status', 'status') || '').toLowerCase();
+   const hasBadge = (coverageStatus && coverageStatus !== 'pilot') || jurisdiction;
+-  return <article className="surface-card flex h-full min-h-[188px] flex-col p-4 transition hover:-translate-y-0.5 hover:border-leaf/40 sm:p-[18px]"><div className="flex items-start gap-3"><MdaLogo name={name} acronym={acronym} slug={slug} /><div className="min-w-0"><h3 className="break-words font-semibold leading-6 text-ink">{name}</h3>{acronym ? <p className="mt-1 text-xs font-medium uppercase tracking-[0.08em] text-slate-500">{acronym}</p> : null}</div></div>{hasBadge ? <div className="mt-2 flex flex-wrap gap-2">{coverageStatus && coverageStatus !== 'pilot' ? <StatusBadge status={coverageStatus} /> : null}{jurisdiction ? <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">{jurisdiction}</span> : null}</div> : null}{services !== undefined ? <div className="mt-3 flex items-center gap-2 text-sm text-slate-600"><Layers3 size={16} className="text-leaf" aria-hidden="true" /><span>{formatCount(services)} mapped service{Number(services) === 1 ? '' : 's'}</span></div> : null}<div className="mt-2">{slug ? <Link className="text-button" to={`/mdas/${slug}`}>View services <ArrowRight size={16} aria-hidden="true" /></Link> : null}</div></article>;
++  return <article className="surface-card flex h-full flex-col p-4 transition hover:-translate-y-0.5 hover:border-leaf/40 sm:p-[18px]"><div className="flex items-start gap-3"><MdaLogo name={name} acronym={acronym} slug={slug} /><div className="min-w-0"><h3 className="break-words font-semibold leading-6 text-ink">{name}</h3>{acronym ? <p className="mt-1 text-xs font-medium uppercase tracking-[0.08em] text-slate-500">{acronym}</p> : null}</div></div>{hasBadge ? <div className="mt-2 flex flex-wrap gap-2">{coverageStatus && coverageStatus !== 'pilot' ? <StatusBadge status={coverageStatus} /> : null}{jurisdiction ? <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">{jurisdiction}</span> : null}</div> : null}{services !== undefined ? <div className="mt-3 flex items-center gap-2 text-sm text-slate-600"><Layers3 size={16} className="text-leaf" aria-hidden="true" /><span>{formatCount(services)} service{Number(services) === 1 ? '' : 's'}</span></div> : null}<div className="mt-auto pt-3">{slug ? <Link className="text-button" to={`/mdas/${slug}`}>View services <ArrowRight size={16} aria-hidden="true" /></Link> : null}</div></article>;
+ }
+ 
+diff --git a/frontend/src/components/mda/MdaFilters.jsx b/frontend/src/components/mda/MdaFilters.jsx
+index 5c82541..fefbaa5 100644
+--- a/frontend/src/components/mda/MdaFilters.jsx
++++ b/frontend/src/components/mda/MdaFilters.jsx
+@@ -1,11 +1,11 @@
+ import { Filter, RotateCcw } from 'lucide-react';
+ 
+ function FilterSelect({ id, label, value, onChange, options }) {
+-  return <label className="block min-w-0 flex-1 text-xs font-bold text-slate-600" htmlFor={id}>{label}<select id={id} value={value} onChange={(event) => onChange(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-normal text-ink focus:border-leaf focus:outline-none"><option value="">All {label.toLowerCase()}</option>{options.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>;
++  return <label className="block min-w-0 flex-1 text-xs font-bold text-slate-600" htmlFor={id}>{label}<select id={id} value={value} onChange={(event) => onChange(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-normal text-ink focus:border-leaf focus:outline-none"><option value="">All {label.toLowerCase()}</option>{options.map((option) => <option key={option} value={option}>{id === 'coverage-status' ? ({ pilot: 'Published', roadmap: 'Planned', inactive: 'Inactive' }[option] || option) : option}</option>)}</select></label>;
+ }
+ 
+ export function MdaFilters({ filters, setFilters, options, onReset }) {
+   const update = (key) => (value) => setFilters((current) => ({ ...current, [key]: value, page: 1 }));
+-  return <div className="surface-card p-4"><div className="flex items-center gap-2 text-sm font-bold text-ink"><Filter size={17} className="text-leaf" aria-hidden="true" />Filter and sort</div><div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5"><FilterSelect id="jurisdiction" label="Jurisdiction" value={filters.jurisdiction} onChange={update('jurisdiction')} options={options.jurisdictions} /><FilterSelect id="entity-type" label="Entity type" value={filters.entityType} onChange={update('entityType')} options={options.entityTypes} /><FilterSelect id="coverage-status" label="Coverage status" value={filters.coverageStatus} onChange={update('coverageStatus')} options={options.coverageStatuses} /><FilterSelect id="category" label="Category" value={filters.category} onChange={update('category')} options={options.categories} /><label className="block min-w-0 text-xs font-bold text-slate-600" htmlFor="sort">Sort<select id="sort" value={filters.sort} onChange={(event) => update('sort')(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-normal text-ink focus:border-leaf focus:outline-none"><option value="coverage">Coverage priority</option><option value="alpha">A–Z</option><option value="live">Live / available first</option><option value="services">Mapped services</option></select></label></div><button type="button" onClick={onReset} className="text-button mt-3"><RotateCcw size={15} aria-hidden="true" />Reset filters</button></div>;
++  return <div className="surface-card p-4"><div className="flex items-center gap-2 text-sm font-bold text-ink"><Filter size={17} className="text-leaf" aria-hidden="true" />Filter and sort</div><div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{options.jurisdictions.length > 1 || filters.jurisdiction ? <FilterSelect id="jurisdiction" label="Jurisdiction" value={filters.jurisdiction} onChange={update('jurisdiction')} options={options.jurisdictions} /> : null}{options.entityTypes.length > 1 || filters.entityType ? <FilterSelect id="entity-type" label="Entity type" value={filters.entityType} onChange={update('entityType')} options={options.entityTypes} /> : null}{options.coverageStatuses.length > 1 || filters.coverageStatus ? <FilterSelect id="coverage-status" label="Publication status" value={filters.coverageStatus} onChange={update('coverageStatus')} options={options.coverageStatuses} /> : null}{options.categories.length > 1 || filters.category ? <FilterSelect id="category" label="Category" value={filters.category} onChange={update('category')} options={options.categories} /> : null}<label className="block min-w-0 text-xs font-bold text-slate-600" htmlFor="sort">Sort<select id="sort" value={filters.sort} onChange={(event) => update('sort')(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-normal text-ink focus:border-leaf focus:outline-none"><option value="coverage">Publication priority</option><option value="alpha">A–Z</option><option value="live">Live / available first</option><option value="services">Mapped services</option></select></label></div><button type="button" onClick={onReset} className="text-button mt-3"><RotateCcw size={15} aria-hidden="true" />Reset filters</button></div>;
+ }
+ 
+diff --git a/frontend/src/pages/AboutPage.jsx b/frontend/src/pages/AboutPage.jsx
+index a262e8b..cea5b01 100644
+--- a/frontend/src/pages/AboutPage.jsx
++++ b/frontend/src/pages/AboutPage.jsx
+@@ -3,6 +3,6 @@ import { Link } from 'react-router-dom';
+ import { PageIntro } from '../components/common/PageIntro';
+ 
+ export function AboutPage() {
+-  return <div className="page-shell space-y-8 py-8 sm:py-10"><div className="mx-auto max-w-3xl text-center"><PageIntro eyebrow="About FeeLens NG" title="Independent clarity before a public-service payment" description="FeeLens NG is independent civic technology for public-fee transparency. It helps citizens and businesses understand what has been published, what has been checked, and what remains uncertain." /></div><section className="grid gap-4 md:grid-cols-3"><div className="surface-card p-5"><Landmark className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Independent</h2><p className="mt-2 text-sm leading-6 text-slate-600">FeeLens is not a government platform and does not imply government ownership or endorsement.</p></div><div className="surface-card p-5"><ShieldCheck className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Evidence-led</h2><p className="mt-2 text-sm leading-6 text-slate-600">The goal is to make evidence, status, and review dates easier to inspect before you act.</p></div><div className="surface-card p-5"><ArrowUpRight className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Official channels remain official</h2><p className="mt-2 text-sm leading-6 text-slate-600">Government portals and offices remain the place to complete government transactions.</p></div></section><section className="surface-card p-5 sm:p-7"><p className="eyebrow">Project support</p><h2 className="section-heading mt-2">Project Support</h2><div className="mt-3 w-full text-left text-sm leading-7 text-slate-600 sm:text-base sm:text-justify"><p>FeeLens NG is an independent civic technology initiative developed through the 2026 NYSC Policy Advocacy Lab (N-PAL), implemented by LEAP Africa with support from the Nigeria Youth Futures Fund (NYFF). The programme provided capacity development, mentorship, and implementation support for the FeeLens pilot.</p><p className="mt-3">FeeLens remains independently managed. It is not a government platform, payment processor, application portal, or representative of any Ministry, Department, or Agency listed on the platform. Programme support does not determine which fees are published, how evidence is assessed, or how conflicting official information is presented.</p></div></section><section className="surface-card p-5 sm:p-7"><p className="eyebrow">Initial pilot</p><h2 className="section-heading mt-2">Starting with an Abuja / FCT focus</h2><p className="muted-copy mt-3 w-full text-left text-sm sm:text-base sm:text-justify">The initial pilot is Abuja/FCT-focused. The platform does not collect government payments, replace official portals, or act as an agent or middleman.</p><div className="mt-5 flex flex-wrap gap-3"><Link className="primary-button" to="/mdas">Browse MDAs</Link><Link className="secondary-button" to="/methodology">Read the methodology</Link></div></section></div>;
++  return <div className="page-shell space-y-6 py-6 sm:py-8"><div className="mx-auto max-w-3xl text-center"><PageIntro eyebrow="About FeeLens NG" title="Independent clarity before a public-service payment" description="FeeLens NG is independent civic technology for public-fee transparency. It helps citizens and businesses understand what has been published, what has been checked, and what remains uncertain." /></div><section className="grid gap-4 md:grid-cols-3"><div className="surface-card p-5"><Landmark className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Independent</h2><p className="mt-2 text-sm leading-6 text-slate-600">FeeLens is not a government platform and does not imply government ownership or endorsement.</p></div><div className="surface-card p-5"><ShieldCheck className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Evidence-led</h2><p className="mt-2 text-sm leading-6 text-slate-600">The goal is to make evidence, status, and review dates easier to inspect before you act.</p></div><div className="surface-card p-5"><ArrowUpRight className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Official channels remain official</h2><p className="mt-2 text-sm leading-6 text-slate-600">Government portals and offices remain the place to complete government transactions.</p></div></section><section className="surface-card p-5 sm:p-6"><p className="eyebrow">Project support</p><h2 className="section-heading mt-2">Project Support</h2><div className="mt-3 w-full text-left text-sm leading-7 text-slate-600 sm:text-base sm:text-justify"><p>FeeLens NG is an independent civic technology initiative developed through the 2026 NYSC Policy Advocacy Lab (N-PAL), implemented by LEAP Africa with support from the Nigeria Youth Futures Fund (NYFF). The programme provided capacity development, mentorship, and implementation support for the development of FeeLens.</p><p className="mt-3">FeeLens remains independently managed. It is not a government platform, payment processor, application portal, or representative of any Ministry, Department, or Agency listed on the platform. Programme support does not determine which fees are published, how evidence is assessed, or how conflicting official information is presented.</p></div></section><section className="surface-card p-5 sm:p-6"><p className="eyebrow">Initial coverage</p><h2 className="section-heading mt-2">Starting with an Abuja / FCT focus</h2><p className="muted-copy mt-3 w-full text-left text-sm sm:text-base sm:text-justify">The initial coverage is focused on Abuja/FCT. The platform does not collect government payments, replace official portals, or act as an agent or middleman.</p><div className="mt-5 flex flex-wrap gap-3"><Link className="primary-button" to="/mdas">Browse MDAs</Link><Link className="secondary-button" to="/methodology">Read the methodology</Link></div></section></div>;
+ }
+ 
+diff --git a/frontend/src/pages/HomePage.jsx b/frontend/src/pages/HomePage.jsx
+index 27c6a0e..ac6dadc 100644
+--- a/frontend/src/pages/HomePage.jsx
++++ b/frontend/src/pages/HomePage.jsx
+@@ -14,7 +14,7 @@ import { HowItWorks } from '../components/home/HowItWorks';
+ 
+ function metricValue(stats, keys, hasCoverage) {
+   const value = valueOf(stats, ...keys);
+-  return !hasCoverage || value === undefined || value === null ? 'Pilot data being prepared' : formatCount(value);
++  return !hasCoverage || value === undefined || value === null ? 'No published data yet' : formatCount(value);
+ }
+ 
+ export function HomePage() {
+@@ -30,12 +30,12 @@ export function HomePage() {
+     .some((key) => Number(statData[key]) > 0);
+   const featuredItems = featured.status === 'success' ? featured.data?.items || [] : [];
+   return <div>
+-    <section className="hero-grid hero-glow border-b border-slate-200/70"><div className="page-shell py-10 sm:py-14"><div className="mx-auto max-w-3xl text-center"><p className="eyebrow">Independent civic technology</p><h1 className="mt-3 text-4xl font-black tracking-tight text-ink sm:text-5xl sm:leading-[1.08]">Know the official fee before you pay.</h1><p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">Find a public service, understand whether it is free or paid, inspect the evidence, and continue through the official channel.</p></div><div className="surface-card mx-auto mt-7 max-w-3xl p-3 sm:mt-8 sm:p-4"><SearchBox id="public-search" compact /></div><p className="mx-auto mt-3 max-w-xl text-center text-xs leading-5 text-slate-500">Search results depend on published FeeLens records. No record is treated as free just because a fee is unknown.</p></div></section>
++    <section className="hero-grid hero-glow border-b border-slate-200/70"><div className="page-shell py-8 sm:py-10"><div className="mx-auto max-w-3xl text-center"><p className="eyebrow">Independent civic technology</p><h1 className="mt-3 text-4xl font-black tracking-tight text-ink sm:text-5xl sm:leading-[1.08]">Know the official fee before you pay.</h1><p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">Find a public service, understand whether it is free or paid, inspect the evidence, and continue through the official channel.</p></div><div className="surface-card mx-auto mt-5 max-w-3xl p-3 sm:mt-6 sm:p-4"><SearchBox id="public-search" compact /></div><p className="mx-auto mt-3 max-w-xl text-center text-xs leading-5 text-slate-500">Search results depend on published FeeLens records. No record is treated as free just because a fee is unknown.</p></div></section>
+ 
+-    <div className="page-shell space-y-12 py-8 sm:py-10">
+-      <section><SectionHeading eyebrow="Pilot coverage" title="A transparent picture of what is mapped" description="These numbers are connected to public data and stay neutral until records are available." /><div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4"><MetricCard label="MDAs covered" value={metricValue(statData, ['mdasCovered', 'mdas_covered', 'mdaCount'], hasCoverage)} /><MetricCard label="Services mapped" value={metricValue(statData, ['servicesMapped', 'services_mapped', 'serviceCount'], hasCoverage)} /><MetricCard label="Verified fee items" value={metricValue(statData, ['verifiedFeeItems', 'verified_fee_items', 'verifiedFees'], hasCoverage)} /><MetricCard label="Sources / evidence" value={metricValue(statData, ['sources', 'sourceCount', 'evidenceCount'], hasCoverage)} /></div>{stats.status === 'error' ? <p className="mt-3 text-xs text-slate-500">Pilot data is not available yet; this view will update when public records are connected.</p> : null}</section>
++    <div className="page-shell space-y-8 py-6 sm:py-8">
++      <section><SectionHeading eyebrow="Coverage overview" title="A transparent picture of what is mapped" description="These numbers are connected to public data and stay neutral until records are available." /><div className="mt-5 grid grid-cols-2 gap-3"><MetricCard label="MDAs Covered" value={metricValue(statData, ['mdasCovered', 'mdas_covered', 'mdaCount'], hasCoverage)} /><MetricCard label="Services Available" value={metricValue(statData, ['servicesMapped', 'services_mapped', 'serviceCount'], hasCoverage)} /></div>{stats.status === 'error' ? <p className="mt-3 text-xs text-slate-500">Published data is not available yet; this view will update as verified records are published.</p> : null}</section>
+ 
+-      <section><SectionHeading eyebrow="Featured coverage" title="Browse the public catalogue" description="Only MDAs returned by the public API appear here. FeeLens does not invent pilot records." action={<Link className="text-button" to="/mdas">View all MDAs <ArrowRight size={16} aria-hidden="true" /></Link>} />{featured.status === 'loading' ? <div className="mt-6"><LoadingState label="Loading featured coverage…" /></div> : featured.status === 'error' ? <div className="mt-6"><ErrorState title="Featured coverage is not available yet" description="The public catalogue will appear here when the API is ready." /></div> : featuredItems.length === 0 ? <div className="mt-6"><EmptyState title="Pilot coverage is being prepared" description="When public MDA records are available, featured coverage will appear in this space." icon={Building2} /></div> : <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{featuredItems.map((mda, index) => <MdaCard key={valueOf(mda, 'id', 'slug') || index} mda={mda} />)}</div>}</section>
++      <section><SectionHeading eyebrow="Featured coverage" title="Browse the public catalogue" description="Only MDAs returned by the public API appear here. FeeLens publishes only records supported by available evidence." action={<Link className="text-button" to="/mdas">View all MDAs <ArrowRight size={16} aria-hidden="true" /></Link>} />{featured.status === 'loading' ? <div className="mt-6"><LoadingState label="Loading featured coverage…" /></div> : featured.status === 'error' ? <div className="mt-6"><ErrorState title="The public catalogue is temporarily unavailable" description="FeeLens could not load published catalogue records. Please try again shortly." /></div> : featuredItems.length === 0 ? <div className="mt-6"><EmptyState title="No published MDAs yet" description="Published MDA records will appear here as they become available." icon={Building2} /></div> : <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{featuredItems.map((mda, index) => <MdaCard key={valueOf(mda, 'id', 'slug') || index} mda={mda} />)}</div>}</section>
+ 
+       <HowItWorks />
+       <EvidenceFlow />
+diff --git a/frontend/src/pages/MdaDetailPage.jsx b/frontend/src/pages/MdaDetailPage.jsx
+index 0f0d558..74d4f1d 100644
+--- a/frontend/src/pages/MdaDetailPage.jsx
++++ b/frontend/src/pages/MdaDetailPage.jsx
+@@ -36,6 +36,6 @@ export function MdaDetailPage() {
+   const officialChannels = valueOf(mda, 'officialChannels', 'official_channels') || [];
+   const name = valueOf(mda, 'name', 'fullName') || 'Unnamed MDA';
+   const acronym = valueOf(mda, 'acronym', 'shortName');
+-  return <div className="page-shell space-y-8 py-8 sm:py-10"><section className="surface-card p-5 sm:p-7"><div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between"><div className="flex min-w-0 items-start gap-4"><MdaLogo name={name} acronym={acronym} slug={slug} size="large" /><div className="min-w-0"><p className="eyebrow">MDA profile</p><h1 className="mt-2 break-words text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{name}</h1>{acronym ? <p className="mt-2 text-sm font-medium uppercase tracking-[0.1em] text-slate-500">{acronym}</p> : null}</div></div>{website ? <ExternalLink href={website} label={`Visit the official ${name} website (opens in a new tab)`}>Official website</ExternalLink> : null}</div></section><section aria-labelledby="fee-coverage-title"><p id="fee-coverage-title" className="eyebrow">Fee coverage</p><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"><MetricCard label="Mapped services" value={mappedServices === undefined ? '—' : formatCount(mappedServices)} /><MetricCard label="Verified fees" value={verified === undefined ? '—' : formatCount(verified)} /><MetricCard label="Pending" value={typeof pending === 'number' ? formatCount(pending) : pending} /><MetricCard label="Conflicting / unresolved" value={typeof unresolved === 'number' ? formatCount(unresolved) : unresolved} /></div></section>{officialChannels.length ? <section><p className="eyebrow">Official MDA channel</p><h2 className="section-heading mt-2">Start from the official institution channel</h2><div className="mt-5 grid gap-4 sm:grid-cols-2">{officialChannels.map((channel, index) => <OfficialChannelCard key={valueOf(channel, 'id', 'url') || index} channel={channel} />)}</div></section> : null}<section><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Service list</p><h2 className="section-heading mt-2">Services linked to this MDA</h2></div>{services.length ? <span className="text-sm text-slate-500">{formatCount(services.length)} listed</span> : null}</div><div className="mt-5">{servicesState.status === 'loading' ? <LoadingState label="Loading services…" /> : servicesState.status === 'error' ? <ErrorState title="Services are not available yet" description="This MDA profile loaded, but its public service list could not be reached." /> : services.length === 0 ? <EmptyState title="No services mapped yet" description="Services will appear here when they have been reviewed and added to the public catalogue." icon={Layers3} /> : <div className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3">{services.map((service, index) => <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} />)}</div>}</div></section></div>;
++  return <div className="page-shell space-y-6 py-6 sm:py-8"><section className="surface-card p-5 sm:p-6"><div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between"><div className="flex min-w-0 items-start gap-4"><MdaLogo name={name} acronym={acronym} slug={slug} size="large" /><div className="min-w-0"><p className="eyebrow">MDA profile</p><h1 className="mt-2 break-words text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{name}</h1>{acronym ? <p className="mt-2 text-sm font-medium uppercase tracking-[0.1em] text-slate-500">{acronym}</p> : null}</div></div>{website ? <ExternalLink href={website} label={`Visit the official ${name} website (opens in a new tab)`}>Official website</ExternalLink> : null}</div></section><section aria-labelledby="fee-coverage-title"><p id="fee-coverage-title" className="eyebrow">Fee coverage</p><div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"><MetricCard label="Mapped services" value={mappedServices === undefined ? '—' : formatCount(mappedServices)} /><MetricCard label="Verified fees" value={verified === undefined ? '—' : formatCount(verified)} /><MetricCard label="Pending" value={typeof pending === 'number' ? formatCount(pending) : pending} /><MetricCard label="Conflicting / unresolved" value={typeof unresolved === 'number' ? formatCount(unresolved) : unresolved} /></div></section><section><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Service list</p><h2 className="section-heading mt-2">Services linked to this MDA</h2></div>{services.length ? <span className="text-sm text-slate-500">{formatCount(services.length)} listed</span> : null}</div><div className="mt-5">{servicesState.status === 'loading' ? <LoadingState label="Loading services…" /> : servicesState.status === 'error' ? <ErrorState title="Services are not available yet" description="This MDA profile loaded, but its public service list could not be reached." /> : services.length === 0 ? <EmptyState title="No services mapped yet" description="Services will appear here when they have been reviewed and added to the public catalogue." icon={Layers3} /> : <div className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-3">{services.map((service, index) => <ServiceCard key={valueOf(service, 'id', 'slug') || index} service={service} />)}</div>}</div></section>{officialChannels.length ? <section><p className="eyebrow">Official MDA channel</p><h2 className="section-heading mt-2">Start from the official institution channel</h2><div className="mt-5 grid gap-4 sm:grid-cols-2">{officialChannels.map((channel, index) => <OfficialChannelCard key={valueOf(channel, 'id', 'url') || index} channel={channel} />)}</div></section> : null}</div>;
+ }
+ 
+diff --git a/frontend/src/pages/MdasPage.jsx b/frontend/src/pages/MdasPage.jsx
+index 300a9c0..c7929df 100644
+--- a/frontend/src/pages/MdasPage.jsx
++++ b/frontend/src/pages/MdasPage.jsx
+@@ -46,6 +46,6 @@ export function MdasPage() {
+     setFilters(initialFilters);
+   }
+ 
+-  return <div className="page-shell space-y-8 py-8 sm:py-10"><PageIntro eyebrow="Public catalogue" title="Browse MDAs and their services" description="Start with the public body, then move through its services to the fee, evidence, and official channel." /><div className="surface-card p-4 sm:p-5"><form className="flex flex-col gap-2 sm:flex-row" role="search" onSubmit={submitSearch}><label className="sr-only" htmlFor="mda-search">Search MDAs</label><div className="relative min-w-0 flex-1"><Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" /><input id="mda-search" value={searchDraft} onChange={(event) => setSearchDraft(event.target.value)} className="min-h-12 w-full rounded-xl border border-slate-300 bg-white pl-11 pr-4 text-sm placeholder:text-slate-400 focus:border-leaf focus:outline-none" placeholder="Search an MDA, acronym, or category" /></div><button className="primary-button min-h-12" type="submit"><Search size={17} aria-hidden="true" />Search catalogue</button></form></div><MdaFilters filters={filters} setFilters={setFilters} options={options} onReset={resetFilters} /><div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm text-slate-600">{state.status === 'success' ? `${formatCount(state.data?.total ?? items.length)} result${(state.data?.total ?? items.length) === 1 ? '' : 's'}` : 'Public results'}</p>{filters.search ? <p className="text-xs text-slate-500">Showing results for “{filters.search}”</p> : null}</div>{state.status === 'loading' ? <LoadingState label="Loading MDA catalogue…" /> : state.status === 'error' ? <ErrorState title="The MDA catalogue is not available yet" description="The public API did not return catalogue data. Try again when public records are connected." onRetry={() => setRetry((current) => current + 1)} /> : items.length === 0 ? <EmptyState title="No public MDA records yet" description="The catalogue is ready for verified records, but none are available to display yet." /> : <><div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((mda, index) => <MdaCard key={valueOf(mda, 'id', 'slug') || index} mda={mda} />)}</div>{state.data?.hasMore ? <div className="flex justify-center"><button type="button" className="secondary-button" onClick={() => setFilters((current) => ({ ...current, page: current.page + 1 }))}>Load more</button></div> : null}</>}</div>;
++  return <div className="page-shell space-y-6 py-6 sm:py-8"><PageIntro eyebrow="Public catalogue" title="Browse MDAs and their services" description="Start with the public body, then move through its services to the fee, evidence, and official channel." /><div className="surface-card p-4 sm:p-5"><form className="flex flex-col gap-2 sm:flex-row" role="search" onSubmit={submitSearch}><label className="sr-only" htmlFor="mda-search">Search MDAs</label><div className="relative min-w-0 flex-1"><Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" /><input id="mda-search" value={searchDraft} onChange={(event) => setSearchDraft(event.target.value)} className="min-h-12 w-full rounded-xl border border-slate-300 bg-white pl-11 pr-4 text-sm placeholder:text-slate-400 focus:border-leaf focus:outline-none" placeholder="Search an MDA, acronym, or category" /></div><button className="primary-button min-h-12" type="submit"><Search size={17} aria-hidden="true" />Search catalogue</button></form></div><MdaFilters filters={filters} setFilters={setFilters} options={options} onReset={resetFilters} /><div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm text-slate-600">{state.status === 'success' ? `${formatCount(state.data?.total ?? items.length)} result${(state.data?.total ?? items.length) === 1 ? '' : 's'}` : 'Public results'}</p>{filters.search ? <p className="text-xs text-slate-500">Showing results for “{filters.search}”</p> : null}</div>{state.status === 'loading' ? <LoadingState label="Loading MDA catalogue…" /> : state.status === 'error' ? <ErrorState title="The MDA catalogue is not available yet" description="The public API did not return catalogue data. Try again when public records are connected." onRetry={() => setRetry((current) => current + 1)} /> : items.length === 0 ? <EmptyState title="No public MDA records yet" description="The catalogue is ready for verified records, but none are available to display yet." /> : <><div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((mda, index) => <MdaCard key={valueOf(mda, 'id', 'slug') || index} mda={mda} />)}</div>{state.data?.hasMore ? <div className="flex justify-center"><button type="button" className="secondary-button" onClick={() => setFilters((current) => ({ ...current, page: current.page + 1 }))}>Load more</button></div> : null}</>}</div>;
+ }
+ 
+diff --git a/frontend/src/pages/MethodologyPage.jsx b/frontend/src/pages/MethodologyPage.jsx
+index 136eb2b..2c7c8aa 100644
+--- a/frontend/src/pages/MethodologyPage.jsx
++++ b/frontend/src/pages/MethodologyPage.jsx
+@@ -21,5 +21,5 @@ function Principle({ icon: Icon, title, children }) {
+ }
+ 
+ export function MethodologyPage() {
+-  return <div className="page-shell space-y-10 py-8 sm:py-10"><PageIntro eyebrow="Methodology" title="Evidence before confidence" description="FeeLens explains what has been published, what has been checked, and what remains uncertain before a person completes a public-service payment." /><section className="grid gap-4 md:grid-cols-3"><Principle icon={FileCheck2} title="What FeeLens does">It identifies public services, records published fee options, links each record to evidence, and shows the verification status and last-checked date.</Principle><Principle icon={ShieldCheck} title="What FeeLens does not do">FeeLens does not process payments, submit applications, replace official portals, or imply that an MDA endorses the service.</Principle><Principle icon={CalendarClock} title="Dates matter">A source can be official without publishing an exact publication or effective date. FeeLens leaves missing dates blank and keeps the last-checked date separate.</Principle></section><section><p className="eyebrow">Evidence hierarchy</p><h2 className="section-heading mt-2">The strongest available source comes first</h2><div className="mt-5 grid gap-4 lg:grid-cols-3">{evidenceTiers.map(([label, title, description]) => <article key={label} className="rounded-2xl border border-slate-200 bg-white p-5"><p className="eyebrow">{label}</p><h3 className="mt-2 font-semibold text-ink">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{description}</p></article>)}</div><p className="mt-4 text-sm leading-6 text-slate-600">FeeLens does not use blogs, unofficial agents, or third-party websites as sole authoritative evidence. They can point to a research lead, but they cannot establish an official fee by themselves.</p></section><section><p className="eyebrow">Verification</p><h2 className="section-heading mt-2">How a fee becomes public</h2><ol className="mt-5 grid gap-3 md:grid-cols-4">{['Identify the service and official channel.', 'Locate the strongest available evidence.', 'Record the fee model, source, and checking date.', 'Publish the status and preserve uncertainty.'].map((step, index) => <li key={step} className="surface-card flex gap-3 p-4"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-leaf text-xs font-semibold text-white">{index + 1}</span><span className="text-sm leading-6 text-slate-700">{step}</span></li>)}</ol></section><section><p className="eyebrow">Status language</p><h2 className="section-heading mt-2">Five distinct outcomes</h2><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{statuses.map(([title, description]) => <article key={title} className="rounded-2xl border border-slate-200 bg-white p-4"><h3 className="font-semibold text-ink">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{description}</p></article>)}</div></section><section className="grid gap-8 lg:grid-cols-2"><div><p className="eyebrow">Fee models</p><h2 className="section-heading mt-2">Read the amount as published</h2><div className="mt-5 space-y-3"><div className="surface-card flex gap-3 p-4"><WalletCards className="mt-1 shrink-0 text-leaf" size={20} aria-hidden="true" /><p className="text-sm leading-6 text-slate-600"><strong className="font-semibold text-ink">Free</strong> is a distinct fee model, not a missing amount. <strong className="font-semibold text-ink">Unknown</strong> is never treated as zero.</p></div><div className="surface-card flex gap-3 p-4"><BookOpenCheck className="mt-1 shrink-0 text-leaf" size={20} aria-hidden="true" /><p className="text-sm leading-6 text-slate-600">Foreign-currency fees remain in the published currency. Variable, percentage, range, and formula-based fees remain described rather than forced into a single number.</p></div></div></div><div><p className="eyebrow">Conflict and history</p><h2 className="section-heading mt-2">Uncertainty stays visible</h2><div className="mt-5 space-y-3"><div className="surface-card flex gap-3 p-4"><GitCompareArrows className="mt-1 shrink-0 text-leaf" size={20} aria-hidden="true" /><p className="text-sm leading-6 text-slate-600">When official sources conflict, the status is <strong className="font-semibold text-ink">Conflicting</strong>. FeeLens does not silently choose an amount.</p></div><div className="surface-card flex gap-3 p-4"><History className="mt-1 shrink-0 text-leaf" size={20} aria-hidden="true" /><p className="text-sm leading-6 text-slate-600">Superseded fees and verification history remain available so that changes can be understood over time.</p></div></div></div></section><section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7"><div className="flex gap-3"><MessageSquareWarning className="mt-1 shrink-0 text-leaf" size={22} aria-hidden="true" /><div><h2 className="font-semibold text-ink">Corrections and review</h2><p className="mt-2 text-sm leading-6 text-slate-600">If an official source changes or a record appears incorrect, the record should be reviewed against the official channel and source register. FeeLens will preserve the existing status until the evidence supports an update; it does not silently overwrite a disagreement.</p><Link className="text-button mt-3" to="/policy#corrections">Read the correction policy</Link></div></div></section><p className="text-xs leading-5 text-slate-500">FeeLens is independent civic technology. Every public fee should be read together with its source, status, and last-checked date.</p></div>;
++  return <div className="page-shell space-y-10 py-8 sm:py-10"><PageIntro eyebrow="Methodology" title="Evidence before confidence" description="FeeLens explains what has been published, what has been checked, and what remains uncertain before a person completes a public-service payment." /><section className="grid gap-4 md:grid-cols-3"><Principle icon={FileCheck2} title="What FeeLens does">It identifies public services, records published fee options, links each record to evidence, and shows the verification status and last-checked date.</Principle><Principle icon={ShieldCheck} title="What FeeLens does not do">FeeLens does not process payments, submit applications, replace official portals, or imply that an MDA endorses the service.</Principle><Principle icon={CalendarClock} title="Dates matter">A source can be official without publishing an exact publication or effective date. FeeLens leaves missing dates blank and keeps the last-checked date separate.</Principle></section><section><p className="eyebrow">Evidence hierarchy</p><h2 className="section-heading mt-2">The strongest available source comes first</h2><div className="mt-5 grid gap-4 lg:grid-cols-3">{evidenceTiers.map(([label, title, description]) => <article key={label} className="rounded-2xl border border-slate-200 bg-white p-5"><p className="eyebrow">{label}</p><h3 className="mt-2 font-semibold text-ink">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{description}</p></article>)}</div><p className="mt-4 text-sm leading-6 text-slate-600">FeeLens does not use blogs, unofficial agents, or third-party websites as sole authoritative evidence. They can point to a research lead, but they cannot establish an official fee by themselves.</p></section><section><p className="eyebrow">Verification</p><h2 className="section-heading mt-2">How a fee becomes public</h2><ol className="mt-5 grid gap-3 md:grid-cols-4">{['Identify the service and official channel.', 'Locate the strongest available evidence.', 'Record the fee model, source, and checking date.', 'Publish the status and preserve uncertainty.'].map((step, index) => <li key={step} className="surface-card flex gap-3 p-4"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-leaf text-xs font-semibold text-white">{index + 1}</span><span className="text-sm leading-6 text-slate-700">{step}</span></li>)}</ol></section><section><p className="eyebrow">Status language</p><h2 className="section-heading mt-2">Five distinct outcomes</h2><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{statuses.map(([title, description]) => <article key={title} className="rounded-2xl border border-slate-200 bg-white p-4"><h3 className="font-semibold text-ink">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{description}</p></article>)}</div></section><section className="grid gap-8 lg:grid-cols-2"><div><p className="eyebrow">Fee models</p><h2 className="section-heading mt-2">Read the amount as published</h2><div className="mt-5 space-y-3"><div className="surface-card flex gap-3 p-4"><WalletCards className="mt-1 shrink-0 text-leaf" size={20} aria-hidden="true" /><p className="text-sm leading-6 text-slate-600"><strong className="font-semibold text-ink">Free</strong> is a distinct fee model, not a missing amount. <strong className="font-semibold text-ink">Unknown</strong> is never treated as zero.</p></div><div className="surface-card flex gap-3 p-4"><BookOpenCheck className="mt-1 shrink-0 text-leaf" size={20} aria-hidden="true" /><p className="text-sm leading-6 text-slate-600">Foreign-currency fees remain in the published currency. Variable, percentage, range, and formula-based fees remain described rather than forced into a single number.</p></div></div></div><div><p className="eyebrow">Conflict and history</p><h2 className="section-heading mt-2">Uncertainty stays visible</h2><div className="mt-5 space-y-3"><div className="surface-card flex gap-3 p-4"><GitCompareArrows className="mt-1 shrink-0 text-leaf" size={20} aria-hidden="true" /><p className="text-sm leading-6 text-slate-600">When official sources conflict, the status is <strong className="font-semibold text-ink">Conflicting</strong>. FeeLens does not silently choose an amount.</p></div><div className="surface-card flex gap-3 p-4"><History className="mt-1 shrink-0 text-leaf" size={20} aria-hidden="true" /><p className="text-sm leading-6 text-slate-600">Superseded fees and verification history remain available so that changes can be understood over time.</p></div></div></div></section><section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"><div className="flex gap-3"><MessageSquareWarning className="mt-1 shrink-0 text-leaf" size={22} aria-hidden="true" /><div><h2 className="font-semibold text-ink">Corrections and review</h2><p className="mt-2 text-sm leading-6 text-slate-600">If an official source changes or a record appears incorrect, the record should be reviewed against the official channel and source register. FeeLens will preserve the existing status until the evidence supports an update; it does not silently overwrite a disagreement.</p><Link className="text-button mt-3" to="/policy#corrections">Read the correction policy</Link></div></div></section><p className="text-xs leading-5 text-slate-500">FeeLens is independent civic technology. Every public fee should be read together with its source, status, and last-checked date.</p></div>;
+ }
+diff --git a/frontend/src/pages/PrivacyPage.jsx b/frontend/src/pages/PrivacyPage.jsx
+index f4b7490..e74875e 100644
+--- a/frontend/src/pages/PrivacyPage.jsx
++++ b/frontend/src/pages/PrivacyPage.jsx
+@@ -2,6 +2,6 @@ import { LockKeyhole, Minimize2, UserRoundX } from 'lucide-react';
+ import { PageIntro } from '../components/common/PageIntro';
+ 
+ export function PrivacyPage() {
+-  return <div className="page-shell space-y-8 py-8 sm:py-10"><PageIntro eyebrow="Privacy" title="Keep the public experience simple" description="The public side of FeeLens is designed to answer a question without asking citizens to create profiles or share unnecessary personal information." /><section className="grid gap-4 md:grid-cols-3"><div className="surface-card p-5"><UserRoundX className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">No public registration</h2><p className="mt-2 text-sm leading-6 text-slate-600">Citizens do not need an account to browse public records or inspect evidence.</p></div><div className="surface-card p-5"><Minimize2 className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Data minimisation</h2><p className="mt-2 text-sm leading-6 text-slate-600">Future analytics and user research should collect only what is needed, with meaningful consent.</p></div><div className="surface-card p-5"><LockKeyhole className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Separate admin access</h2><p className="mt-2 text-sm leading-6 text-slate-600">Management authentication is separate from the public browsing experience.</p></div></section><section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7"><h2 className="text-xl font-bold text-ink">What this page does and does not promise</h2><p className="mt-3 text-sm leading-7 text-slate-600">This Phase 2 public frontend does not ask for citizen profiles, payment details, or unnecessary personal data. Any future analytics, feedback, or user research must be reviewed against data-minimisation and consent principles before it is introduced.</p></section></div>;
++  return <div className="page-shell space-y-6 py-6 sm:py-8"><PageIntro eyebrow="Privacy" title="Keep the public experience simple" description="The public side of FeeLens is designed to answer a question without asking citizens to create profiles or share unnecessary personal information." /><section className="grid gap-4 md:grid-cols-3"><div className="surface-card p-5"><UserRoundX className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">No public registration</h2><p className="mt-2 text-sm leading-6 text-slate-600">Citizens do not need an account to browse public records or inspect evidence.</p></div><div className="surface-card p-5"><Minimize2 className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Data minimisation</h2><p className="mt-2 text-sm leading-6 text-slate-600">Future analytics and user research should collect only what is needed, with meaningful consent.</p></div><div className="surface-card p-5"><LockKeyhole className="text-leaf" size={22} aria-hidden="true" /><h2 className="mt-4 font-bold text-ink">Separate admin access</h2><p className="mt-2 text-sm leading-6 text-slate-600">Management authentication is separate from the public browsing experience.</p></div></section><section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"><h2 className="text-xl font-bold text-ink">What this page does and does not promise</h2><p className="mt-3 text-sm leading-7 text-slate-600">This Phase 2 public frontend does not ask for citizen profiles, payment details, or unnecessary personal data. Any future analytics, feedback, or user research must be reviewed against data-minimisation and consent principles before it is introduced.</p></section></div>;
+ }
+ 
+diff --git a/frontend/src/pages/ServiceDetailPage.jsx b/frontend/src/pages/ServiceDetailPage.jsx
+index 9e25b65..d23dff7 100644
+--- a/frontend/src/pages/ServiceDetailPage.jsx
++++ b/frontend/src/pages/ServiceDetailPage.jsx
+@@ -27,16 +27,18 @@ export function ServiceDetailPage() {
+   const mdaValue = valueOf(service, 'mdaName', 'mda_name', 'mda');
+   const mdaName = typeof mdaValue === 'object' ? valueOf(mdaValue, 'name', 'fullName') : mdaValue;
+   const officialUrl = valueOf(service, 'officialUrl', 'official_url');
+-  return <div className="page-shell space-y-8 py-8 sm:py-10"><section className="surface-card p-5 sm:p-7"><div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div className="min-w-0"><p className="eyebrow">Public service</p><h1 className="mt-2 break-words text-3xl font-black tracking-tight text-ink sm:text-4xl">{valueOf(service, 'name', 'title') || 'Unnamed service'}</h1><p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">{valueOf(service, 'description', 'summary') || 'A public description has not been supplied yet.'}</p><div className="mt-4 flex flex-wrap items-center gap-2"><StatusBadge status={status} /><span className="text-sm text-slate-500">{mdaName || 'MDA not listed'}</span>{valueOf(service, 'jurisdiction') ? <><ChevronRight size={14} className="text-slate-400" aria-hidden="true" /><span className="text-sm text-slate-500">{valueOf(service, 'jurisdiction')}</span></> : null}</div></div>{officialUrl ? <ExternalLink href={officialUrl}>Official service</ExternalLink> : null}</div><div className="mt-5 flex flex-wrap gap-4 border-t border-slate-200 pt-4 text-xs text-slate-500"><span className="inline-flex items-center gap-1.5"><CalendarDays size={14} aria-hidden="true" />Last checked {formatDate(valueOf(service, 'lastChecked', 'last_checked', 'checkedAt'))}</span>{valueOf(service, 'category') ? <span>{valueOf(service, 'category')}</span> : null}</div></section>
++  return <div className="page-shell space-y-6 py-6 sm:py-8"><section className="surface-card p-5 sm:p-6"><div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div className="min-w-0"><p className="eyebrow">Public service</p><h1 className="mt-2 break-words text-3xl font-black tracking-tight text-ink sm:text-4xl">{valueOf(service, 'name', 'title') || 'Unnamed service'}</h1><p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">{valueOf(service, 'description', 'summary') || 'A public description has not been supplied yet.'}</p><div className="mt-4 flex flex-wrap items-center gap-2"><StatusBadge status={status} /><span className="text-sm text-slate-500">{mdaName || 'MDA not listed'}</span>{valueOf(service, 'jurisdiction') ? <><ChevronRight size={14} className="text-slate-400" aria-hidden="true" /><span className="text-sm text-slate-500">{valueOf(service, 'jurisdiction')}</span></> : null}</div></div>{officialUrl ? <ExternalLink href={officialUrl}>Official service</ExternalLink> : null}</div><div className="mt-5 flex flex-wrap gap-4 border-t border-slate-200 pt-4 text-xs text-slate-500"><span className="inline-flex items-center gap-1.5"><CalendarDays size={14} aria-hidden="true" />Last checked {formatDate(valueOf(service, 'lastChecked', 'last_checked', 'checkedAt'))}</span>{valueOf(service, 'category') ? <span>{valueOf(service, 'category')}</span> : null}</div></section>
+ 
+     <section><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Primary fee answer</p><h2 className="section-heading mt-2">Fee options</h2></div><p className="text-sm text-slate-500">Each option is shown separately.</p></div><div className="mt-5 grid gap-4 lg:grid-cols-2">{feeOptions.length ? feeOptions.map((option, index) => <FeeOptionCard key={valueOf(option, 'id') || index} option={option} index={index} />) : <EmptyState title="Fee information not available yet" description="No fee option has been supplied for this service. That is not the same as free." />}</div></section>
+ 
++    <section><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Evidence</p><h2 className="section-heading mt-2">Sources behind this record</h2></div><p className="text-sm text-slate-500">{sources.length ? `${sources.length} source${sources.length === 1 ? '' : 's'}` : 'No sources listed'}</p></div><div className="mt-5">{sources.length ? <div className="grid gap-4 lg:grid-cols-2">{sources.map((source, index) => <EvidenceCard key={valueOf(source, 'id', 'url') || index} source={source} />)}</div> : <EmptyState title="Evidence is not available yet" description="This record needs an authoritative source before FeeLens can present a confirmed fee." />}</div></section>
++
+     <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]"><section><p className="eyebrow">Before you start</p><h2 className="section-heading mt-2">Requirements</h2><div className="mt-5">{requirements.length ? <ul className="surface-card divide-y divide-slate-100 p-1">{requirements.map((requirement, index) => <li key={index} className="flex gap-3 p-4 text-sm leading-6 text-slate-700"><ShieldCheck size={17} className="mt-1 shrink-0 text-leaf" aria-hidden="true" />{typeof requirement === 'string' ? requirement : valueOf(requirement, 'name', 'description', 'label') || 'Requirement not described'}</li>)}</ul> : <EmptyState title="Requirements not listed yet" description="Requirements will be shown here when they are supplied by the public record." />}</div></section><section><p className="eyebrow">Process</p><h2 className="section-heading mt-2">How the service works</h2><div className="mt-5">{procedure.length ? <ol className="space-y-3">{procedure.map((step, index) => <li key={index} className="surface-card flex gap-3 p-4"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-leaf text-xs font-black text-white">{index + 1}</span><span className="text-sm leading-6 text-slate-700">{typeof step === 'string' ? step : valueOf(step, 'title', 'description', 'name') || 'Procedure step not described'}</span></li>)}</ol> : <EmptyState title="Procedure not listed yet" description="The process will be shown here when it is supplied by the public record." icon={ListChecks} />}</div></section></div>
+ 
+     <section><p className="eyebrow">Continue officially</p><h2 className="section-heading mt-2">Official service channel</h2><div className="mt-5">{channels.length ? <div className="grid gap-4 sm:grid-cols-2">{channels.map((channel, index) => <OfficialChannelCard key={valueOf(channel, 'id', 'url') || index} channel={channel} />)}</div> : <EmptyState title="Official channel not listed yet" description="FeeLens does not invent government links. Follow a verified official channel when one is supplied." />}</div></section>
+ 
+-    <section><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Evidence</p><h2 className="section-heading mt-2">Sources behind this record</h2></div><p className="text-sm text-slate-500">{sources.length ? `${sources.length} source${sources.length === 1 ? '' : 's'}` : 'No sources listed'}</p></div><div className="mt-5">{sources.length ? <div className="grid gap-4 lg:grid-cols-2">{sources.map((source, index) => <EvidenceCard key={valueOf(source, 'id', 'url') || index} source={source} />)}</div> : <EmptyState title="Evidence is not available yet" description="This record needs an authoritative source before FeeLens can present a confirmed fee." />}</div></section>
+ 
+-    <div className="grid gap-4 lg:grid-cols-2"><VerificationExplanation status={status} summary={valueOf(service, 'verificationSummary')} /><div className="rounded-2xl border border-slate-200 bg-white p-4"><h3 className="font-bold text-ink">Last review</h3><p className="mt-2 text-sm text-slate-600">Checked {formatDate(valueOf(service, 'lastChecked', 'last_checked', 'checkedAt'))}</p><p className="mt-1 text-sm text-slate-600">Next review: {formatDate(valueOf(service, 'nextReviewDate', 'next_review_date'))}</p></div></div><p className="text-xs leading-5 text-slate-500">FeeLens is independent civic technology. It does not collect government payments or replace official government portals. Review the linked official channel before completing a transaction.</p></div>;
++
++    <div className="grid gap-4 lg:grid-cols-2"><VerificationExplanation status={status} summary={valueOf(service, 'verificationSummary')} /><div className="rounded-2xl border border-slate-200 bg-white p-4"><h3 className="font-bold text-ink">Last review</h3><p className="mt-2 text-sm text-slate-600">Checked {formatDate(valueOf(service, 'lastChecked', 'last_checked', 'checkedAt'))}</p><p className="mt-1 text-sm text-slate-600">Next review: {formatDate(valueOf(service, 'nextReviewDate', 'next_review_date'))}</p></div></div><p className="text-xs leading-5 text-slate-500">FeeLens is independent civic technology. It is not a government agency, payment processor, application portal, agent or middleman, and does not collect government payments. Review the linked official channel before completing a transaction.</p></div>;
+ }
+ 
+diff --git a/frontend/src/pages/admin/AdminEntityFormPage.jsx b/frontend/src/pages/admin/AdminEntityFormPage.jsx
+index c897b93..8e4787a 100644
+--- a/frontend/src/pages/admin/AdminEntityFormPage.jsx
++++ b/frontend/src/pages/admin/AdminEntityFormPage.jsx
+@@ -160,7 +160,7 @@ function MdaFields({ form, set, errors }) {
+       <FormSection title="Coverage and official presence">
+         <div className="admin-form-grid">
+           <Field label="Official website" name="websiteUrl" error={errors.websiteUrl}>{(props) => <Input {...props} type="url" value={form.websiteUrl || ''} onChange={(e) => set('websiteUrl', e.target.value)} />}</Field>
+-          <Field label="Coverage status" name="coverageStatus" required error={errors.coverageStatus}>{(props) => <Select {...props} value={form.coverageStatus} onChange={(e) => set('coverageStatus', e.target.value)}>{coverageStatuses.map((status) => <option key={status} value={status}>{status.replaceAll('_', ' ')}</option>)}</Select>}</Field>
++          <Field label="Publication status" name="coverageStatus" required error={errors.coverageStatus}>{(props) => <Select {...props} value={form.coverageStatus} onChange={(e) => set('coverageStatus', e.target.value)}>{coverageStatuses.map((status) => <option key={status} value={status}>{status === 'pilot' ? 'Published' : status === 'roadmap' ? 'Planned' : status.replaceAll('_', ' ')}</option>)}</Select>}</Field>
+           <Field label="Record state" name="isActive">{(props) => <Select {...props} value={String(form.isActive)} onChange={(e) => set('isActive', e.target.value === 'true')}><option value="true">Active</option><option value="false">Inactive / archived</option></Select>}</Field>
+         </div>
+       </FormSection>
+diff --git a/frontend/src/pages/admin/AdminEntityListPage.jsx b/frontend/src/pages/admin/AdminEntityListPage.jsx
+index 665f101..4591b5b 100644
+--- a/frontend/src/pages/admin/AdminEntityListPage.jsx
++++ b/frontend/src/pages/admin/AdminEntityListPage.jsx
+@@ -10,7 +10,7 @@ const configs = {
+     title: 'MDAs', description: 'Manage institutions covered by FeeLens.', singular: 'MDA',
+     empty: 'Create an MDA before adding services.',
+     summary: (item) => item.entityType || item.jurisdiction || 'Entity details not set',
+-    meta: (item) => `${item.coverageStatus?.replaceAll('_', ' ') || 'pilot'} · ${item.isActive ? 'Active' : 'Inactive'}`,
++    meta: (item) => `${item.coverageStatus === 'pilot' ? 'published' : item.coverageStatus?.replaceAll('_', ' ') || 'published'} · ${item.isActive ? 'Active' : 'Inactive'}`,
+   },
+   services: {
+     title: 'Services', description: 'Maintain service information, requirements and procedures.', singular: 'service',
+diff --git a/frontend/vite.config.js b/frontend/vite.config.js
+index b330e74..e97be36 100644
+--- a/frontend/vite.config.js
++++ b/frontend/vite.config.js
+@@ -29,6 +29,7 @@ const sentryBuildPlugin = canUploadSentrySourceMaps
+ export default defineConfig({
+   plugins: [react(), ...(sentryBuildPlugin ? [sentryBuildPlugin] : [])],
+   build: {
++    assetsInlineLimit: 0,
+     sourcemap: canUploadSentrySourceMaps ? 'hidden' : false,
+   },
+ });

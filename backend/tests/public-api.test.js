@@ -134,6 +134,26 @@ test('MDA filters reject unsafe sorting and invalid page sizes', async () => {
   });
 });
 
+test('MDA listing applies requested publication priority order', async () => {
+  let executedSql = '';
+  const pool = poolFor((sql) => {
+    executedSql = sql;
+    return { rows: [
+      { id: 2, slug: 'nimc', name: 'National Identity Management Commission', acronym: 'NIMC', coverageStatus: 'pilot', publicationOrder: 2, total_count: '4' },
+      { id: 3, slug: 'cac', name: 'Corporate Affairs Commission', acronym: 'CAC', coverageStatus: 'pilot', publicationOrder: 3, total_count: '4' },
+      { id: 4, slug: 'nipc', name: 'Nigerian Investment Promotion Commission', acronym: 'NIPC', coverageStatus: 'pilot', publicationOrder: 4, total_count: '4' },
+      { id: 5, slug: 'nigeria-immigration-service', name: 'Nigeria Immigration Service', acronym: 'NIS', coverageStatus: 'pilot', publicationOrder: 5, total_count: '4' },
+    ] };
+  });
+  await withServer(createApp({ config, pool }), async (baseUrl) => {
+    const response = await request(baseUrl, '/public/mdas');
+    assert.equal(response.status, 200);
+    assert.match(executedSql, /ORDER BY COALESCE\(m\.publication_priority, CASE m\.slug/);
+    assert.deepEqual(response.body.items.map((item) => item.slug), ['nimc', 'cac', 'nipc', 'nigeria-immigration-service']);
+    assert.equal(response.body.items[0].publicationOrder, 2);
+  });
+});
+
 test('MDA services exclude inactive services and return current fee summaries', async () => {
   const pool = poolFor((sql) => {
     assert.match(sql, /s\.is_active = TRUE/);

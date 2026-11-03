@@ -3,7 +3,7 @@ const { sourceTypes } = require('./admin.schemas');
 
 const verificationStatuses = ['verified', 'pending', 'conflicting', 'unable_to_verify', 'superseded'];
 const coverageStatuses = ['pilot', 'roadmap', 'inactive'];
-const publicSorts = ['coverage', 'alpha', 'live', 'services', 'name', 'status', 'updatedAt'];
+const publicSorts = ['coverage', 'priority', 'alpha', 'live', 'services', 'name', 'status', 'updatedAt'];
 
 const optionalQueryText = (max = 200) => z.string().trim().max(max).transform((value) => value || undefined).optional();
 const queryBoolean = z.union([

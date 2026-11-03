@@ -699,8 +699,7 @@ function loadManifest(manifestPath) {
   const withFctirs = buildFctirsManifest(baseManifest, JSON.parse(fs.readFileSync(FCTIRS_CATALOGUE_PATH, 'utf8')));
   const withCac = buildCacManifest(withFctirs, JSON.parse(fs.readFileSync(CAC_CATALOGUE_PATH, 'utf8')));
   const withNimc = buildNimcManifest(withCac, JSON.parse(fs.readFileSync(NIMC_CATALOGUE_PATH, 'utf8')));
-  const withNis = buildNisManifest(withNimc, JSON.parse(fs.readFileSync(NIS_CATALOGUE_PATH, 'utf8')));
-  return buildFrscManifest(withNis, JSON.parse(fs.readFileSync(FRSC_CATALOGUE_PATH, 'utf8')));
+  return buildFrscManifest(withNimc, JSON.parse(fs.readFileSync(FRSC_CATALOGUE_PATH, 'utf8')));
 }
 
 function selectBatch(manifest, batch = 'batch-01') {
